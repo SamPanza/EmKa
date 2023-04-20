@@ -11,7 +11,11 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--TODO-->
+            <dependency>
+                <groupId>io.github.embeddedkafka</groupId>
+                <artifactId>embedded-kafka_2.13</artifactId>
+                <version>3.4.0.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
