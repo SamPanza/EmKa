@@ -19,6 +19,12 @@
             <artifactId>embedded-kafka_2.13</artifactId>
         </dependency>
 
+        <!--To access org.apache.kafka.metadata.BrokerState-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-metadata</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
