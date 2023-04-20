@@ -11,13 +11,12 @@
         <relativePath>../1-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>ekafka-scratch</artifactId>
+    <artifactId>ekafka-core</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>su.ptx.ekafka</groupId>
-            <artifactId>ekafka-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.github.embeddedkafka</groupId>
+            <artifactId>embedded-kafka_2.13</artifactId>
         </dependency>
     </dependencies>
 </project>
