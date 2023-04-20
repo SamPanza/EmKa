@@ -12,6 +12,6 @@
     <modules>
         <module>0-bom</module>
         <module>1-parent</module>
-        <module>playground</module>
+        <module>scratch</module>
     </modules>
 </project>
