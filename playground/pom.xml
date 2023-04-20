@@ -12,4 +12,11 @@
     </parent>
 
     <artifactId>ekafka-playground</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.embeddedkafka</groupId>
+            <artifactId>embedded-kafka_2.13</artifactId>
+        </dependency>
+    </dependencies>
 </project>
