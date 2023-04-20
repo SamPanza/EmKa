@@ -12,9 +12,12 @@ import static su.ptx.ekafka.core.JavaToScala.immutableMap;
 
 public final class EKafka implements AutoCloseable {
     private final EmbeddedK ek;
+    public final String bootstrapServers;
 
-    private EKafka(EmbeddedK ek) {
-        this.ek = ek;
+    private EKafka(EmbeddedK embeddedK) {
+        ek = embeddedK;
+        var endpoint = ek.broker().advertisedListeners().head();
+        bootstrapServers = endpoint.host() + ":" + endpoint.port();
     }
 
     public static EKafka start() {
