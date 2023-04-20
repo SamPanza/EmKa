@@ -5,6 +5,7 @@ import io.github.embeddedkafka.EmbeddedKafka$;
 import io.github.embeddedkafka.EmbeddedKafkaConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.collection.immutable.Map$;
 
 import java.util.Map;
 
@@ -23,22 +24,22 @@ public final class EKafka implements AutoCloseable {
     }
 
     public static EKafka start() {
-        return start(0, 0, emptyMap(), emptyMap(), emptyMap());
+        return start(emptyMap());
     }
 
-    public static EKafka start(int kafkaPort,
-                               int zooKeeperPort,
-                               Map<String, String> brokerConfig,
-                               Map<String, String> producerConfig,
-                               Map<String, String> consumerConfig) {
+    public static EKafka start(Map<String, String> brokerConfig) {
+        return start(0, 0, brokerConfig);
+    }
+
+    public static EKafka start(int kafkaPort, int zooKeeperPort, Map<String, String> brokerConfig) {
         return new EKafka(
                 EmbeddedKafka$.MODULE$.start(
                         new EmbeddedKafkaConfigImpl(
                                 kafkaPort,
                                 zooKeeperPort,
                                 immutableMap(brokerConfig),
-                                immutableMap(producerConfig),
-                                immutableMap(consumerConfig))));
+                                Map$.MODULE$.empty(),
+                                Map$.MODULE$.empty())));
     }
 
     @Override
