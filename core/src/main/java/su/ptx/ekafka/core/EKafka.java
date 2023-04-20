@@ -7,7 +7,6 @@ import io.github.embeddedkafka.EmbeddedKafkaConfigImpl;
 import java.util.Map;
 
 import static java.util.Collections.emptyMap;
-import static org.apache.kafka.metadata.BrokerState.RUNNING;
 import static su.ptx.ekafka.core.JavaToScala.immutableMap;
 
 public final class EKafka implements AutoCloseable {
@@ -37,10 +36,6 @@ public final class EKafka implements AutoCloseable {
                                 immutableMap(brokerConfig),
                                 immutableMap(producerConfig),
                                 immutableMap(consumerConfig))));
-    }
-
-    public boolean running() {
-        return ek.broker().brokerState() == RUNNING;
     }
 
     @Override
