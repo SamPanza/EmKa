@@ -9,6 +9,7 @@
     <logger name="org.apache.kafka" level="WARN"/>
     <logger name="org.apache.zookeeper" level="WARN"/>
     <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR"/>
+    <logger name="su.ptx.ekafka.core.EKafka" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
