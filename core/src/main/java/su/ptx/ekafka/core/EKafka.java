@@ -9,30 +9,20 @@ import scala.collection.immutable.Map$;
 
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
 import static su.ptx.ekafka.core.JavaToScala.immutableMap;
 
-public final class EKafka implements AutoCloseable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EKafka.class);
-    private final EmbeddedK ek;
-    public final String bootstrapServers;
+public interface EKafka extends AutoCloseable {
+    String bootstrapServers();
 
-    private EKafka(EmbeddedK embeddedK) {
-        ek = embeddedK;
-        var endpoint = ek.broker().advertisedListeners().head();
-        bootstrapServers = endpoint.host() + ":" + endpoint.port();
+    void stop();
+
+    @Override
+    default void close() {
+        stop();
     }
 
-    public static EKafka start() {
-        return start(emptyMap());
-    }
-
-    public static EKafka start(Map<String, String> brokerConfig) {
-        return start(0, 0, brokerConfig);
-    }
-
-    public static EKafka start(int kafkaPort, int zooKeeperPort, Map<String, String> brokerConfig) {
-        return new EKafka(
+    static EKafka start(int kafkaPort, int zooKeeperPort, Map<String, String> brokerConfig) {
+        return new Impl(
                 EmbeddedKafka$.MODULE$.start(
                         new EmbeddedKafkaConfigImpl(
                                 kafkaPort,
@@ -42,10 +32,26 @@ public final class EKafka implements AutoCloseable {
                                 Map$.MODULE$.empty())));
     }
 
-    @Override
-    public void close() {
-        LOGGER.debug("Stopping");
-        ek.stop(true);
-        LOGGER.debug("Stopped");
+    final class Impl implements EKafka {
+        private static final Logger LOGGER = LoggerFactory.getLogger("ekafka");
+        private final EmbeddedK ek;
+
+        private Impl(EmbeddedK embeddedK) {
+            ek = embeddedK;
+        }
+
+        @Override
+        public String bootstrapServers() {
+            return ek.broker().advertisedListeners().headOption()
+                    .map(ep -> ep.host() + ":" + ep.port())
+                    .get();
+        }
+
+        @Override
+        public void stop() {
+            LOGGER.debug("Stopping");
+            ek.stop(true);
+            LOGGER.debug("Stopped");
+        }
     }
 }
