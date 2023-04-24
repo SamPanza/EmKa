@@ -2,6 +2,8 @@ package su.ptx.ekafka.core;
 
 import kafka.zookeeper.ZooKeeperClientTimeoutException;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -16,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EKafkaTests {
+    private static final Logger LOGGER = LoggerFactory.getLogger("ekafka.tests");
+
     @Test
     void start_and_stop() {
         try (var ek = EKafka.start(0, 0, emptyMap())) {
@@ -28,12 +32,11 @@ class EKafkaTests {
 
     @Test
     void fails_to_start_on_busy_ZK_port() throws InterruptedException {
-        withBusyPort(port -> {
-            //noinspection resource
-            assertThrows(
-                    ZooKeeperClientTimeoutException.class,
-                    () -> EKafka.start(0, port, emptyMap()));
-        });
+        //noinspection resource
+        withBusyPort(port ->
+                assertThrows(
+                        ZooKeeperClientTimeoutException.class,
+                        () -> EKafka.start(0, port, emptyMap())));
     }
 
     //TODO: fails_to_start_on_busy_Kafka_port
@@ -41,10 +44,12 @@ class EKafkaTests {
     private static void withBusyPort(IntConsumer body) throws InterruptedException {
         try (var ssc = ServerSocketChannel.open()) {
             ssc.bind(null);
+            LOGGER.debug("Bound to {}", ssc.getLocalAddress());
             var latch = new CountDownLatch(1);
             var acceptingThread = new Thread(() -> {
                 try {
                     latch.countDown();
+                    LOGGER.debug("Waiting threads released");
                     while (true) {
                         ssc.accept();
                     }
@@ -56,8 +61,10 @@ class EKafkaTests {
             });
             acceptingThread.start();
             latch.await();
+            var port = ssc.socket().getLocalPort();
+            LOGGER.debug("Calling body.accept({})", port);
             try {
-                body.accept(ssc.socket().getLocalPort());
+                body.accept(port);
             } finally {
                 acceptingThread.interrupt();
             }
