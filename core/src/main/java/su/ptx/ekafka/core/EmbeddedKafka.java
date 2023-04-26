@@ -12,7 +12,7 @@ public final class EmbeddedKafka implements EKafka {
     private static final Logger LOGGER = LoggerFactory.getLogger("ekafka");
     private final EmbeddedK embeddedK;
 
-    EmbeddedKafka(EmbeddedK embeddedK) {
+    private EmbeddedKafka(EmbeddedK embeddedK) {
         this.embeddedK = embeddedK;
     }
 

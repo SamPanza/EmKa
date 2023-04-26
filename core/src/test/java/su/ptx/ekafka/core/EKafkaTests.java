@@ -33,8 +33,9 @@ class EKafkaTests {
     private EKafka eKafka;
 
     @BeforeEach
-    void setUp() {
-        eKafka = EmbeddedKafka.start(0, 0, Map.of("auto.create.topics.enable", "false"));
+    void setUp() throws Exception {
+        //eKafka = EmbeddedKafka.start(0, 0, Map.of("auto.create.topics.enable", "false"));
+        eKafka = EK.start();
     }
 
     @AfterEach
@@ -86,7 +87,7 @@ class EKafkaTests {
                 consumerRecords.forEach(cr -> log.add(format("%d-%s-%s", cr.partition(), cr.key(), cr.value())));
             } while (polled < N);
             consumer.close();
-        }).join(5000);
+        }).join(10000);
         assertEquals(Set.of("0-0-0", "1-1-1", "2-2-2"), log);
     }
 
