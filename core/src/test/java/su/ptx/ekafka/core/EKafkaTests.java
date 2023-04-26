@@ -61,8 +61,8 @@ class EKafkaTests {
         }
 
         try (Producer<String, String> producer = new KafkaProducer<>(Map.of(
-                "key.serializer", StringSerializer.class.getName(),
-                "value.serializer", StringSerializer.class.getName(),
+                "key.serializer", StringSerializer.class,
+                "value.serializer", StringSerializer.class,
                 "bootstrap.servers", eKafka.bootstrapServers()))) {
             for (var i = 0; i < N; ++i) {
                 producer.send(new ProducerRecord<>(TOPIC, i, Integer.toString(i), Integer.toString(i)));
@@ -71,8 +71,8 @@ class EKafkaTests {
 
         @SuppressWarnings("resource")
         Consumer<String, String> consumer = new KafkaConsumer<>(Map.of(
-                "key.deserializer", StringDeserializer.class.getName(),
-                "value.deserializer", StringDeserializer.class.getName(),
+                "key.deserializer", StringDeserializer.class,
+                "value.deserializer", StringDeserializer.class,
                 "bootstrap.servers", eKafka.bootstrapServers(),
                 "group.id", "g-1",
                 "auto.offset.reset", "earliest"));
@@ -82,9 +82,6 @@ class EKafkaTests {
             var polled = 0;
             do {
                 var consumerRecords = consumer.poll(ofSeconds(1));
-                if (consumerRecords.isEmpty()) {
-                    continue;
-                }
                 polled += consumerRecords.count();
                 consumerRecords.forEach(cr -> log.add(format("%d-%s-%s", cr.partition(), cr.key(), cr.value())));
             } while (polled < N);
