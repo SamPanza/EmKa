@@ -1,4 +1,4 @@
-package su.ptx.ekafka.core;
+package su.ptx.ekafka.kore;
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -12,8 +12,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import su.ptx.ekafka.core.EKafka;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -28,14 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EKafkaTests {
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger("ekafka.tests");
     private EKafka eKafka;
 
     @BeforeEach
     void setUp() throws Exception {
-        //eKafka = EmbeddedKafka.start(0, 0, Map.of("auto.create.topics.enable", "false"));
-        eKafka = EK.start();
+        eKafka = EKafka.start();
     }
 
     @AfterEach
@@ -44,7 +40,7 @@ class EKafkaTests {
     }
 
     @Test
-    void bootstrapServers_looks_OK() {
+    void checkBootstrapServers() {
         assertTrue(
                 Pattern.compile("localhost:\\d\\d\\d\\d+")
                         .matcher(eKafka.bootstrapServers())

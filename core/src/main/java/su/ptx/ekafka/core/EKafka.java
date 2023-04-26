@@ -9,4 +9,8 @@ public interface EKafka extends AutoCloseable {
     default void close() {
         stop();
     }
+
+    static EKafka start() throws Exception {
+        return EmbeddedKafka.start();
+    }
 }

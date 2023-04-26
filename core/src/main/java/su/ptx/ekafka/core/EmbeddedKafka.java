@@ -20,11 +20,11 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
-public final class EK implements EKafka {
+final class EmbeddedKafka implements EKafka {
     private final String bootstrapServers;
     private final KafkaRaftServer krs;
 
-    private EK(String bootstrapServers, KafkaRaftServer krs) {
+    private EmbeddedKafka(String bootstrapServers, KafkaRaftServer krs) {
         this.bootstrapServers = bootstrapServers;
         this.krs = krs;
     }
@@ -40,17 +40,16 @@ public final class EK implements EKafka {
         krs.awaitShutdown();
     }
 
-    public static EK start() throws Exception {
+    static EKafka start() throws Exception {
         var brokerPort = randomPort();
         var krs = new KafkaRaftServer(
                 new KafkaConfig(newProps(newLogDir(), brokerPort, randomPort()), false),
                 Time.SYSTEM,
                 Option.empty());
         krs.startup();
-        return new EK("localhost:" + brokerPort, krs);
+        return new EmbeddedKafka("localhost:" + brokerPort, krs);
     }
 
-    //WHY: KafkaConfig accepts Map[_, _] which is Map<?, ?>
     private static Map<?, ?> newProps(File logDir, int brokerPort, int controllerPort) {
         final var NODE_ID = 1;
         return Map.of(
