@@ -34,7 +34,7 @@ class EKafkaTests {
 
     @BeforeEach
     void setUp() {
-        eKafka = EKafka.start(0, 0, Map.of("auto.create.topics.enable", "false"));
+        eKafka = EmbeddedKafka.start(0, 0, Map.of("auto.create.topics.enable", "false"));
     }
 
     @AfterEach
