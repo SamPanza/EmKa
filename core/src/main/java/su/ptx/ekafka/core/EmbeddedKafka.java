@@ -13,12 +13,15 @@ import scala.Option;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
 
 final class EmbeddedKafka implements EKafka {
     private final String bootstrapServers;
@@ -40,30 +43,35 @@ final class EmbeddedKafka implements EKafka {
         krs.awaitShutdown();
     }
 
-    static EKafka start() throws Exception {
-        var brokerPort = randomPort();
+    static EKafka start(short brokers) throws Exception {
+        var controllerPort = randomPort();
+        var brokerPorts = IntStream.generate(EmbeddedKafka::randomPort).limit(brokers).toArray();
         var krs = new KafkaRaftServer(
-                new KafkaConfig(newProps(newLogDir(), brokerPort, randomPort()), false),
+                new KafkaConfig(newProps(newLogDir(), controllerPort, brokerPorts), false),
                 Time.SYSTEM,
                 Option.empty());
         krs.startup();
-        return new EmbeddedKafka("localhost:" + brokerPort, krs);
+        return new EmbeddedKafka(
+                IntStream.of(brokerPorts).mapToObj(p -> "localhost:" + p).collect(joining(",")),
+                krs);
     }
 
     private static final int NODE_ID = 1;
 
-    private static Map<?, ?> newProps(File logDir, int brokerPort, int controllerPort) {
+    private static Map<?, ?> newProps(File logDir, int controllerPort, int[] brokerPorts) {
+        var rf = (short) brokerPorts.length;
         return Map.of(
-                "process.roles", "broker,controller",
+                "process.roles", "controller,broker",
                 "node.id", NODE_ID,
                 "controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort,
-                "listeners", format("BROKER://localhost:%d,CONTROLLER://localhost:%d", brokerPort, controllerPort),
-                "listener.security.protocol.map", "BROKER:PLAINTEXT,CONTROLLER:PLAINTEXT",
+                //TODO
+                "listeners", format("CONTROLLER://localhost:%d,BROKER://localhost:%d", controllerPort, brokerPorts[0]),
+                "listener.security.protocol.map", "CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT",
                 "controller.listener.names", "CONTROLLER",
                 "inter.broker.listener.name", "BROKER",
                 "log.dir", logDir.toString(),
-                "offsets.topic.replication.factor", (short) 1,
-                "transaction.state.log.replication.factor", (short) 1);
+                "offsets.topic.replication.factor", rf,
+                "transaction.state.log.replication.factor", rf);
     }
 
     private static File newLogDir() throws Exception {
@@ -91,9 +99,11 @@ final class EmbeddedKafka implements EKafka {
         return logDir;
     }
 
-    private static int randomPort() throws IOException {
+    private static int randomPort() {
         try (var s = new ServerSocket(0)) {
             return s.getLocalPort();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 }

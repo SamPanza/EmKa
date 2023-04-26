@@ -31,7 +31,7 @@ class EKafkaTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        eKafka = EKafka.start();
+        eKafka = EKafka.start((short) 1);
     }
 
     @AfterEach
