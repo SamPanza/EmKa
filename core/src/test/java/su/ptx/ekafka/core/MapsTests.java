@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static su.ptx.ekafka.core.JavaToScala.immutableMap;
+import static su.ptx.ekafka.core.Maps.map;
 
-class JavaToScalaTests {
+class MapsTests {
     @Test
-    void immutableMapWorks() {
+    void mapWorks() {
         assertEquals(
                 "Map(foo -> 42)",
-                String.valueOf(immutableMap(Map.of("foo", 42))));
+                String.valueOf(map(Map.of("foo", 42))));
     }
 }

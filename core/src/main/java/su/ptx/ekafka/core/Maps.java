@@ -8,11 +8,15 @@ import java.util.Map;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static scala.jdk.javaapi.CollectionConverters.asScala;
 
-final class JavaToScala {
-    private JavaToScala() {
+final class Maps {
+    private Maps() {
     }
 
-    static <K, V> scala.collection.immutable.Map<K, V> immutableMap(Map<K, V> map) {
+    static <K, V>scala.collection.immutable.Map<K, V> empty() {
+        return Map$.MODULE$.empty();
+    }
+
+    static <K, V> scala.collection.immutable.Map<K, V> map(Map<K, V> map) {
         return Map$.MODULE$.from(
                 asScala(
                         map.entrySet().stream()

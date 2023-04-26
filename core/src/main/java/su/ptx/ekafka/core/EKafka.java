@@ -5,11 +5,8 @@ import io.github.embeddedkafka.EmbeddedKafka$;
 import io.github.embeddedkafka.EmbeddedKafkaConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.immutable.Map$;
 
 import java.util.Map;
-
-import static su.ptx.ekafka.core.JavaToScala.immutableMap;
 
 public interface EKafka extends AutoCloseable {
     String bootstrapServers();
@@ -27,9 +24,9 @@ public interface EKafka extends AutoCloseable {
                         new EmbeddedKafkaConfigImpl(
                                 kafkaPort,
                                 zooKeeperPort,
-                                immutableMap(brokerConfig),
-                                Map$.MODULE$.empty(),
-                                Map$.MODULE$.empty())));
+                                Maps.map(brokerConfig),
+                                Maps.empty(),
+                                Maps.empty())));
     }
 
     final class Impl implements EKafka {
