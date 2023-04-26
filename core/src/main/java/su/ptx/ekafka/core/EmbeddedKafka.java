@@ -50,8 +50,9 @@ final class EmbeddedKafka implements EKafka {
         return new EmbeddedKafka("localhost:" + brokerPort, krs);
     }
 
+    private static final int NODE_ID = 1;
+
     private static Map<?, ?> newProps(File logDir, int brokerPort, int controllerPort) {
-        final var NODE_ID = 1;
         return Map.of(
                 "process.roles", "broker,controller",
                 "node.id", NODE_ID,
@@ -66,17 +67,13 @@ final class EmbeddedKafka implements EKafka {
     }
 
     private static File newLogDir() throws Exception {
-        final var SOURCE = "ekafka";
-        final var META = "meta.properties";
-        final var NODE_ID = 1;
-
-        var logDir = Files.createTempDirectory(SOURCE).toFile();
+        var logDir = Files.createTempDirectory("ekafka").toFile();
         logDir.deleteOnExit();
 
         new BrokerMetadataCheckpoint(
                 new File(
                         logDir,
-                        META))
+                        "meta.properties"))
                 .write(
                         new MetaProperties(
                                 Uuid.randomUuid().toString(),
@@ -89,7 +86,7 @@ final class EmbeddedKafka implements EKafka {
                 .writeBinaryFile(
                         BootstrapMetadata.fromVersion(
                                 MetadataVersion.latest(),
-                                SOURCE));
+                                "ekafka"));
 
         return logDir;
     }
