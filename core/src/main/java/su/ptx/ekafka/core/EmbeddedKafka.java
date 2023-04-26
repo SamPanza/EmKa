@@ -12,9 +12,6 @@ import org.apache.kafka.server.common.MetadataVersion;
 import scala.Option;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +19,8 @@ import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
+import static su.ptx.ekafka.core.RandomPorts.randomPort;
+import static su.ptx.ekafka.core.RandomPorts.randomPorts;
 
 final class EmbeddedKafka implements EKafka {
     private final String bootstrapServers;
@@ -45,7 +44,7 @@ final class EmbeddedKafka implements EKafka {
 
     static EKafka start(short brokers) throws Exception {
         var controllerPort = randomPort();
-        var brokerPorts = IntStream.generate(EmbeddedKafka::randomPort).limit(brokers).toArray();
+        var brokerPorts = randomPorts(brokers);
         var krs = new KafkaRaftServer(
                 new KafkaConfig(newProps(newLogDir(), controllerPort, brokerPorts), false),
                 Time.SYSTEM,
@@ -97,13 +96,5 @@ final class EmbeddedKafka implements EKafka {
                                 "ekafka"));
 
         return logDir;
-    }
-
-    private static int randomPort() {
-        try (var s = new ServerSocket(0)) {
-            return s.getLocalPort();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }
