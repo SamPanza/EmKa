@@ -31,13 +31,13 @@ class EmKaTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        emKa = EmKa.start();
+        emKa = EmKa.create().start();
     }
 
     @AfterEach
     void tearDown() {
         if (emKa != null) {
-            emKa.close();
+            System.err.println(emKa.stop());
         }
     }
 

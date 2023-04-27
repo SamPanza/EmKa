@@ -25,9 +25,10 @@ final class KRaftee implements EmKa {
     private final String bootstrapServers;
     private final KafkaRaftServer krs;
 
-    private KRaftee(String bootstrapServers, KafkaRaftServer krs) {
-        this.bootstrapServers = bootstrapServers;
-        this.krs = krs;
+    KRaftee() throws Exception {
+        var props = newProps(newLogDir());
+        bootstrapServers = props._1;
+        krs = new KafkaRaftServer(new KafkaConfig(props._2, false), Time.SYSTEM, Option.empty());
     }
 
     @Override
@@ -36,21 +37,21 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public void stop() {
-        krs.shutdown();
-        krs.awaitShutdown();
+    public EmKa start() {
+        krs.startup();
+        return this;
     }
 
-    static EmKa start() throws Exception {
-        var props = newProps(newLogDir());
-        var krs = new KafkaRaftServer(new KafkaConfig(props._1, false), Time.SYSTEM, Option.empty());
-        krs.startup();
-        return new KRaftee(props._2, krs);
+    @Override
+    public EmKa stop() {
+        krs.shutdown();
+        krs.awaitShutdown();
+        return this;
     }
 
     private static final int NODE_ID = 1;
 
-    private static Tuple2<Map<?, ?>, String> newProps(File logDir) {
+    private static Tuple2<String, Map<?, ?>> newProps(File logDir) {
         IntSupplier port0 = () -> {
             try (var s = new ServerSocket(0)) {
                 return s.getLocalPort();
@@ -58,9 +59,10 @@ final class KRaftee implements EmKa {
                 throw new UncheckedIOException(e);
             }
         };
-        var cp = port0.getAsInt();
         var bp = port0.getAsInt();
+        var cp = port0.getAsInt();
         return new Tuple2<>(
+                "localhost:" + bp,
                 Map.of(
                         "process.roles", "controller,broker",
                         "node.id", NODE_ID,
@@ -71,8 +73,7 @@ final class KRaftee implements EmKa {
                         "inter.broker.listener.name", "BRO",
                         "log.dir", logDir.toString(),
                         "offsets.topic.replication.factor", "1",
-                        "transaction.state.log.replication.factor", "1"),
-                "localhost:" + bp);
+                        "transaction.state.log.replication.factor", "1"));
     }
 
     private static File newLogDir() throws Exception {
