@@ -1,4 +1,4 @@
-package su.ptx.ekafka.core;
+package su.ptx.emka.core;
 
 import kafka.server.BrokerMetadataCheckpoint;
 import kafka.server.KafkaConfig;

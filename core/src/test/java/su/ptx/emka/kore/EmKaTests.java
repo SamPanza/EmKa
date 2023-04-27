@@ -1,4 +1,4 @@
-package su.ptx.ekafka.kore;
+package su.ptx.emka.kore;
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -12,7 +12,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import su.ptx.ekafka.core.EmKa;
+import su.ptx.emka.core.EmKa;
 
 import java.util.HashSet;
 import java.util.Map;

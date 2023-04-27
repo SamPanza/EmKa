@@ -1,4 +1,4 @@
-package su.ptx.ekafka.core;
+package su.ptx.emka.core;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

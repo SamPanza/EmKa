@@ -1,4 +1,4 @@
-package su.ptx.ekafka.core;
+package su.ptx.emka.core;
 
 public interface EmKa extends AutoCloseable {
     String bootstrapServers();
