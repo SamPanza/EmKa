@@ -12,7 +12,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import su.ptx.ekafka.core.EKafka;
+import su.ptx.ekafka.core.EmKa;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -26,24 +26,24 @@ import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EKafkaTests {
-    private EKafka eKafka;
+class EmKaTests {
+    private EmKa emKa;
 
     @BeforeEach
     void setUp() throws Exception {
-        eKafka = EKafka.start((short) 2);
+        emKa = EmKa.start((short) 2);
     }
 
     @AfterEach
     void tearDown() {
-        if (eKafka != null) {
-            eKafka.close();
+        if (emKa != null) {
+            emKa.close();
         }
     }
 
     @Test
     void checkBootstrapServers() {
-        var bootstrapServers = eKafka.bootstrapServers();
+        var bootstrapServers = emKa.bootstrapServers();
         assertTrue(Pattern.compile("localhost:\\d\\d\\d\\d+").matcher(bootstrapServers).matches(), bootstrapServers);
     }
 
@@ -53,14 +53,14 @@ class EKafkaTests {
         final var N = 3;
 
         try (var admin = Admin.create(Map.of(
-                "bootstrap.servers", eKafka.bootstrapServers()))) {
+                "bootstrap.servers", emKa.bootstrapServers()))) {
             admin.createTopics(singleton(new NewTopic(TOPIC, N, (short) 1))).all().get();
         }
 
         try (Producer<String, String> producer = new KafkaProducer<>(Map.of(
                 "key.serializer", StringSerializer.class,
                 "value.serializer", StringSerializer.class,
-                "bootstrap.servers", eKafka.bootstrapServers()))) {
+                "bootstrap.servers", emKa.bootstrapServers()))) {
             for (var i = 0; i < N; ++i) {
                 producer.send(new ProducerRecord<>(TOPIC, i, Integer.toString(i), Integer.toString(i)));
             }
@@ -70,7 +70,7 @@ class EKafkaTests {
         Consumer<String, String> consumer = new KafkaConsumer<>(Map.of(
                 "key.deserializer", StringDeserializer.class,
                 "value.deserializer", StringDeserializer.class,
-                "bootstrap.servers", eKafka.bootstrapServers(),
+                "bootstrap.servers", emKa.bootstrapServers(),
                 "group.id", "g-1",
                 "auto.offset.reset", "earliest"));
         consumer.subscribe(singleton(TOPIC));

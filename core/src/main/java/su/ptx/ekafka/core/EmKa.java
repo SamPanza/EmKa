@@ -1,6 +1,6 @@
 package su.ptx.ekafka.core;
 
-public interface EKafka extends AutoCloseable {
+public interface EmKa extends AutoCloseable {
     String bootstrapServers();
 
     void stop();
@@ -10,7 +10,7 @@ public interface EKafka extends AutoCloseable {
         stop();
     }
 
-    static EKafka start(short nBrokers) throws Exception {
+    static EmKa start(short nBrokers) throws Exception {
         return EmbeddedKafka.start(nBrokers);
     }
 }

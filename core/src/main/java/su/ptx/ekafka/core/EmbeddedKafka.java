@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.joining;
 
-final class EmbeddedKafka implements EKafka {
+final class EmbeddedKafka implements EmKa {
     private final String bootstrapServers;
     private final KafkaRaftServer krs;
 
@@ -40,7 +40,7 @@ final class EmbeddedKafka implements EKafka {
         krs.awaitShutdown();
     }
 
-    static EKafka start(short nBrokers) throws Exception {
+    static EmKa start(short nBrokers) throws Exception {
         var props = newProps(newLogDir(), nBrokers);
         var krs = new KafkaRaftServer(new KafkaConfig(props._1, false), Time.SYSTEM, Option.empty());
         krs.startup();
