@@ -19,7 +19,7 @@
         <dependencies>
             <dependency>
                 <groupId>su.ptx.emka</groupId>
-                <artifactId>ekafka-bom</artifactId>
+                <artifactId>emka-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
