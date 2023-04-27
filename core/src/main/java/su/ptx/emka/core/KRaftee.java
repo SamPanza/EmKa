@@ -72,7 +72,7 @@ final class KRaftee implements EmKa {
     }
 
     private static File newLogDir() throws Exception {
-        var logDir = Files.createTempDirectory("ekafka").toFile();
+        var logDir = Files.createTempDirectory("emka").toFile();
         logDir.deleteOnExit();
 
         new BrokerMetadataCheckpoint(new File(logDir, "meta.properties")).write(
@@ -84,7 +84,7 @@ final class KRaftee implements EmKa {
                 .writeBinaryFile(
                         BootstrapMetadata.fromVersion(
                                 MetadataVersion.latest(),
-                                "ekafka"));
+                                "emka"));
 
         return logDir;
     }
