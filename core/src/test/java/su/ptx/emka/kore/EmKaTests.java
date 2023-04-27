@@ -31,7 +31,7 @@ class EmKaTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        emKa = EmKa.start((short) 2);
+        emKa = EmKa.start();
     }
 
     @AfterEach

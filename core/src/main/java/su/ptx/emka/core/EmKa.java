@@ -10,7 +10,7 @@ public interface EmKa extends AutoCloseable {
         stop();
     }
 
-    static EmKa start(short nBrokers) throws Exception {
-        return KRaftee.start(nBrokers);
+    static EmKa start() throws Exception {
+        return KRaftee.start();
     }
 }

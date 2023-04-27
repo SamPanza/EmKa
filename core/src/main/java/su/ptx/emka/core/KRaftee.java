@@ -13,12 +13,13 @@ import scala.Option;
 import scala.Tuple2;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.joining;
+import java.util.function.IntSupplier;
 
 final class KRaftee implements EmKa {
     private final String bootstrapServers;
@@ -40,8 +41,8 @@ final class KRaftee implements EmKa {
         krs.awaitShutdown();
     }
 
-    static EmKa start(short nBrokers) throws Exception {
-        var props = newProps(newLogDir(), nBrokers);
+    static EmKa start() throws Exception {
+        var props = newProps(newLogDir());
         var krs = new KafkaRaftServer(new KafkaConfig(props._1, false), Time.SYSTEM, Option.empty());
         krs.startup();
         return new KRaftee(props._2, krs);
@@ -49,26 +50,29 @@ final class KRaftee implements EmKa {
 
     private static final int NODE_ID = 1;
 
-    private static Tuple2<Map<?, ?>, String> newProps(File logDir, @SuppressWarnings("ParameterCanBeLocal") short nBrokers) {
-        //TODO java.lang.IllegalArgumentException: requirement failed: Each listener must have a different name, listeners: ***
-        nBrokers = 1;
-        final var LOCALHOST_ = "localhost:";
-        var fp = new FreePort();
-        var cp = fp.next();
-        var bps = IntStream.generate(fp).limit(nBrokers).toArray();
+    private static Tuple2<Map<?, ?>, String> newProps(File logDir) {
+        IntSupplier port0 = () -> {
+            try (var s = new ServerSocket(0)) {
+                return s.getLocalPort();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        };
+        var cp = port0.getAsInt();
+        var bp = port0.getAsInt();
         return new Tuple2<>(
                 Map.of(
                         "process.roles", "controller,broker",
                         "node.id", NODE_ID,
-                        "controller.quorum.voters", NODE_ID + "@" + LOCALHOST_ + cp,
-                        "listeners", "CONTROLLER://" + LOCALHOST_ + cp + "," + IntStream.of(bps).mapToObj(p -> "BROKER://" + LOCALHOST_ + p).collect(joining(",")),
-                        "listener.security.protocol.map", "CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT",
-                        "controller.listener.names", "CONTROLLER",
-                        "inter.broker.listener.name", "BROKER",
+                        "controller.quorum.voters", NODE_ID + "@localhost:" + cp,
+                        "listeners", "CTL://localhost:" + cp + ",BRO://localhost:" + bp,
+                        "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
+                        "controller.listener.names", "CTL",
+                        "inter.broker.listener.name", "BRO",
                         "log.dir", logDir.toString(),
-                        "offsets.topic.replication.factor", nBrokers,
-                        "transaction.state.log.replication.factor", nBrokers),
-                IntStream.of(bps).mapToObj(p -> LOCALHOST_ + p).collect(joining(",")));
+                        "offsets.topic.replication.factor", "1",
+                        "transaction.state.log.replication.factor", "1"),
+                "localhost:" + bp);
     }
 
     private static File newLogDir() throws Exception {
