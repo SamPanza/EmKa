@@ -20,11 +20,11 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.joining;
 
-final class EmbeddedKafka implements EmKa {
+final class KRaftee implements EmKa {
     private final String bootstrapServers;
     private final KafkaRaftServer krs;
 
-    private EmbeddedKafka(String bootstrapServers, KafkaRaftServer krs) {
+    private KRaftee(String bootstrapServers, KafkaRaftServer krs) {
         this.bootstrapServers = bootstrapServers;
         this.krs = krs;
     }
@@ -44,7 +44,7 @@ final class EmbeddedKafka implements EmKa {
         var props = newProps(newLogDir(), nBrokers);
         var krs = new KafkaRaftServer(new KafkaConfig(props._1, false), Time.SYSTEM, Option.empty());
         krs.startup();
-        return new EmbeddedKafka(props._2, krs);
+        return new KRaftee(props._2, krs);
     }
 
     private static final int NODE_ID = 1;

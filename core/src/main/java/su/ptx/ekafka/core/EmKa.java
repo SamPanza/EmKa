@@ -11,6 +11,6 @@ public interface EmKa extends AutoCloseable {
     }
 
     static EmKa start(short nBrokers) throws Exception {
-        return EmbeddedKafka.start(nBrokers);
+        return KRaftee.start(nBrokers);
     }
 }
