@@ -3,21 +3,19 @@ package su.ptx.ekafka.core;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.ServerSocket;
-import java.util.stream.IntStream;
+import java.util.function.IntSupplier;
 
-final class RandomPorts {
-    private RandomPorts() {
+final class FreePort implements IntSupplier {
+    @Override
+    public int getAsInt() {
+        return next();
     }
 
-    static int randomPort() {
+    int next() {
         try (var s = new ServerSocket(0)) {
             return s.getLocalPort();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    static int[] randomPorts(short n) {
-        return IntStream.generate(RandomPorts::randomPort).limit(n).toArray();
     }
 }

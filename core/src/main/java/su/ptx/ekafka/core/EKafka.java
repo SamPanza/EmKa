@@ -10,7 +10,7 @@ public interface EKafka extends AutoCloseable {
         stop();
     }
 
-    static EKafka start(short brokers) throws Exception {
-        return EmbeddedKafka.start(brokers);
+    static EKafka start(short nBrokers) throws Exception {
+        return EmbeddedKafka.start(nBrokers);
     }
 }

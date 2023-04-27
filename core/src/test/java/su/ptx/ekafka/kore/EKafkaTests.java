@@ -31,20 +31,20 @@ class EKafkaTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        eKafka = EKafka.start((short) 1);
+        eKafka = EKafka.start((short) 2);
     }
 
     @AfterEach
     void tearDown() {
-        eKafka.close();
+        if (eKafka != null) {
+            eKafka.close();
+        }
     }
 
     @Test
     void checkBootstrapServers() {
-        assertTrue(
-                Pattern.compile("localhost:\\d\\d\\d\\d+")
-                        .matcher(eKafka.bootstrapServers())
-                        .matches());
+        var bootstrapServers = eKafka.bootstrapServers();
+        assertTrue(Pattern.compile("localhost:\\d\\d\\d\\d+").matcher(bootstrapServers).matches(), bootstrapServers);
     }
 
     @Test
