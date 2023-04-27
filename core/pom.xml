@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>su.ptx.emka</groupId>
-        <artifactId>ekafka-parent</artifactId>
+        <artifactId>emka-parent</artifactId>
         <version>0-SNAPSHOT</version>
         <relativePath>../1-parent/pom.xml</relativePath>
     </parent>
