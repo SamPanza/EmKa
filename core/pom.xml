@@ -11,7 +11,7 @@
         <relativePath>../1-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>ekafka-core</artifactId>
+    <artifactId>emka-core</artifactId>
 
     <dependencies>
         <dependency>
