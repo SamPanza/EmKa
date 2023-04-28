@@ -59,8 +59,8 @@ final class KRaftee implements EmKa {
                 throw new UncheckedIOException(e);
             }
         };
-        var bp = port0.getAsInt();
         var cp = port0.getAsInt();
+        var bp = port0.getAsInt();
         return new Tuple2<>(
                 "localhost:" + bp,
                 Map.of(
