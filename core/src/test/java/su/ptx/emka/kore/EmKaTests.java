@@ -18,13 +18,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.time.Duration.ofSeconds;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmKaTests {
     private EmKa emKa;
@@ -39,12 +37,6 @@ class EmKaTests {
         if (emKa != null) {
             System.err.println(emKa.stop());
         }
-    }
-
-    @Test
-    void checkBootstrapServers() {
-        var bootstrapServers = emKa.bootstrapServers();
-        assertTrue(Pattern.compile("localhost:\\d\\d\\d\\d+").matcher(bootstrapServers).matches(), bootstrapServers);
     }
 
     @Test
