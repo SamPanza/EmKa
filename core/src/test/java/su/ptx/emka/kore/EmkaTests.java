@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import su.ptx.emka.core.EmKa;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmkaTests {
     @Test
@@ -15,13 +14,6 @@ class EmkaTests {
             // because the return value of "kafka.server.BrokerServer.socketServer()" is null
             // @ kafka.server.BrokerServer.boundPort(BrokerServer.scala:606)
             assertThrows(NullPointerException.class, emKa::bootstrapServers);
-        }
-    }
-
-    @Test
-    void callBootstrapServersAfterStart() throws Exception {
-        try (var emKa = EmKa.create().open()) {
-            assertTrue(emKa.bootstrapServers().matches("localhost:\\d\\d\\d\\d+"));
         }
     }
 

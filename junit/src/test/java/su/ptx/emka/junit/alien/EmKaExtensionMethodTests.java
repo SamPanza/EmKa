@@ -11,6 +11,6 @@ class EmKaExtensionMethodTests {
     @Test
     @ExtendWith(EmKaExtension.class)
     void bServers_here(@BootstrapServers String bServers) {
-        assertTrue(bServers.startsWith("localhost:"));
+        assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
     }
 }
