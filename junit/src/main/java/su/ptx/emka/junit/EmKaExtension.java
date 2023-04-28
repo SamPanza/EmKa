@@ -6,12 +6,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class EmKaExtension implements BeforeEachCallback, AfterEachCallback {
     @Override
-    public void afterEach(ExtensionContext extensionContext) {
-        //TODO
+    public void beforeEach(ExtensionContext ctx) {
+        System.err.println("beforeEach");
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
-        //TODO
+    public void afterEach(ExtensionContext ctx) {
+        System.err.println("afterEach");
     }
 }
