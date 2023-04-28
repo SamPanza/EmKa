@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EmKaWithClientsTests {
     @Test
     void create_produce_consume() throws Exception {
-        try (var emKa = EmKa.create().start()) {
+        try (var emKa = EmKa.create().open()) {
             var bServers = emKa.bootstrapServers();
             var topic = "Topeg";
             var numPartitions = 3;

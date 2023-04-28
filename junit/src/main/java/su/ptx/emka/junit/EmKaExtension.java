@@ -14,7 +14,7 @@ public class EmKaExtension implements BeforeEachCallback, AfterEachCallback, Par
     @Override
     public void beforeEach(ExtensionContext e) throws Exception {
         var emKa = EmKa.create();
-        e.getStore(NS).put("emka", emKa.start());
+        e.getStore(NS).put("emka", emKa.open());
     }
 
     @Override

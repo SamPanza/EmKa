@@ -50,16 +50,15 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public EmKa start() {
+    public EmKa open() {
         kafka.startup();
         return this;
     }
 
     @Override
-    public EmKa stop() {
+    public void close() {
         kafka.shutdown();
         kafka.awaitShutdown();
-        return this;
     }
 
     private static final class Co {
