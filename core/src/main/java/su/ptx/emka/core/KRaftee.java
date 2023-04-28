@@ -27,20 +27,19 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 
 final class KRaftee implements EmKa {
-    private final KafkaRaftServer kafka;
+    private final KafkaRaftServer server;
     private final KafkaBroker bro;
 
     KRaftee() throws Exception {
-        kafka = new KafkaRaftServer(
+        server = new KafkaRaftServer(
                 Co.kafkaConfig(),
                 Time.SYSTEM,
                 Option.empty());
-        //
         @SuppressWarnings("JavaReflectionMemberAccess")
         var broField = KafkaRaftServer.class.getDeclaredField("broker");
         broField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        var broOption = (Option<BrokerServer>) broField.get(kafka);
+        var broOption = (Option<BrokerServer>) broField.get(server);
         bro = broOption.get();
     }
 
@@ -51,14 +50,14 @@ final class KRaftee implements EmKa {
 
     @Override
     public EmKa open() {
-        kafka.startup();
+        server.startup();
         return this;
     }
 
     @Override
     public void close() {
-        kafka.shutdown();
-        kafka.awaitShutdown();
+        server.shutdown();
+        server.awaitShutdown();
     }
 
     private static final class Co {
