@@ -49,8 +49,6 @@ final class KRaftee implements EmKa {
         return this;
     }
 
-    private static final int NODE_ID = 1;
-
     private static Tuple2<String, Map<?, ?>> newProps(File logDir) {
         IntSupplier port0 = () -> {
             try (var s = new ServerSocket(0)) {
@@ -59,21 +57,24 @@ final class KRaftee implements EmKa {
                 throw new UncheckedIOException(e);
             }
         };
+        var ctl = "CTL";
         var cp = port0.getAsInt();
+        var bro = "BRO";
         var bp = port0.getAsInt();
+        short rf = 1;
         return new Tuple2<>(
-                "localhost:" + bp,
+                "%s:%d".formatted(HOST, bp),
                 Map.of(
                         "process.roles", "controller,broker",
                         "node.id", NODE_ID,
-                        "controller.quorum.voters", NODE_ID + "@localhost:" + cp,
-                        "listeners", "CTL://localhost:" + cp + ",BRO://localhost:" + bp,
-                        "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
-                        "controller.listener.names", "CTL",
-                        "inter.broker.listener.name", "BRO",
+                        "controller.quorum.voters", "%d@%s:%d".formatted(NODE_ID, HOST, cp),
+                        "listeners", "%s://%s:%d".formatted(ctl, HOST, cp) + "," + "%s://%s:%d".formatted(bro, HOST, bp),
+                        "listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(ctl, bro),
+                        "controller.listener.names", ctl,
+                        "inter.broker.listener.name", bro,
                         "log.dir", logDir.toString(),
-                        "offsets.topic.replication.factor", "1",
-                        "transaction.state.log.replication.factor", "1"));
+                        "offsets.topic.replication.factor", rf,
+                        "transaction.state.log.replication.factor", rf));
     }
 
     private static File newLogDir() throws Exception {
