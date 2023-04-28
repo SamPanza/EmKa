@@ -1,16 +1,18 @@
 package su.ptx.emka.core;
 
 import kafka.server.BrokerMetadataCheckpoint;
+import kafka.server.BrokerServer;
+import kafka.server.KafkaBroker;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
 import kafka.server.MetaProperties;
 import org.apache.kafka.common.Uuid;
+import org.apache.kafka.common.network.ListenerName;
 import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
 import org.apache.kafka.metadata.bootstrap.BootstrapMetadata;
 import org.apache.kafka.server.common.MetadataVersion;
 import scala.Option;
-import scala.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,34 +24,45 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 
 final class KRaftee implements EmKa {
-    private final String bootstrapServers;
-    private final KafkaRaftServer krs;
+    private static final String CTL = "CTL";
+    private static final String BRO = "BRO";
+    private final KafkaRaftServer kafka;
+    private final KafkaBroker bro;
 
     KRaftee() throws Exception {
-        var props = newProps(newLogDir());
-        bootstrapServers = props._1;
-        krs = new KafkaRaftServer(new KafkaConfig(props._2, false), Time.SYSTEM, Option.empty());
+        kafka = new KafkaRaftServer(
+                new KafkaConfig(
+                        newProps(newLogDir()), false),
+                Time.SYSTEM,
+                Option.empty());
+        //
+        @SuppressWarnings("JavaReflectionMemberAccess")
+        var broField = KafkaRaftServer.class.getDeclaredField("broker");
+        broField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        var broOption = (Option<BrokerServer>) broField.get(kafka);
+        bro = broOption.get();
     }
 
     @Override
     public String bootstrapServers() {
-        return bootstrapServers;
+        return "%s:%d".formatted(HOST, bro.boundPort(new ListenerName(BRO)));
     }
 
     @Override
     public EmKa start() {
-        krs.startup();
+        kafka.startup();
         return this;
     }
 
     @Override
     public EmKa stop() {
-        krs.shutdown();
-        krs.awaitShutdown();
+        kafka.shutdown();
+        kafka.awaitShutdown();
         return this;
     }
 
-    private static Tuple2<String, Map<?, ?>> newProps(File logDir) {
+    private static Map<?, ?> newProps(File logDir) {
         IntSupplier port0 = () -> {
             try (var s = new ServerSocket(0)) {
                 return s.getLocalPort();
@@ -57,24 +70,20 @@ final class KRaftee implements EmKa {
                 throw new UncheckedIOException(e);
             }
         };
-        var ctl = "CTL";
         var cp = port0.getAsInt();
-        var bro = "BRO";
         var bp = port0.getAsInt();
         short rf = 1;
-        return new Tuple2<>(
-                "%s:%d".formatted(HOST, bp),
-                Map.of(
-                        "process.roles", "controller,broker",
-                        "node.id", NODE_ID,
-                        "controller.quorum.voters", "%d@%s:%d".formatted(NODE_ID, HOST, cp),
-                        "listeners", "%s://%s:%d".formatted(ctl, HOST, cp) + "," + "%s://%s:%d".formatted(bro, HOST, bp),
-                        "listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(ctl, bro),
-                        "controller.listener.names", ctl,
-                        "inter.broker.listener.name", bro,
-                        "log.dir", logDir.toString(),
-                        "offsets.topic.replication.factor", rf,
-                        "transaction.state.log.replication.factor", rf));
+        return Map.of(
+                "process.roles", "controller,broker",
+                "node.id", NODE_ID,
+                "controller.quorum.voters", "%d@%s:%d".formatted(NODE_ID, HOST, cp),
+                "listeners", "%s://%s:%d".formatted(CTL, HOST, cp) + "," + "%s://%s:%d".formatted(BRO, HOST, bp),
+                "listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(CTL, BRO),
+                "controller.listener.names", CTL,
+                "inter.broker.listener.name", BRO,
+                "log.dir", logDir.toString(),
+                "offsets.topic.replication.factor", rf,
+                "transaction.state.log.replication.factor", rf);
     }
 
     private static File newLogDir() throws Exception {
