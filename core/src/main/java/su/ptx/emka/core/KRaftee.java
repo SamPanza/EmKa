@@ -24,8 +24,25 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 
 final class KRaftee implements EmKa {
+    private static final int NODE_ID = 1;
+
+    private static String q_voters(int port) {
+        return NODE_ID + "@" + host_port(port);
+    }
+
     private static final String CTL = "CTL";
     private static final String BRO = "BRO";
+
+    private static String lstnr(String name, int port) {
+        return name + "://" + host_port(port);
+    }
+
+    private static final String HOST = "localhost";
+
+    private static String host_port(int port) {
+        return HOST + ":" + port;
+    }
+
     private final KafkaRaftServer kafka;
     private final KafkaBroker bro;
 
@@ -46,7 +63,7 @@ final class KRaftee implements EmKa {
 
     @Override
     public String bootstrapServers() {
-        return "%s:%d".formatted(HOST, bro.boundPort(new ListenerName(BRO)));
+        return host_port(bro.boundPort(new ListenerName(BRO)));
     }
 
     @Override
@@ -76,8 +93,8 @@ final class KRaftee implements EmKa {
         return Map.of(
                 "process.roles", "controller,broker",
                 "node.id", NODE_ID,
-                "controller.quorum.voters", "%d@%s:%d".formatted(NODE_ID, HOST, cp),
-                "listeners", "%s://%s:%d".formatted(CTL, HOST, cp) + "," + "%s://%s:%d".formatted(BRO, HOST, bp),
+                "controller.quorum.voters", q_voters(cp),
+                "listeners", lstnr(CTL, cp) + "," + lstnr(BRO, bp),
                 "listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(CTL, BRO),
                 "controller.listener.names", CTL,
                 "inter.broker.listener.name", BRO,
