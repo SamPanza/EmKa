@@ -7,7 +7,7 @@ import su.ptx.emka.junit.EmKaExtension;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EmKaExtensionTests {
+class EmKaExtensionMethodTests {
     @Test
     @ExtendWith(EmKaExtension.class)
     void bServers_here(@BootstrapServers String bServers) {
