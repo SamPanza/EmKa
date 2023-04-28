@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EmKaExtension;
 
-@ExtendWith(EmKaExtension.class)
-class EmKaExtensionOnClassTests {
+class EmKaExtensionOnMethodTests {
     @Test
+    @ExtendWith(EmKaExtension.class)
     void test1() {
         System.err.println("test1");
     }
