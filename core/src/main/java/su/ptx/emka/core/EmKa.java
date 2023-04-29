@@ -9,6 +9,10 @@ public interface EmKa extends AutoCloseable {
 
     EmKa start();
 
+    void stop();
+
     @Override
-    void close();
+    default void close() {
+        stop();
+    }
 }

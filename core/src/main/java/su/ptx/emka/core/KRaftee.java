@@ -55,7 +55,7 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public void close() {
+    public void stop() {
         server.shutdown();
         server.awaitShutdown();
     }
