@@ -5,16 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.BootstrapServers;
 import su.ptx.emka.junit.EmKaExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EmKaExtension.class)
-class EmKaExtensionTypeAndFieldTests {
-    @BootstrapServers
-    private String bServers;
-
+class BootstrapServerAsParameterTests {
     @Test
-    void bServers_here() {
-        //TODO: Make it fail
-        assertNull(bServers);
+    void bServers_here(@BootstrapServers String bServers) {
+        assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
     }
 }
