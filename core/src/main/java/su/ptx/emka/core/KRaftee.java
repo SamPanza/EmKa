@@ -49,7 +49,7 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public EmKa open() {
+    public EmKa start() {
         server.startup();
         return this;
     }

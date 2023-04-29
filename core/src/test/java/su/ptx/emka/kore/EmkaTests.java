@@ -20,13 +20,13 @@ class EmkaTests {
     @Test
     void emKa_is_not_restartable() throws Exception {
         try (var emKa = EmKa.create()) {
-            emKa.open();
+            emKa.start();
             emKa.close();
             //Something's gone after `stop()`:
             // ERROR kafka.server.ControllerServer [ControllerServer id=1] Fatal error during controller startup. Prepare to shutdown
             // java.lang.NullPointerException: Cannot invoke "org.apache.kafka.common.metrics.Metrics.sensor(String)" because "metrics" is null
             // @kafka.network.SocketServer.<init>(SocketServer.scala:91)
-            assertThrows(NullPointerException.class, emKa::open);
+            assertThrows(NullPointerException.class, emKa::start);
         }
     }
 }

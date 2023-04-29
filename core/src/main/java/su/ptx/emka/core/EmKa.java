@@ -7,7 +7,7 @@ public interface EmKa extends AutoCloseable {
 
     String bootstrapServers();
 
-    EmKa open();
+    EmKa start();
 
     @Override
     void close();
