@@ -24,6 +24,7 @@ import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 
 final class KRaftee implements EmKa {
@@ -31,10 +32,7 @@ final class KRaftee implements EmKa {
     private final KafkaBroker bro;
 
     KRaftee() throws Exception {
-        server = new KafkaRaftServer(
-                Co.kafkaConfig(),
-                Time.SYSTEM,
-                Option.empty());
+        server = new KafkaRaftServer(Co.kafkaConfig(), Time.SYSTEM, Option.empty());
         @SuppressWarnings("JavaReflectionMemberAccess")
         var broField = KafkaRaftServer.class.getDeclaredField("broker");
         broField.setAccessible(true);
@@ -45,7 +43,7 @@ final class KRaftee implements EmKa {
 
     @Override
     public String bootstrapServers() {
-        return Co.host_port(bro.boundPort(new ListenerName(Co.BRO)));
+        return Co.bServers(bro::boundPort);
     }
 
     @Override
@@ -120,6 +118,10 @@ final class KRaftee implements EmKa {
 
         private static String lstnr(String name, int port) {
             return name + "://" + host_port(port);
+        }
+
+        private static String bServers(Function<ListenerName, Integer> f) {
+            return host_port(f.apply(new ListenerName(BRO)));
         }
 
         private static String host_port(int port) {
