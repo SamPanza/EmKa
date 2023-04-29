@@ -9,12 +9,10 @@ import org.apache.kafka.common.utils.Time;
 import scala.Option;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.ServerSocket;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
+
+import static su.ptx.emka.core.FreePort.nextFreePort;
 
 final class KRaftee implements EmKa {
     private final KafkaRaftServer server;
@@ -53,15 +51,8 @@ final class KRaftee implements EmKa {
         }
 
         private static Map<?, ?> serverProps(File logDir) {
-            IntSupplier port_0 = () -> {
-                try (var s = new ServerSocket(0)) {
-                    return s.getLocalPort();
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            };
-            var cp = port_0.getAsInt();
-            var bp = port_0.getAsInt();
+            var cp = nextFreePort();
+            var bp = nextFreePort();
             short rf = 1;
             return Map.of(
                     "process.roles", "controller,broker",
