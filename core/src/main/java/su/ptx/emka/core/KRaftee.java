@@ -68,24 +68,21 @@ final class KRaftee implements EmKa {
         }
 
         private static final int NODE_ID = 1;
-        private static final String HOST = "localhost";
         private static final String CTL = "CTL";
         private static final String BRO = "BRO";
 
+        private static final Host H = Host.local;
+
         private static String q_voters(int port) {
-            return NODE_ID + "@" + host_port(port);
+            return NODE_ID + "@" + H.withPort(port);
         }
 
         private static String lstnr(String name, int port) {
-            return name + "://" + host_port(port);
+            return name + "://" + H.withPort(port);
         }
 
         private static String bServers(Function<ListenerName, Integer> f) {
-            return host_port(f.apply(new ListenerName(BRO)));
-        }
-
-        private static String host_port(int port) {
-            return HOST + ":" + port;
+            return H.withPort(f.apply(new ListenerName(BRO)));
         }
     }
 }
