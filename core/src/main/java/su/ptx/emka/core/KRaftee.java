@@ -62,10 +62,7 @@ final class KRaftee implements EmKa {
 
     private static final class Co {
         private static KafkaConfig kafkaConfig() throws Exception {
-            return new KafkaConfig(
-                    serverProps(
-                            formatTmpLogDir()),
-                    false);
+            return new KafkaConfig(serverProps(formatTmpLogDir()), false);
         }
 
         private static Map<?, ?> serverProps(File logDir) {
@@ -96,20 +93,20 @@ final class KRaftee implements EmKa {
          * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
          */
         private static File formatTmpLogDir() throws Exception {
-            var tld = Files.createTempDirectory(null).toFile();
-            tld.deleteOnExit();
+            var dir = Files.createTempDirectory(null).toFile();
+            dir.deleteOnExit();
 
-            new BrokerMetadataCheckpoint(new File(tld, "meta.properties")).write(
+            new BrokerMetadataCheckpoint(new File(dir, "meta.properties")).write(
                     new MetaProperties(Uuid.randomUuid().toString(), NODE_ID).toProperties());
 
             new BootstrapDirectory(
-                    tld.toString(),
+                    dir.toString(),
                     Optional.empty())
                     .writeBinaryFile(
                             BootstrapMetadata.fromVersion(
                                     MetadataVersion.latest(),
                                     "kraftee-emka"));
-            return tld;
+            return dir;
         }
 
         private static final int NODE_ID = 1;

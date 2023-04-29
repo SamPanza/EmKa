@@ -9,27 +9,27 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
 public class EmKaExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
-    private static final Namespace NS = Namespace.create("emka");
+    private static final Namespace NS = Namespace.GLOBAL;
+    private static final String K = "EmKaInstance";
 
     @Override
-    public void beforeEach(ExtensionContext e) throws Exception {
-        @SuppressWarnings("resource")
-        var emKa = EmKa.create();
-        e.getStore(NS).put("emka", emKa.start());
+    public void beforeEach(ExtensionContext ec) throws Exception {
+        //noinspection resource
+        ec.getStore(NS).put(K, EmKa.create().start());
     }
 
     @Override
-    public void afterEach(ExtensionContext e) {
-        e.getStore(NS).get("emka", EmKa.class).stop();
+    public void afterEach(ExtensionContext ec) {
+        ec.getStore(NS).get(K, EmKa.class).stop();
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext p, ExtensionContext e) {
-        return p.isAnnotated(BootstrapServers.class);
+    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+        return pc.isAnnotated(BootstrapServers.class);
     }
 
     @Override
-    public String resolveParameter(ParameterContext p, ExtensionContext e) {
-        return e.getStore(NS).get("emka", EmKa.class).bootstrapServers();
+    public String resolveParameter(ParameterContext pc, ExtensionContext ec) {
+        return ec.getStore(NS).get(K, EmKa.class).bootstrapServers();
     }
 }
