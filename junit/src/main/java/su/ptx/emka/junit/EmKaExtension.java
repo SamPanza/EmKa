@@ -13,14 +13,14 @@ public class EmKaExtension implements BeforeEachCallback, AfterEachCallback, Par
 
     @Override
     public void beforeEach(ExtensionContext e) throws Exception {
-        @SuppressWarnings("resource")//see afterEach
+        @SuppressWarnings("resource")
         var emKa = EmKa.create();
         e.getStore(NS).put("emka", emKa.start());
     }
 
     @Override
     public void afterEach(ExtensionContext e) {
-        e.getStore(NS).get("emka", EmKa.class).close();
+        e.getStore(NS).get("emka", EmKa.class).stop();
     }
 
     @Override
