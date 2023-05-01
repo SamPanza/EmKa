@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.function.Function;
 
-import static su.ptx.emka.core.FreePort.nextFreePort;
+import static java.util.Map.entry;
 
 final class KRaftee implements EmKa {
     private final KafkaRaftServer server;
@@ -51,30 +51,29 @@ final class KRaftee implements EmKa {
         }
 
         private static Map<?, ?> serverProps(File logDir) {
-            var cp = nextFreePort();
-            var bp = nextFreePort();
+            var cp = new FreePort().getAsInt();
+            var bp = new FreePort().getAsInt();
             short rf = 1;
-            return Map.of(
-                    "process.roles", "controller,broker",
-                    "node.id", Node._1.id,
-                    "controller.quorum.voters", q_voters(cp),
-                    "listeners", lstnr(CTL, cp) + "," + lstnr(BRO, bp),
-                    "listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(CTL, BRO),
-                    "controller.listener.names", CTL,
-                    "inter.broker.listener.name", BRO,
-                    "log.dir", logDir.toString(),
-                    "offsets.topic.replication.factor", rf,
-                    "transaction.state.log.replication.factor", rf);
+            return Map.ofEntries(
+                    entry("process.roles", "controller,broker"),
+                    entry("node.id", Node._1.id),
+                    entry("controller.quorum.voters", q_voters(cp)),
+                    entry("listeners", lstnr(CTL, cp) + "," + lstnr(BRO, bp)),
+                    entry("listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(CTL, BRO)),
+                    entry("controller.listener.names", CTL),
+                    entry("inter.broker.listener.name", BRO),
+                    entry("log.dir", logDir.toString()),
+                    entry("offsets.topic.replication.factor", rf),
+                    entry("transaction.state.log.replication.factor", rf));
         }
 
-        private static final int NODE_ID = 1;
         private static final String CTL = "CTL";
         private static final String BRO = "BRO";
 
-        private static final Host H = Host.local;
+        private static final Host H = new Host("localhost");
 
         private static String q_voters(int port) {
-            return NODE_ID + "@" + H.withPort(port);
+            return Node._1 + "@" + H.withPort(port);
         }
 
         private static String lstnr(String name, int port) {
@@ -82,7 +81,7 @@ final class KRaftee implements EmKa {
         }
 
         private static String bServers(Function<ListenerName, Integer> f) {
-            return H.withPort(f.apply(new ListenerName(BRO)));
+            return H.withPort(f.apply(new ListenerName(BRO))).toString();
         }
     }
 }

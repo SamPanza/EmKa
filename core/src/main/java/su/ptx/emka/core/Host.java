@@ -1,14 +1,20 @@
 package su.ptx.emka.core;
 
-final class Host {
-    static final Host local = new Host("localhost");
-    final String name;
-
-    private Host(String name) {
-        this.name = name;
+record Host(String name) {
+    WithPort withPort(int port) {
+        return new WithPort(port);
     }
 
-    String withPort(int port) {
-        return name + ":" + port;
+    final class WithPort {
+        final int port;
+
+        private WithPort(int port) {
+            this.port = port;
+        }
+
+        @Override
+        public String toString() {
+            return name + ":" + port;
+        }
     }
 }
