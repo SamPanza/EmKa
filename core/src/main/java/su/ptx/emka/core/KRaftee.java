@@ -1,87 +1,80 @@
 package su.ptx.emka.core;
 
-import kafka.server.BrokerServer;
-import kafka.server.KafkaBroker;
+import kafka.server.BrokerMetadataCheckpoint;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
-import org.apache.kafka.common.network.ListenerName;
+import kafka.server.MetaProperties;
+import kafka.tools.StorageTool;
+import org.apache.kafka.common.Uuid;
 import org.apache.kafka.common.utils.Time;
+import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
+import org.apache.kafka.metadata.bootstrap.BootstrapMetadata;
+import org.apache.kafka.server.common.MetadataVersion;
 import scala.Option;
+import scala.collection.immutable.Seq;
 
 import java.io.File;
+import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.Map.entry;
+import java.util.Optional;
 
 final class KRaftee implements EmKa {
-    private final KafkaRaftServer server;
-    private final KafkaBroker bro;
-
-    KRaftee() throws Exception {
-        server = new KafkaRaftServer(Co.kafkaConfig(), Time.SYSTEM, Option.empty());
-        @SuppressWarnings("JavaReflectionMemberAccess")
-        var broField = KafkaRaftServer.class.getDeclaredField("broker");
-        broField.setAccessible(true);
-        @SuppressWarnings("unchecked")
-        var broOption = (Option<BrokerServer>) broField.get(server);
-        bro = broOption.get();
-    }
+    private String bootstrapServers;
+    private KafkaRaftServer server;
 
     @Override
     public String bootstrapServers() {
-        return Co.bServers(bro::boundPort);
+        return bootstrapServers;
     }
 
     @Override
-    public EmKa start() {
+    public EmKa start() throws Exception {
+        var p0 = new FreePort();
+        var cp = p0.getAsInt();
+        var bp = p0.getAsInt();
+        bootstrapServers = "localhost:" + bp;
+        server = new KafkaRaftServer(
+                new KafkaConfig(
+                        Map.of(
+                                "process.roles", "controller,broker",
+                                "node.id", 1,
+                                "controller.quorum.voters", "1@localhost:" + cp,
+                                "listeners", "CTL://localhost:%d,BRO://localhost:%d".formatted(cp, bp),
+                                "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
+                                "controller.listener.names", "CTL",
+                                "inter.broker.listener.name", "BRO",
+                                "log.dir", formatTmpLogDir().getAbsolutePath(),
+                                "offsets.topic.replication.factor", (short) 1,
+                                "transaction.state.log.replication.factor", (short) 1),
+                        false),
+                Time.SYSTEM,
+                Option.empty());
         server.startup();
         return this;
     }
 
     @Override
     public void stop() {
-        server.shutdown();
-        server.awaitShutdown();
+        if (server != null) {
+            server.shutdown();
+            server.awaitShutdown();
+            server = null;
+        }
     }
 
-    private static final class Co {
-        private static KafkaConfig kafkaConfig() throws Exception {
-            return new KafkaConfig(serverProps(Node._1.formatTmpLogDir()), false);
-        }
-
-        private static Map<?, ?> serverProps(File logDir) {
-            var cp = new FreePort().getAsInt();
-            var bp = new FreePort().getAsInt();
-            short rf = 1;
-            return Map.ofEntries(
-                    entry("process.roles", "controller,broker"),
-                    entry("node.id", Node._1.id),
-                    entry("controller.quorum.voters", q_voters(cp)),
-                    entry("listeners", lstnr(CTL, cp) + "," + lstnr(BRO, bp)),
-                    entry("listener.security.protocol.map", "%s:PLAINTEXT,%s:PLAINTEXT".formatted(CTL, BRO)),
-                    entry("controller.listener.names", CTL),
-                    entry("inter.broker.listener.name", BRO),
-                    entry("log.dir", logDir.toString()),
-                    entry("offsets.topic.replication.factor", rf),
-                    entry("transaction.state.log.replication.factor", rf));
-        }
-
-        private static final String CTL = "CTL";
-        private static final String BRO = "BRO";
-
-        private static final Host H = new Host("localhost");
-
-        private static String q_voters(int port) {
-            return Node._1 + "@" + H.withPort(port);
-        }
-
-        private static String lstnr(String name, int port) {
-            return name + "://" + H.withPort(port);
-        }
-
-        private static String bServers(Function<ListenerName, Integer> f) {
-            return H.withPort(f.apply(new ListenerName(BRO))).toString();
-        }
+    /**
+     * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
+     */
+    private static File formatTmpLogDir() throws Exception {
+        var dir = Files.createTempDirectory(null).toFile();
+        dir.deleteOnExit();
+        new BrokerMetadataCheckpoint(new File(dir, "meta.properties")).write(
+                new MetaProperties(Uuid.randomUuid().toString(), 1).toProperties());
+        new BootstrapDirectory(
+                dir.toString(),
+                Optional.empty())
+                .writeBinaryFile(BootstrapMetadata.fromVersion(MetadataVersion.latest(), ""));
+        return dir;
     }
 }

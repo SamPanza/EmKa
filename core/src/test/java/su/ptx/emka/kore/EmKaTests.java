@@ -21,9 +21,9 @@ import static java.time.Duration.ofSeconds;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class EmKaWithClientsTests {
+class EmKaTests {
     @Test
-    void create_produce_consume() throws Exception {
+    void withClients() throws Exception {
         try (var emKa = EmKa.create().start()) {
             var bServers = emKa.bootstrapServers();
             var topic = "Topeg";

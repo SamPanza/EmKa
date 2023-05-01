@@ -1,13 +1,13 @@
 package su.ptx.emka.core;
 
 public interface EmKa extends AutoCloseable {
-    static EmKa create() throws Exception {
+    static EmKa create() {
         return new KRaftee();
     }
 
     String bootstrapServers();
 
-    EmKa start();
+    EmKa start() throws Exception;
 
     void stop();
 
