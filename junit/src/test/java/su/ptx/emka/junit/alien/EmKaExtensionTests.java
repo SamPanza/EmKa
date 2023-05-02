@@ -4,14 +4,14 @@ import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.BootstrapServers;
+import su.ptx.emka.junit.EkAdmin;
+import su.ptx.emka.junit.EkBootstrapServers;
+import su.ptx.emka.junit.EkProducer;
 import su.ptx.emka.junit.EmKaExtension;
 
 import java.util.HashSet;
@@ -28,22 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(EmKaExtension.class)
 class EmKaExtensionTests {
     @Test
-    void withBootstrapServers(@BootstrapServers String bServers) throws InterruptedException, ExecutionException {
+    void withClients(@EkBootstrapServers String bServers,
+                     @EkAdmin Admin admin,
+                     @EkProducer Producer<String, String> producer) throws InterruptedException, ExecutionException {
         assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
         var numPartitions = 3;
-
-        try (var admin = Admin.create(Map.of("bootstrap.servers", bServers))) {
-            admin.createTopics(singleton(new NewTopic(topic, numPartitions, (short) 1))).all().get();
-        }
-
-        try (Producer<String, String> producer = new KafkaProducer<>(Map.of(
-                "key.serializer", StringSerializer.class,
-                "value.serializer", StringSerializer.class,
-                "bootstrap.servers", bServers))) {
-            for (var i = 0; i < numPartitions; ++i) {
-                producer.send(new ProducerRecord<>(topic, i, Integer.toString(i), Integer.toString(i)));
-            }
+        admin.createTopics(singleton(new NewTopic(topic, numPartitions, (short) 1))).all().get();
+        for (var i = 0; i < numPartitions; ++i) {
+            producer.send(new ProducerRecord<>(topic, i, Integer.toString(i), Integer.toString(i)));
         }
 
         Set<String> out = new HashSet<>();
