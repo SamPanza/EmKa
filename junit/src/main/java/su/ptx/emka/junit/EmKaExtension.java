@@ -15,21 +15,14 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
-    private static final Set<Class<? extends Annotation>> SUPPORTED = Set.of(
-            EkBootstrapServers.class,
-            EkAdmin.class,
-            EkProducer.class,
-            EkConsumer.class);
     //TODO: Other entries
     Map<? extends Type, Class<? extends Serializer<?>>> KNOWN_SERIALIZERS = Map.of(
             String.class, StringSerializer.class);
@@ -44,7 +37,7 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return SUPPORTED.stream().anyMatch(pc::isAnnotated);
+        return pc.isAnnotated(Ek.class);
     }
 
     @Override
