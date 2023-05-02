@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EkAdmin;
 import su.ptx.emka.junit.EkBootstrapServers;
+import su.ptx.emka.junit.EkConsumer;
 import su.ptx.emka.junit.EkProducer;
 import su.ptx.emka.junit.EmKaExtension;
 
@@ -30,7 +31,8 @@ class EmKaExtensionTests {
     @Test
     void withClients(@EkBootstrapServers String bServers,
                      @EkAdmin Admin admin,
-                     @EkProducer Producer<String, String> producer) throws InterruptedException, ExecutionException {
+                     @EkProducer Producer<String, String> producer,
+                     @EkConsumer Consumer<String, String> c) throws InterruptedException, ExecutionException {
         assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
         var numPartitions = 3;

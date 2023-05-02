@@ -2,11 +2,14 @@ package su.ptx.emka.junit;
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
@@ -23,9 +26,14 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     private static final Set<Class<? extends Annotation>> SUPPORTED = Set.of(
             EkBootstrapServers.class,
             EkAdmin.class,
-            EkProducer.class);
+            EkProducer.class,
+            EkConsumer.class);
+    //TODO: Other entries
     Map<? extends Type, Class<? extends Serializer<?>>> KNOWN_SERIALIZERS = Map.of(
             String.class, StringSerializer.class);
+    //TODO: Other entries
+    Map<? extends Type, Class<? extends Deserializer<?>>> KNOWN_DESERIALIZERS = Map.of(
+            String.class, StringDeserializer.class);
 
     @Override
     public void beforeEach(ExtensionContext ec) throws Exception {
@@ -39,6 +47,7 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
+        //TODO: Refactor if if if if
         var v = EcV.get(ec);
         var bServers = v.emKa.bootstrapServers();
         if (pc.isAnnotated(EkBootstrapServers.class)) {
@@ -48,19 +57,20 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
             return v.toClose(Admin.create(Map.of("bootstrap.servers", bServers)));
         }
         if (pc.isAnnotated(EkProducer.class)) {
-            var pt = (ParameterizedType) pc.getParameter().getParameterizedType();
-            var atas = pt.getActualTypeArguments();
-            var ks = KNOWN_SERIALIZERS.get(atas[0]);
-            var vs = KNOWN_SERIALIZERS.get(atas[1]);
+            var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
             return v.toClose(new KafkaProducer<>(Map.of(
                     "bootstrap.servers", bServers,
-                    "key.serializer", ks,
-                    "value.serializer", vs)));
+                    "key.serializer", KNOWN_SERIALIZERS.get(atas[0]),
+                    "value.serializer", KNOWN_SERIALIZERS.get(atas[1]))));
         }
+        if (pc.isAnnotated(EkConsumer.class)) {
+            //TODO
+        }
+        //TODO: null?
         return null;
     }
 
-    private static final class EcV implements ExtensionContext.Store.CloseableResource {
+    private static final class EcV implements CloseableResource {
         private final EmKa emKa;
         private final List<AutoCloseable> toClose;
 
