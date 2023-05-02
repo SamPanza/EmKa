@@ -10,5 +10,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER})
 public @interface EkConsumer {
-    //TODO: group.id & auto.offset.reset
+    String group() default "";
+
+    AutoOffsetReset autoOffsetReset() default AutoOffsetReset.LATEST;
+
+    enum AutoOffsetReset {
+        LATEST, EARLIEST, NONE
+    }
 }

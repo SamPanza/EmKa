@@ -1,6 +1,7 @@
 package su.ptx.emka.junit;
 
 import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     private static final Set<Class<? extends Annotation>> SUPPORTED = Set.of(
@@ -64,7 +66,14 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
                     "value.serializer", KNOWN_SERIALIZERS.get(atas[1]))));
         }
         if (pc.isAnnotated(EkConsumer.class)) {
-            //TODO
+            var ann = pc.findAnnotation(EkConsumer.class).orElseThrow();
+            var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
+            return v.toClose(new KafkaConsumer<>(Map.of(
+                    "bootstrap.servers", bServers,
+                    "key.deserializer", KNOWN_DESERIALIZERS.get(atas[0]),
+                    "value.deserializer", KNOWN_DESERIALIZERS.get(atas[1]),
+                    "group.id", ann.group().isBlank() ? "g_" + UUID.randomUUID() : ann.group(),
+                    "auto.offset.reset", ann.autoOffsetReset().name().toLowerCase())));
         }
         //TODO: null?
         return null;
