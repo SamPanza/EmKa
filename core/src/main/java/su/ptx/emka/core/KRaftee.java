@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
 
+import static su.ptx.emka.core.FreePorts.FREE_PORTS;
+
 final class KRaftee implements EmKa {
     private String bootstrapServers;
     private KafkaRaftServer server;
@@ -30,9 +32,8 @@ final class KRaftee implements EmKa {
 
     @Override
     public EmKa start() throws Exception {
-        var p0 = new FreePort();
-        var cp = p0.getAsInt();
-        var bp = p0.getAsInt();
+        var cp = FREE_PORTS.getAsInt();
+        var bp = FREE_PORTS.getAsInt();
         bootstrapServers = "localhost:" + bp;
         server = new KafkaRaftServer(
                 new KafkaConfig(
