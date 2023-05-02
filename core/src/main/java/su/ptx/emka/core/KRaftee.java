@@ -32,6 +32,7 @@ final class KRaftee implements EmKa {
 
     @Override
     public EmKa start() throws Exception {
+        var nodeId = 1;
         var cp = FREE_PORTS.getAsInt();
         var bp = FREE_PORTS.getAsInt();
         bootstrapServers = "localhost:" + bp;
@@ -39,13 +40,13 @@ final class KRaftee implements EmKa {
                 new KafkaConfig(
                         Map.of(
                                 "process.roles", "controller,broker",
-                                "node.id", 1,
-                                "controller.quorum.voters", "1@localhost:" + cp,
+                                "node.id", nodeId,
+                                "controller.quorum.voters", nodeId + "@localhost:" + cp,
                                 "listeners", "CTL://localhost:%d,BRO://localhost:%d".formatted(cp, bp),
                                 "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
                                 "controller.listener.names", "CTL",
                                 "inter.broker.listener.name", "BRO",
-                                "log.dir", formatTmpLogDir().getAbsolutePath(),
+                                "log.dir", formatTmpLogDir(nodeId).getAbsolutePath(),
                                 "offsets.topic.replication.factor", (short) 1,
                                 "transaction.state.log.replication.factor", (short) 1),
                         false),
@@ -67,11 +68,11 @@ final class KRaftee implements EmKa {
     /**
      * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
      */
-    private static File formatTmpLogDir() throws Exception {
+    private static File formatTmpLogDir(int nodeId) throws Exception {
         var dir = Files.createTempDirectory(null).toFile();
         dir.deleteOnExit();
         new BrokerMetadataCheckpoint(new File(dir, "meta.properties")).write(
-                new MetaProperties(Uuid.randomUuid().toString(), 1).toProperties());
+                new MetaProperties(Uuid.randomUuid().toString(), nodeId).toProperties());
         new BootstrapDirectory(
                 dir.toString(),
                 Optional.empty())
