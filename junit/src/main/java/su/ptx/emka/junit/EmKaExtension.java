@@ -44,8 +44,6 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        var v = EcV.get(ec);
-        var bootstrapServers = v.emKa.bootstrapServers();
         @FunctionalInterface
         interface PR {
             Object rp(String bServers, Type[] atas, Annotation ann);
@@ -68,37 +66,35 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
                 (b_servers, atas, ann) ->
                         new KafkaConsumer<>(
                                 Map.of(
-                                        "bootstrap.servers", bootstrapServers,
+                                        "bootstrap.servers", b_servers,
                                         "key.deserializer", KNOWN_DESERIALIZERS.get(atas[0]),
                                         "value.deserializer", KNOWN_DESERIALIZERS.get(atas[1]),
                                         "group.id", ((EkConsumer) ann).group().isBlank() ? "g_" + UUID.randomUUID() : ((EkConsumer) ann).group(),
                                         "auto.offset.reset", ((EkConsumer) ann).autoOffsetReset().name().toLowerCase())));
-        Object pv = null;
+        var ecV = EcV.get(ec);
+        //TODO: Streamify
+        Object v = null;
         for (var e : m.entrySet()) {
-            var k = e.getKey();
-            if (pc.isAnnotated(k)) {
+            var annType = e.getKey();
+            if (pc.isAnnotated(annType)) {
                 var pr = e.getValue();
-                pv = pr.rp(
-                        bootstrapServers,
+                v = pr.rp(
+                        ecV.emKa.bootstrapServers(),
                         pc.getParameter().getParameterizedType() instanceof ParameterizedType pt ? pt.getActualTypeArguments() : null,
-                        pc.findAnnotation(k).orElseThrow());
+                        pc.findAnnotation(annType).orElseThrow());
                 break;
             }
         }
-        if (pv instanceof AutoCloseable ac) {
-            v.toClose(ac);
-        }
-        return pv;
+        return ecV.count(v);
     }
 
     private static final class EcV implements CloseableResource {
+        private final List<Object> counted;
         private final EmKa emKa;
-        private final List<AutoCloseable> toClose;
 
         private EcV() throws Exception {
-            emKa = EmKa.create().start();
-            toClose = new ArrayList<>();
-            toClose.add(emKa);
+            counted = new ArrayList<>();
+            counted.add(emKa = EmKa.create().start());
         }
 
         private static void setUp(ExtensionContext ec) throws Exception {
@@ -109,17 +105,22 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
             return ec.getStore(Namespace.GLOBAL).get(EcV.class, EcV.class);
         }
 
-        private void toClose(AutoCloseable ac) {
-            toClose.add(ac);
+        private Object count(Object o) {
+            if (o != null) {
+                counted.add(o);
+            }
+            return o;
         }
 
         @Override
         public void close() {
-            for (var i = toClose.size() - 1; i >= 0; --i) {
-                try {
-                    toClose.get(i).close();
-                } catch (Exception e) {
-                    //TODO
+            for (var i = counted.size() - 1; i >= 0; --i) {
+                if (counted.get(i) instanceof AutoCloseable ac) {
+                    try {
+                        ac.close();
+                    } catch (Exception e) {
+                        //TODO
+                    }
                 }
             }
         }
