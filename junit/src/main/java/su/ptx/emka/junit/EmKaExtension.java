@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//TODO: Cleanup
 public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     //TODO: Other entries
     Map<? extends Type, Class<? extends Serializer<?>>> KNOWN_SERIALIZERS = Map.of(
@@ -42,34 +44,51 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        //TODO: Refactor if if if if
         var v = EcV.get(ec);
-        var bServers = v.emKa.bootstrapServers();
-        if (pc.isAnnotated(EkBootstrapServers.class)) {
-            return bServers;
+        var bootstrapServers = v.emKa.bootstrapServers();
+        @FunctionalInterface
+        interface PR {
+            Object rp(String bServers, Type[] atas, Annotation ann);
         }
-        if (pc.isAnnotated(EkAdmin.class)) {
-            return v.toClose(Admin.create(Map.of("bootstrap.servers", bServers)));
+        Map<Class<? extends Annotation>, PR> m = Map.of(
+                EkBootstrapServers.class,
+                (b_servers, atas, ann) ->
+                        b_servers,
+                EkAdmin.class,
+                (b_servers, atas, ann) ->
+                        Admin.create(Map.of("bootstrap.servers", b_servers)),
+                EkProducer.class,
+                (b_servers, atas, ann) ->
+                        new KafkaProducer<>(
+                                Map.of(
+                                        "bootstrap.servers", b_servers,
+                                        "key.serializer", KNOWN_SERIALIZERS.get(atas[0]),
+                                        "value.serializer", KNOWN_SERIALIZERS.get(atas[1]))),
+                EkConsumer.class,
+                (b_servers, atas, ann) ->
+                        new KafkaConsumer<>(
+                                Map.of(
+                                        "bootstrap.servers", bootstrapServers,
+                                        "key.deserializer", KNOWN_DESERIALIZERS.get(atas[0]),
+                                        "value.deserializer", KNOWN_DESERIALIZERS.get(atas[1]),
+                                        "group.id", ((EkConsumer) ann).group().isBlank() ? "g_" + UUID.randomUUID() : ((EkConsumer) ann).group(),
+                                        "auto.offset.reset", ((EkConsumer) ann).autoOffsetReset().name().toLowerCase())));
+        Object pv = null;
+        for (var e : m.entrySet()) {
+            var k = e.getKey();
+            if (pc.isAnnotated(k)) {
+                var pr = e.getValue();
+                pv = pr.rp(
+                        bootstrapServers,
+                        pc.getParameter().getParameterizedType() instanceof ParameterizedType pt ? pt.getActualTypeArguments() : null,
+                        pc.findAnnotation(k).orElseThrow());
+                break;
+            }
         }
-        if (pc.isAnnotated(EkProducer.class)) {
-            var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
-            return v.toClose(new KafkaProducer<>(Map.of(
-                    "bootstrap.servers", bServers,
-                    "key.serializer", KNOWN_SERIALIZERS.get(atas[0]),
-                    "value.serializer", KNOWN_SERIALIZERS.get(atas[1]))));
+        if (pv instanceof AutoCloseable ac) {
+            v.toClose(ac);
         }
-        if (pc.isAnnotated(EkConsumer.class)) {
-            var ann = pc.findAnnotation(EkConsumer.class).orElseThrow();
-            var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
-            return v.toClose(new KafkaConsumer<>(Map.of(
-                    "bootstrap.servers", bServers,
-                    "key.deserializer", KNOWN_DESERIALIZERS.get(atas[0]),
-                    "value.deserializer", KNOWN_DESERIALIZERS.get(atas[1]),
-                    "group.id", ann.group().isBlank() ? "g_" + UUID.randomUUID() : ann.group(),
-                    "auto.offset.reset", ann.autoOffsetReset().name().toLowerCase())));
-        }
-        //TODO: null?
-        return null;
+        return pv;
     }
 
     private static final class EcV implements CloseableResource {
@@ -90,9 +109,8 @@ public class EmKaExtension implements BeforeEachCallback, ParameterResolver {
             return ec.getStore(Namespace.GLOBAL).get(EcV.class, EcV.class);
         }
 
-        private AutoCloseable toClose(AutoCloseable ac) {
+        private void toClose(AutoCloseable ac) {
             toClose.add(ac);
-            return ac;
         }
 
         @Override
