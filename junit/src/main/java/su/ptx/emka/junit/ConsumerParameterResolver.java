@@ -46,7 +46,7 @@ final class ConsumerParameterResolver implements ParameterResolver {
                 "key.deserializer", deserializers.get(atas[0]),
                 "value.deserializer", deserializers.get(atas[1]),
                 "group.id", ekc.group().isBlank() ? "g_" + UUID.randomUUID() : ekc.group(),
-                "auto.offset.reset", ekc.autoOffsetReset().name().toLowerCase()));
+                "auto.offset.reset", ekc.autoOffsetReset().name()));
     }
 
     private static final Map<? extends Type, Class<? extends Deserializer<?>>> deserializers = ofEntries(

@@ -20,7 +20,6 @@ import static java.time.Duration.ofSeconds;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static su.ptx.emka.junit.EkConsumer.AutoOffsetReset.EARLIEST;
 
 @ExtendWith(EmKaExtension.class)
 class EmKaAnnotatedTests {
@@ -28,7 +27,7 @@ class EmKaAnnotatedTests {
     void withClients(@EkBootstrapServers String bServers,
                      Admin admin,
                      Producer<String, String> producer,
-                     @EkConsumer(autoOffsetReset = EARLIEST) Consumer<String, String> consumer) throws InterruptedException, ExecutionException {
+                     @EkConsumer Consumer<String, String> consumer) throws InterruptedException, ExecutionException {
         assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
         var numPartitions = 3;

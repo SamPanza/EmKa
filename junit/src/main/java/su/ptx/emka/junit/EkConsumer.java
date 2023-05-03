@@ -10,13 +10,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER})
 public @interface EkConsumer {
+    //TODO: Tests for non-default group
     String group() default "";
 
-    //NB: EARLIEST?
-    AutoOffsetReset autoOffsetReset() default AutoOffsetReset.LATEST;
+    //TODO: Tests for non-default autoOffsetReset
+    AutoOffsetReset autoOffsetReset() default AutoOffsetReset.earliest;
 
     enum AutoOffsetReset {
-        //NB: To lowercase?
-        LATEST, EARLIEST, NONE
+        latest, earliest, none
     }
 }
