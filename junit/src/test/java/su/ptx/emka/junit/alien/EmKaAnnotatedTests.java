@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EkBootstrapServers;
 import su.ptx.emka.junit.EkConsumer;
-import su.ptx.emka.junit.EkProducer;
 import su.ptx.emka.junit.EmKaExtension;
 
 import java.util.HashSet;
@@ -28,7 +27,7 @@ class EmKaAnnotatedTests {
     @Test
     void withClients(@EkBootstrapServers String bServers,
                      Admin admin,
-                     @EkProducer Producer<String, String> producer,
+                     Producer<String, String> producer,
                      @EkConsumer(autoOffsetReset = EARLIEST) Consumer<String, String> consumer) throws InterruptedException, ExecutionException {
         assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
