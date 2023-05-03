@@ -4,9 +4,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static su.ptx.emka.junit.U.b_servers;
-
-final class BootstrapServersParameterResolver implements ParameterResolver {
+final class BootstrapServersParameterResolver implements ParameterResolver, Ztore {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
         return pc.isAnnotated(EkBootstrapServers.class);

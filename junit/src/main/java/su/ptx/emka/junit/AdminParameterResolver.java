@@ -7,9 +7,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.Map;
 
-import static su.ptx.emka.junit.U.b_servers;
-
-final class AdminParameterResolver implements ParameterResolver {
+final class AdminParameterResolver implements ParameterResolver, Ztore {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
         //TODO: Look at type not annotation

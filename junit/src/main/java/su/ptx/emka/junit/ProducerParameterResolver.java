@@ -27,9 +27,8 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
-import static su.ptx.emka.junit.U.b_servers;
 
-final class ProducerParameterResolver implements ParameterResolver {
+final class ProducerParameterResolver implements ParameterResolver, Ztore {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
         //TODO: Look at type not annotation?

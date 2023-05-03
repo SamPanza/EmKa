@@ -21,7 +21,7 @@ public class DelegatingParameterResolver implements ParameterResolver {
     }
 
     @Override
-    public final Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
+    public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         //NB: or else throw?
         return d(pc, ec).map(r -> r.resolveParameter(pc, ec)).orElse(null);
     }
