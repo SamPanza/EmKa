@@ -3,7 +3,7 @@ package su.ptx.emka.junit;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-final class BootstrapServersParamResolver implements EkParamResolver<EkBootstrapServers, String> {
+final class BootstrapServersResolver implements EkResolver<EkBootstrapServers, String> {
     @Override
     public Class<EkBootstrapServers> aClass() {
         return EkBootstrapServers.class;

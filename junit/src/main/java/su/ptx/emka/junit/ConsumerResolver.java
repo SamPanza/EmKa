@@ -25,7 +25,7 @@ import java.util.UUID;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-final class ConsumerParamResolver implements EkParamResolver<EkConsumer, Consumer<?, ?>> {
+final class ConsumerResolver implements EkResolver<EkConsumer, Consumer<?, ?>> {
     @Override
     public Class<EkConsumer> aClass() {
         return EkConsumer.class;

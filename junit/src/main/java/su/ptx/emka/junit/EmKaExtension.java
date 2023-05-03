@@ -28,10 +28,10 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         var ecV = EcV.get(ec);
         return ecV.count(Stream.of(
-                        new BootstrapServersParamResolver(),
-                        new AdminParamResolver(),
-                        new ProducerParamResolver(),
-                        new ConsumerParamResolver())
+                        new BootstrapServersResolver(),
+                        new AdminResolver(),
+                        new ProducerResolver(),
+                        new ConsumerResolver())
                 .filter(r -> pc.isAnnotated(r.aClass()))
                 .map(r -> r.resolve(
                         ecV.emKa.bootstrapServers(),

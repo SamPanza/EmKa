@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-final class AdminParamResolver implements EkParamResolver<EkAdmin, Admin> {
+final class AdminResolver implements EkResolver<EkAdmin, Admin> {
     @Override
     public Class<EkAdmin> aClass() {
         return EkAdmin.class;
