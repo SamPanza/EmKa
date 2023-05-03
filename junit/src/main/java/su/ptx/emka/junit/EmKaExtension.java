@@ -11,7 +11,8 @@ import su.ptx.emka.core.EmKa;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+
+import static java.util.Arrays.stream;
 
 public final class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     @Override
@@ -27,23 +28,27 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
         return pc.isAnnotated(Ek.class);
     }
 
+    private static final EkResolver<?, ?>[] resolvers = {
+            new BootstrapServersResolver(),
+            new AdminResolver(),
+            new ProducerResolver(),
+            new ConsumerResolver()
+    };
+
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         var ecV = EcV.get(ec);
-        return ecV.count(Stream.of(
-                        new BootstrapServersResolver(),
-                        new AdminResolver(),
-                        new ProducerResolver(),
-                        new ConsumerResolver())
-                .filter(r -> pc.isAnnotated(r.aClass()))
-                .map(r -> r.resolve(
-                        ecV.emKa.bootstrapServers(),
-                        pc.findAnnotation(r.aClass()).orElseThrow(),
-                        pc.getParameter().getParameterizedType() instanceof ParameterizedType pt
-                                ? pt.getActualTypeArguments()
-                                : null))
-                .findAny()
-                .orElse(null));
+        return ecV.count(
+                stream(resolvers)
+                        .filter(r -> pc.isAnnotated(r.aClass()))
+                        .map(r -> r.resolve(
+                                ecV.emKa.bootstrapServers(),
+                                pc.findAnnotation(r.aClass()).orElseThrow(),
+                                pc.getParameter().getParameterizedType() instanceof ParameterizedType pt
+                                        ? pt.getActualTypeArguments()
+                                        : null))
+                        .findAny()
+                        .orElse(null));
     }
 
     private static final class EcV implements CloseableResource {
