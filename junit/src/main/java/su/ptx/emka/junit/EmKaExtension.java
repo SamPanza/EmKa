@@ -16,7 +16,10 @@ import java.util.stream.Stream;
 public final class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     @Override
     public void beforeEach(ExtensionContext ec) throws Exception {
-        EcV.setUp(ec);
+        //noinspection resource
+        new EcV(
+                ec,
+                EmKa.create().start());
     }
 
     @Override
@@ -44,16 +47,12 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     }
 
     private static final class EcV implements CloseableResource {
-        private final List<Object> counted;
+        private final List<Object> counted = new ArrayList<>();
         private final EmKa emKa;
 
-        private EcV() throws Exception {
-            counted = new ArrayList<>();
-            counted.add(emKa = EmKa.create().start());
-        }
-
-        private static void setUp(ExtensionContext ec) throws Exception {
-            ec.getStore(Namespace.GLOBAL).put(EcV.class, new EcV());
+        private EcV(ExtensionContext ec, EmKa startedEmKa) {
+            count(emKa = startedEmKa);
+            ec.getStore(Namespace.GLOBAL).put(EcV.class, this);
         }
 
         private static EcV get(ExtensionContext ec) {
