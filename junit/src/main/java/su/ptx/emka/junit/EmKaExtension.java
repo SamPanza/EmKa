@@ -9,12 +9,10 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Optional;
 
 import static java.util.Arrays.stream;
 
@@ -56,13 +54,9 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     }
 
     private static Type[] atas(ParameterContext pc) {
-        return Optional.of(pc)
-                .map(ParameterContext::getParameter)
-                .map(Parameter::getParameterizedType)
-                .filter(ParameterizedType.class::isInstance)
-                .map(ParameterizedType.class::cast)
-                .map(ParameterizedType::getActualTypeArguments)
-                .orElse(null);
+        return pc.getParameter().getParameterizedType() instanceof ParameterizedType pt
+                ? pt.getActualTypeArguments()
+                : null;
     }
 
     private static final class EcV implements CloseableResource {
