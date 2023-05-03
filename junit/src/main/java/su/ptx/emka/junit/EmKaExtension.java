@@ -4,7 +4,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import su.ptx.emka.core.EmKa;
-import su.ptx.emka.junit.moar.DelegatingParameterResolver;
 
 import static su.ptx.emka.junit.Ztore.acs;
 import static su.ptx.emka.junit.Ztore.b_servers;

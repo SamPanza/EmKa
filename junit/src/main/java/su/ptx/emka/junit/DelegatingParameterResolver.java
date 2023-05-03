@@ -1,4 +1,4 @@
-package su.ptx.emka.junit.moar;
+package su.ptx.emka.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static java.util.Arrays.stream;
 
-public class DelegatingParameterResolver implements ParameterResolver {
+class DelegatingParameterResolver implements ParameterResolver {
     private final ParameterResolver[] delegates;
 
     public DelegatingParameterResolver(ParameterResolver... delegates) {
