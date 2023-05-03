@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 interface EkParamResolver<A extends Annotation, T> {
-    Class<A> annType();
+    Class<A> aClass();
 
-    T resolve(String b_servers, Annotation ann, Type[] atas);
+    T resolve(String b_servers, Annotation a, Type[] atas);
 }

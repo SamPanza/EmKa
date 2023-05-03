@@ -32,10 +32,10 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
                         new AdminParamResolver(),
                         new ProducerParamResolver(),
                         new ConsumerParamResolver())
-                .filter(r -> pc.isAnnotated(r.annType()))
+                .filter(r -> pc.isAnnotated(r.aClass()))
                 .map(r -> r.resolve(
                         ecV.emKa.bootstrapServers(),
-                        pc.findAnnotation(r.annType()).orElseThrow(),
+                        pc.findAnnotation(r.aClass()).orElseThrow(),
                         pc.getParameter().getParameterizedType() instanceof ParameterizedType pt
                                 ? pt.getActualTypeArguments()
                                 : null))

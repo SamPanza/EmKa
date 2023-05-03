@@ -27,34 +27,34 @@ import static java.util.Map.ofEntries;
 
 final class ConsumerParamResolver implements EkParamResolver<EkConsumer, Consumer<?, ?>> {
     @Override
-    public Class<EkConsumer> annType() {
+    public Class<EkConsumer> aClass() {
         return EkConsumer.class;
     }
 
     @Override
-    public Consumer<?, ?> resolve(String b_servers, Annotation ann, Type[] atas) {
-        var ann1 = (EkConsumer) ann;
-        return new KafkaConsumer<>(
-                Map.of(
-                        "bootstrap.servers", b_servers,
-                        "key.deserializer", deserializers().get(atas[0]),
-                        "value.deserializer", deserializers().get(atas[1]),
-                        "group.id", ann1.group().isBlank() ? "g_" + UUID.randomUUID() : ann1.group(),
-                        "auto.offset.reset", ann1.autoOffsetReset().name().toLowerCase()));
+    public Consumer<?, ?> resolve(String b_servers, Annotation a, Type[] atas) {
+        var ekc = (EkConsumer) a;
+        return new KafkaConsumer<>(Map.of(
+                "bootstrap.servers", b_servers,
+                "key.deserializer", deserializers().get(atas[0]),
+                "value.deserializer", deserializers().get(atas[1]),
+                "group.id", ekc.group().isBlank() ? "g_" + UUID.randomUUID() : ekc.group(),
+                "auto.offset.reset", ekc.autoOffsetReset().name().toLowerCase()));
     }
 
     private static Map<? extends Type, Class<? extends Deserializer<?>>> deserializers() {
         return ofEntries(
                 entry(byte[].class, ByteArrayDeserializer.class),
-                entry(String.class, StringDeserializer.class),
-                entry(Short.class, ShortDeserializer.class),
-                entry(Bytes.class, BytesDeserializer.class),
-                entry(Integer.class, IntegerDeserializer.class),
-                entry(Float.class, FloatDeserializer.class),
-                entry(Long.class, LongDeserializer.class),
                 entry(ByteBuffer.class, ByteBufferDeserializer.class),
+                entry(Bytes.class, BytesDeserializer.class),
+                entry(Double.class, DoubleDeserializer.class),
+                entry(Float.class, FloatDeserializer.class),
+                entry(Integer.class, IntegerDeserializer.class),
+                //NB: ListDeserializer skipped
+                entry(Long.class, LongDeserializer.class),
+                entry(Short.class, ShortDeserializer.class),
+                entry(String.class, StringDeserializer.class),
                 entry(UUID.class, UUIDDeserializer.class),
-                entry(Void.class, VoidDeserializer.class),
-                entry(Double.class, DoubleDeserializer.class));
+                entry(Void.class, VoidDeserializer.class));
     }
 }
