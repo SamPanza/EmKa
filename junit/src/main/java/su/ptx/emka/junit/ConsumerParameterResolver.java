@@ -30,17 +30,28 @@ import static java.util.Map.ofEntries;
 import static su.ptx.emka.junit.Ztore.b_servers;
 
 final class ConsumerParameterResolver implements ParameterResolver {
+    @EkConsumer
+    private static final boolean b = true;
+    private static final EkConsumer EKC;
+
+    static {
+        try {
+            EKC = ConsumerParameterResolver.class.getDeclaredField("b").getDeclaredAnnotation(EkConsumer.class);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        //TODO: Look at type AND annotation!
-        return pc.isAnnotated(EkConsumer.class);
+        return pc.isAnnotated(EkConsumer.class) || Consumer.class.isAssignableFrom(pc.getParameter().getType());
     }
 
     @Override
     public Consumer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
         //TODO: To utilities
         var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
-        var ekc = pc.findAnnotation(EkConsumer.class).orElseThrow();
+        var ekc = pc.findAnnotation(EkConsumer.class).orElse(EKC);
         return new KafkaConsumer<>(Map.of(
                 "bootstrap.servers", b_servers(ec),
                 "key.deserializer", deserializers.get(atas[0]),

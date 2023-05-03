@@ -8,7 +8,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EkBootstrapServers;
-import su.ptx.emka.junit.EkConsumer;
 import su.ptx.emka.junit.EmKaExtension;
 
 import java.util.HashSet;
@@ -22,18 +21,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EmKaExtension.class)
-class EmKaAnnotatedTests {
+class EmKaExtensionTests {
     @Test
-    void withClients(@EkBootstrapServers String bServers,
-                     Admin admin,
-                     Producer<String, String> producer,
-                     @EkConsumer Consumer<String, String> consumer) throws InterruptedException, ExecutionException {
-        assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
+    void createTopics_send_subscribe_poll(
+            @EkBootstrapServers String b_servers,
+            Admin admin,
+            Producer<Integer, String> producer,
+            Consumer<Integer, String> consumer) throws InterruptedException, ExecutionException {
+        assertTrue(b_servers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
         var numPartitions = 3;
         admin.createTopics(singleton(new NewTopic(topic, numPartitions, (short) 1))).all().get();
         for (var i = 0; i < numPartitions; ++i) {
-            producer.send(new ProducerRecord<>(topic, i, Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<>(topic, i, i, Integer.toString(i)));
         }
         Set<String> out = new HashSet<>();
         consumer.subscribe(singleton(topic));

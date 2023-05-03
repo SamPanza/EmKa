@@ -9,11 +9,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER})
+//TODO: Needs testing:
+// 1) annotate test class field
+// 2) annotate test method parameter
+// 3) non-default group
+// 4) non-default autoOffsetReset
 public @interface EkConsumer {
-    //TODO: Tests for non-default group
     String group() default "";
 
-    //TODO: Tests for non-default autoOffsetReset
     AutoOffsetReset autoOffsetReset() default AutoOffsetReset.earliest;
 
     enum AutoOffsetReset {
