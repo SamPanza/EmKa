@@ -8,9 +8,13 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 
 import static java.util.Arrays.stream;
 
@@ -38,17 +42,27 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         var ecV = EcV.get(ec);
+        var b_servers = ecV.emKa.bootstrapServers();
         return ecV.count(
                 stream(resolvers)
                         .filter(r -> pc.isAnnotated(r.aClass()))
-                        .map(r -> r.resolve(
-                                ecV.emKa.bootstrapServers(),
-                                pc.findAnnotation(r.aClass()).orElseThrow(),
-                                pc.getParameter().getParameterizedType() instanceof ParameterizedType pt
-                                        ? pt.getActualTypeArguments()
-                                        : null))
+                        .map(r -> r.resolve(b_servers, ann(pc, r.aClass()), atas(pc)))
                         .findAny()
                         .orElse(null));
+    }
+
+    private static Annotation ann(ParameterContext pc, Class<? extends Annotation> aClass) {
+        return pc.findAnnotation(aClass).orElseThrow();
+    }
+
+    private static Type[] atas(ParameterContext pc) {
+        return Optional.of(pc)
+                .map(ParameterContext::getParameter)
+                .map(Parameter::getParameterizedType)
+                .filter(ParameterizedType.class::isInstance)
+                .map(ParameterizedType.class::cast)
+                .map(ParameterizedType::getActualTypeArguments)
+                .orElse(null);
     }
 
     private static final class EcV implements CloseableResource {

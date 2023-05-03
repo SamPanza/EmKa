@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static su.ptx.emka.junit.EkConsumer.AutoOffsetReset.EARLIEST;
 
 @ExtendWith(EmKaExtension.class)
-class EmKaExtensionTests {
+class EmKaAnnotatedTests {
     @Test
     void withClients(@EkBootstrapServers String bServers,
                      @EkAdmin Admin admin,
