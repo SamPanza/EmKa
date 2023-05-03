@@ -12,8 +12,7 @@ import static su.ptx.emka.junit.Ztore.b_servers;
 final class AdminParameterResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        //TODO: Look at type not annotation
-        return pc.isAnnotated(EkAdmin.class);
+        return Admin.class.isAssignableFrom(pc.getParameter().getType());
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.EkAdmin;
 import su.ptx.emka.junit.EkBootstrapServers;
 import su.ptx.emka.junit.EkConsumer;
 import su.ptx.emka.junit.EkProducer;
@@ -28,7 +27,7 @@ import static su.ptx.emka.junit.EkConsumer.AutoOffsetReset.EARLIEST;
 class EmKaAnnotatedTests {
     @Test
     void withClients(@EkBootstrapServers String bServers,
-                     @EkAdmin Admin admin,
+                     Admin admin,
                      @EkProducer Producer<String, String> producer,
                      @EkConsumer(autoOffsetReset = EARLIEST) Consumer<String, String> consumer) throws InterruptedException, ExecutionException {
         assertTrue(bServers.matches("localhost:\\d\\d\\d\\d+"));
