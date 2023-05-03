@@ -15,8 +15,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.utils.Bytes;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -24,22 +27,24 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
+import static su.ptx.emka.junit.U.b_servers;
 
-final class ConsumerResolver implements EkResolver<EkConsumer, Consumer<?, ?>> {
+final class ConsumerParameterResolver implements ParameterResolver {
     @Override
-    public Class<EkConsumer> aClass() {
-        return EkConsumer.class;
+    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+        //TODO: Look at type AND annotation!
+        return pc.isAnnotated(EkConsumer.class);
     }
 
     @Override
-    public Consumer<?, ?> resolve(String b_servers, Annotation a, Type[] atas) {
-        var ekc = (EkConsumer) a;
-        var k = atas[0];
-        var v = atas[1];
+    public Consumer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
+        //TODO: To utilities
+        var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
+        var ekc = pc.findAnnotation(EkConsumer.class).orElseThrow();
         return new KafkaConsumer<>(Map.of(
-                "bootstrap.servers", b_servers,
-                "key.deserializer", deserializers.get(k),
-                "value.deserializer", deserializers.get(v),
+                "bootstrap.servers", b_servers(ec),
+                "key.deserializer", deserializers.get(atas[0]),
+                "value.deserializer", deserializers.get(atas[1]),
                 "group.id", ekc.group().isBlank() ? "g_" + UUID.randomUUID() : ekc.group(),
                 "auto.offset.reset", ekc.autoOffsetReset().name().toLowerCase()));
     }

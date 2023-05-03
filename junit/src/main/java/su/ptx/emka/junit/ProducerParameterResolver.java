@@ -15,8 +15,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.apache.kafka.common.utils.Bytes;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -24,21 +27,23 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
+import static su.ptx.emka.junit.U.b_servers;
 
-final class ProducerResolver implements EkResolver<EkProducer, Producer<?, ?>> {
+final class ProducerParameterResolver implements ParameterResolver {
     @Override
-    public Class<EkProducer> aClass() {
-        return EkProducer.class;
+    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+        //TODO: Look at type not annotation?
+        return pc.isAnnotated(EkProducer.class);
     }
 
     @Override
-    public Producer<?, ?> resolve(String b_servers, Annotation a, Type[] atas) {
-        var k = atas[0];
-        var v = atas[1];
+    public Producer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
+        //TODO: To utilities
+        var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
         return new KafkaProducer<>(Map.of(
-                "bootstrap.servers", b_servers,
-                "key.serializer", serializers.get(k),
-                "value.serializer", serializers.get(v)));
+                "bootstrap.servers", b_servers(ec),
+                "key.serializer", serializers.get(atas[0]),
+                "value.serializer", serializers.get(atas[1])));
     }
 
     private static final Map<? extends Type, Class<? extends Serializer<?>>> serializers = ofEntries(
@@ -54,5 +59,4 @@ final class ProducerResolver implements EkResolver<EkProducer, Producer<?, ?>> {
             entry(String.class, StringSerializer.class),
             entry(UUID.class, UUIDSerializer.class),
             entry(Void.class, VoidSerializer.class));
-
 }
