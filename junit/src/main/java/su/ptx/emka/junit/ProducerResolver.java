@@ -33,25 +33,26 @@ final class ProducerResolver implements EkResolver<EkProducer, Producer<?, ?>> {
 
     @Override
     public Producer<?, ?> resolve(String b_servers, Annotation a, Type[] atas) {
+        var k = atas[0];
+        var v = atas[1];
         return new KafkaProducer<>(Map.of(
                 "bootstrap.servers", b_servers,
-                "key.serializer", serializers().get(atas[0]),
-                "value.serializer", serializers().get(atas[1])));
+                "key.serializer", serializers.get(k),
+                "value.serializer", serializers.get(v)));
     }
 
-    private static Map<? extends Type, Class<? extends Serializer<?>>> serializers() {
-        return ofEntries(
-                entry(byte[].class, ByteArraySerializer.class),
-                entry(ByteBuffer.class, ByteBufferSerializer.class),
-                entry(Bytes.class, BytesSerializer.class),
-                entry(Double.class, DoubleSerializer.class),
-                entry(Float.class, FloatSerializer.class),
-                entry(Integer.class, IntegerSerializer.class),
-                //NB: ListSerializer skipped
-                entry(Long.class, LongSerializer.class),
-                entry(Short.class, ShortSerializer.class),
-                entry(String.class, StringSerializer.class),
-                entry(UUID.class, UUIDSerializer.class),
-                entry(Void.class, VoidSerializer.class));
-    }
+    private static final Map<? extends Type, Class<? extends Serializer<?>>> serializers = ofEntries(
+            entry(byte[].class, ByteArraySerializer.class),
+            entry(ByteBuffer.class, ByteBufferSerializer.class),
+            entry(Bytes.class, BytesSerializer.class),
+            entry(Double.class, DoubleSerializer.class),
+            entry(Float.class, FloatSerializer.class),
+            entry(Integer.class, IntegerSerializer.class),
+            //NB: ListSerializer skipped
+            entry(Long.class, LongSerializer.class),
+            entry(Short.class, ShortSerializer.class),
+            entry(String.class, StringSerializer.class),
+            entry(UUID.class, UUIDSerializer.class),
+            entry(Void.class, VoidSerializer.class));
+
 }
