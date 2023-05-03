@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static java.util.Arrays.stream;
 
@@ -52,7 +52,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     }
 
     private static final class EcV implements CloseableResource {
-        private final List<Object> counted = new ArrayList<>();
+        private final Deque<AutoCloseable> acs = new ArrayDeque<>();
         private final EmKa emKa;
 
         private EcV(ExtensionContext ec, EmKa startedEmKa) {
@@ -65,22 +65,16 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
         }
 
         private Object count(Object o) {
-            if (o != null) {
-                counted.add(o);
+            if (o instanceof AutoCloseable ac) {
+                acs.push(ac);
             }
             return o;
         }
 
         @Override
-        public void close() {
-            for (var i = counted.size() - 1; i >= 0; --i) {
-                if (counted.get(i) instanceof AutoCloseable ac) {
-                    try {
-                        ac.close();
-                    } catch (Exception e) {
-                        //NB: Silence?
-                    }
-                }
+        public void close() throws Exception {
+            while (!acs.isEmpty()) {
+                acs.pop().close();
             }
         }
     }
