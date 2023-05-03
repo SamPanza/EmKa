@@ -6,9 +6,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import su.ptx.emka.core.EmKa;
 import su.ptx.emka.junit.moar.DelegatingParameterResolver;
 
-import static su.ptx.emka.junit.Ztore.Key.ACS;
-import static su.ptx.emka.junit.Ztore.Key.B_SERVERS;
-import static su.ptx.emka.junit.Ztore.NS;
+import static su.ptx.emka.junit.Ztore.acs;
+import static su.ptx.emka.junit.Ztore.b_servers;
 
 public final class EmKaExtension extends DelegatingParameterResolver implements BeforeEachCallback {
     public EmKaExtension() {
@@ -21,15 +20,15 @@ public final class EmKaExtension extends DelegatingParameterResolver implements 
 
     @Override
     public void beforeEach(ExtensionContext ec) throws Exception {
-        var acs = new Acs();
-        ec.getStore(NS).put(ACS, acs);
-        ec.getStore(NS).put(
-                B_SERVERS,
-                acs.pass(EmKa.create()).start().bootstrapServers());
+        var acs = acs(ec, new Acs());
+        var emKa = EmKa.create();
+        acs.pass(emKa);
+        emKa.start();
+        b_servers(ec, emKa.bootstrapServers());
     }
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        return ec.getStore(NS).get(ACS, Acs.class).pass(super.resolveParameter(pc, ec));
+        return acs(ec).pass(super.resolveParameter(pc, ec));
     }
 }

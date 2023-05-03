@@ -27,8 +27,9 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
+import static su.ptx.emka.junit.Ztore.b_servers;
 
-final class ConsumerParameterResolver implements ParameterResolver, Ztore {
+final class ConsumerParameterResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
         //TODO: Look at type AND annotation!
