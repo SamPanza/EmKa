@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
-import static su.ptx.emka.junit.Ztore.Key.ACS;
-import static su.ptx.emka.junit.Ztore.Key.B_SERVERS;
 
 final class Ztore {
     private Ztore() {
@@ -18,7 +16,7 @@ final class Ztore {
         return ec.getStore(NS);
     }
 
-    enum Key {
+    private enum Key {
         ACS, B_SERVERS
     }
 
@@ -32,18 +30,18 @@ final class Ztore {
     }
 
     static String b_servers(ExtensionContext ec) {
-        return get(ec, B_SERVERS, String.class);
+        return get(ec, Key.B_SERVERS, String.class);
     }
 
     static String b_servers(ExtensionContext ec, String b_servers) {
-        return put(ec, B_SERVERS, b_servers);
+        return put(ec, Key.B_SERVERS, b_servers);
     }
 
     static Acs acs(ExtensionContext ec) {
-        return get(ec, ACS, Acs.class);
+        return get(ec, Key.ACS, Acs.class);
     }
 
     static Acs acs(ExtensionContext ec, Acs acs) {
-        return put(ec, ACS, acs);
+        return put(ec, Key.ACS, acs);
     }
 }
