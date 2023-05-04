@@ -23,7 +23,7 @@ import java.util.Optional;
 import static java.nio.file.Files.createTempDirectory;
 import static su.ptx.emka.core.FreePorts.FREE_PORTS;
 
-final class KRaftee implements EmKa {
+public final class KRaftee implements EmKa {
     private String bootstrapServers;
     private KafkaRaftServer server;
 
@@ -37,7 +37,7 @@ final class KRaftee implements EmKa {
         return start(0, 0, null);
     }
 
-    private synchronized EmKa start(int conp, int brop, File logd) {
+    public synchronized EmKa start(int conp, int brop, File logd) {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
