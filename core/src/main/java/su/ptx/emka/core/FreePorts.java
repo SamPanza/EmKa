@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.ServerSocket;
 import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 
-final class FreePorts implements IntSupplier {
+final class FreePorts implements IntSupplier, IntUnaryOperator {
     static final FreePorts FREE_PORTS = new FreePorts();
 
     private FreePorts() {
@@ -18,5 +19,10 @@ final class FreePorts implements IntSupplier {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public int applyAsInt(int port) {
+        return port == 0 ? getAsInt() : port;
     }
 }

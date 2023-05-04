@@ -15,13 +15,13 @@ import scala.collection.immutable.Seq;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.nio.file.Files.createTempDirectory;
 import static su.ptx.emka.core.FreePorts.FREE_PORTS;
 
-final class KRaftee implements EmKa {
+public final class KRaftee implements EmKa {
     private String bootstrapServers;
     private KafkaRaftServer server;
 
@@ -31,34 +31,44 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public EmKa start() throws Exception {
+    public synchronized EmKa start() throws Exception {
+        var logDir = createTempDirectory(null).toFile();
+        logDir.deleteOnExit();
+        return start(0, 0, logDir);
+    }
+
+    public synchronized EmKa start(int ctlPort, int broPort, File logDir) throws Exception {
+        if (server != null) {
+            throw new IllegalStateException("Server already started");
+        }
+        ctlPort = FREE_PORTS.applyAsInt(ctlPort);
+        broPort = FREE_PORTS.applyAsInt(broPort);
         var nodeId = 1;
-        var cp = FREE_PORTS.getAsInt();
-        var bp = FREE_PORTS.getAsInt();
-        bootstrapServers = "localhost:" + bp;
         server = new KafkaRaftServer(
                 new KafkaConfig(
                         Map.of(
                                 "process.roles", "controller,broker",
                                 "node.id", nodeId,
-                                "controller.quorum.voters", nodeId + "@localhost:" + cp,
-                                "listeners", "CTL://localhost:%d,BRO://localhost:%d".formatted(cp, bp),
+                                "controller.quorum.voters", nodeId + "@localhost:" + ctlPort,
+                                "listeners", "CTL://localhost:%d,BRO://localhost:%d".formatted(ctlPort, broPort),
                                 "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
                                 "controller.listener.names", "CTL",
                                 "inter.broker.listener.name", "BRO",
-                                "log.dir", formatTmpLogDir(nodeId).getAbsolutePath(),
+                                "log.dir", formatLogDir(logDir, nodeId).getAbsolutePath(),
                                 "offsets.topic.replication.factor", (short) 1,
                                 "transaction.state.log.replication.factor", (short) 1),
                         false),
                 Time.SYSTEM,
                 Option.empty());
         server.startup();
+        bootstrapServers = "localhost:" + broPort;
         return this;
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         if (server != null) {
+            bootstrapServers = null;
             server.shutdown();
             server.awaitShutdown();
             server = null;
@@ -68,9 +78,8 @@ final class KRaftee implements EmKa {
     /**
      * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
      */
-    private static File formatTmpLogDir(int nodeId) throws Exception {
-        var dir = Files.createTempDirectory(null).toFile();
-        dir.deleteOnExit();
+    private static File formatLogDir(File dir, int nodeId) throws Exception {
+        //TODO: Do nothing if dir already formatted
         new BrokerMetadataCheckpoint(new File(dir, "meta.properties")).write(
                 new MetaProperties(Uuid.randomUuid().toString(), nodeId).toProperties());
         new BootstrapDirectory(
