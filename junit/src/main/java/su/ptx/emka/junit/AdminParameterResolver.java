@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.Map;
 
-import static su.ptx.emka.junit.Ztore.b_servers;
+import static su.ptx.emka.junit.StoredValue.B_SERVERS;
 
 final class AdminParameterResolver implements ParameterResolver {
     @Override
@@ -18,6 +18,6 @@ final class AdminParameterResolver implements ParameterResolver {
     @Override
     public Admin resolveParameter(ParameterContext pc, ExtensionContext ec) {
         return Admin.create(Map.of(
-                "bootstrap.servers", b_servers(ec)));
+                "bootstrap.servers", B_SERVERS.get(ec)));
     }
 }
