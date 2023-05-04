@@ -66,13 +66,14 @@ public final class KRaftee implements EmKa {
     }
 
     @Override
-    public synchronized void stop() {
+    public synchronized EmKa stop() {
         if (server != null) {
             bootstrapServers = null;
             server.shutdown();
             server.awaitShutdown();
             server = null;
         }
+        return this;
     }
 
     /**

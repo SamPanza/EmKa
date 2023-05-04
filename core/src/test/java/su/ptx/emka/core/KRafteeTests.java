@@ -24,9 +24,7 @@ class KRafteeTests {
     @Test
     void can_start_stop_start() throws Exception {
         try (var s = new KRaftee()) {
-            s.start();
-            s.stop();
-            s.start();
+            s.start().stop().start();
         }
     }
 }
