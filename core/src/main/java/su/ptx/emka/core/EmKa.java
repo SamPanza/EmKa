@@ -7,8 +7,7 @@ public interface EmKa extends AutoCloseable {
 
     String bootstrapServers();
 
-    //NB: Throw custom rt exc?
-    EmKa start() throws Exception;
+    EmKa start();
 
     EmKa stop();
 

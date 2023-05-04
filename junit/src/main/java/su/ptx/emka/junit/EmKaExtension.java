@@ -18,7 +18,7 @@ public final class EmKaExtension extends DelegatingParameterResolver implements 
     }
 
     @Override
-    public void beforeEach(ExtensionContext ec) throws Exception {
+    public void beforeEach(ExtensionContext ec) {
         var acs = ACS.put(ec, new Acs());
         var emKa = EmKa.create();
         acs.pass(emKa);

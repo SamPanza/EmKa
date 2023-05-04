@@ -16,13 +16,7 @@ class EmKaTests {
     }
 
     private static void withStartedEmKa(Consumer<EmKa> ekc) {
-        withNewEmKa(ek -> {
-            try {
-                ekc.accept(ek.start());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        withNewEmKa(ek -> ekc.accept(ek.start()));
     }
 
     @Test

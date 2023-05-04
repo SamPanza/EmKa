@@ -14,7 +14,9 @@ import scala.Option;
 import scala.collection.immutable.Seq;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,17 +33,20 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public EmKa start() throws Exception {
+    public EmKa start() {
         return start(0, 0, null);
     }
 
-    private synchronized EmKa start(int conp, int brop, File logd) throws Exception {
+    private synchronized EmKa start(int conp, int brop, File logd) {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
         if (logd == null) {
-            logd = createTempDirectory(null).toFile();
-            logd.deleteOnExit();
+            try {
+                (logd = createTempDirectory(null).toFile()).deleteOnExit();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
         var nodeId = 1;
         conp = FREE_PORTS.applyAsInt(conp);
@@ -81,14 +86,18 @@ final class KRaftee implements EmKa {
     /**
      * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
      */
-    private static File formatLogDir(File dir, int nodeId) throws Exception {
+    private static File formatLogDir(File logDir, int nodeId) {
         //TODO: Do nothing if dir already formatted
-        new BrokerMetadataCheckpoint(new File(dir, "meta.properties")).write(
+        new BrokerMetadataCheckpoint(
+                new File(logDir, "meta.properties")).write(
                 new MetaProperties(Uuid.randomUuid().toString(), nodeId).toProperties());
-        new BootstrapDirectory(
-                dir.toString(),
-                Optional.empty())
-                .writeBinaryFile(BootstrapMetadata.fromVersion(MetadataVersion.latest(), ""));
-        return dir;
+        var bd = new BootstrapDirectory(logDir.toString(), Optional.empty());
+        var bm = BootstrapMetadata.fromVersion(MetadataVersion.latest(), "");
+        try {
+            bd.writeBinaryFile(bm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return logDir;
     }
 }
