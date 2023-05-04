@@ -34,7 +34,6 @@
                     <version>3.11.0</version>
                     <configuration>
                         <release>20</release>
-                        <enablePreview>true</enablePreview>
                     </configuration>
                 </plugin>
 
