@@ -1,6 +1,7 @@
-package su.ptx.emka.core;
+package su.ptx.emka.core.alien;
 
 import org.junit.jupiter.api.Test;
+import su.ptx.emka.core.EmKa;
 
 import java.util.function.Consumer;
 
