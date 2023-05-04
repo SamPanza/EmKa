@@ -31,19 +31,21 @@ final class KRaftee implements EmKa {
     }
 
     @Override
-    public synchronized EmKa start() throws Exception {
-        var logDir = createTempDirectory(null).toFile();
-        logDir.deleteOnExit();
-        return start(0, 0, logDir);
+    public EmKa start() throws Exception {
+        return start(0, 0, null);
     }
 
-    private synchronized EmKa start(int conp, int brop, File logDir) throws Exception {
+    private synchronized EmKa start(int conp, int brop, File logd) throws Exception {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
+        if (logd == null) {
+            logd = createTempDirectory(null).toFile();
+            logd.deleteOnExit();
+        }
+        var nodeId = 1;
         conp = FREE_PORTS.applyAsInt(conp);
         brop = FREE_PORTS.applyAsInt(brop);
-        var nodeId = 1;
         server = new KafkaRaftServer(
                 new KafkaConfig(
                         Map.of(
@@ -54,7 +56,7 @@ final class KRaftee implements EmKa {
                                 "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
                                 "controller.listener.names", "CON",
                                 "inter.broker.listener.name", "BRO",
-                                "log.dir", formatLogDir(logDir, nodeId).getAbsolutePath(),
+                                "log.dir", formatLogDir(logd, nodeId).getAbsolutePath(),
                                 "offsets.topic.replication.factor", (short) 1,
                                 "transaction.state.log.replication.factor", (short) 1),
                         false),
