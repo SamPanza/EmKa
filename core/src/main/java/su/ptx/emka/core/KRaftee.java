@@ -37,22 +37,22 @@ public final class KRaftee implements EmKa {
         return start(0, 0, logDir);
     }
 
-    public synchronized EmKa start(int ctlPort, int broPort, File logDir) throws Exception {
+    public synchronized EmKa start(int conp, int brop, File logDir) throws Exception {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
-        ctlPort = FREE_PORTS.applyAsInt(ctlPort);
-        broPort = FREE_PORTS.applyAsInt(broPort);
+        conp = FREE_PORTS.applyAsInt(conp);
+        brop = FREE_PORTS.applyAsInt(brop);
         var nodeId = 1;
         server = new KafkaRaftServer(
                 new KafkaConfig(
                         Map.of(
                                 "process.roles", "controller,broker",
                                 "node.id", nodeId,
-                                "controller.quorum.voters", nodeId + "@localhost:" + ctlPort,
-                                "listeners", "CTL://localhost:%d,BRO://localhost:%d".formatted(ctlPort, broPort),
-                                "listener.security.protocol.map", "CTL:PLAINTEXT,BRO:PLAINTEXT",
-                                "controller.listener.names", "CTL",
+                                "controller.quorum.voters", nodeId + "@localhost:" + conp,
+                                "listeners", "CON://localhost:%d,BRO://localhost:%d".formatted(conp, brop),
+                                "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
+                                "controller.listener.names", "CON",
                                 "inter.broker.listener.name", "BRO",
                                 "log.dir", formatLogDir(logDir, nodeId).getAbsolutePath(),
                                 "offsets.topic.replication.factor", (short) 1,
@@ -61,7 +61,7 @@ public final class KRaftee implements EmKa {
                 Time.SYSTEM,
                 Option.empty());
         server.startup();
-        bootstrapServers = "localhost:" + broPort;
+        bootstrapServers = "localhost:" + brop;
         return this;
     }
 
