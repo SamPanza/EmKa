@@ -20,7 +20,7 @@ class EmKaTests {
     }
 
     @Test
-    void no_bootstrapServers_until_start() {
+    void NO_bootstrapServers_until_start() {
         withNewEmKa(kr -> assertNull(kr.bootstrapServers()));
     }
 

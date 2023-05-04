@@ -4,7 +4,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static su.ptx.emka.junit.StoredValue.B_SERVERS;
+import static su.ptx.emka.junit.V.B_SERVERS;
 
 final class BootstrapServersParameterResolver implements ParameterResolver {
     @Override

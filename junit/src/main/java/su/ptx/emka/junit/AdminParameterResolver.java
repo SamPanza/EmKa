@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.Map;
 
-import static su.ptx.emka.junit.StoredValue.B_SERVERS;
+import static su.ptx.emka.junit.V.B_SERVERS;
 
 final class AdminParameterResolver implements ParameterResolver {
     @Override

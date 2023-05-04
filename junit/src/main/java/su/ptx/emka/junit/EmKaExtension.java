@@ -5,8 +5,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import su.ptx.emka.core.EmKa;
 
-import static su.ptx.emka.junit.StoredValue.ACS;
-import static su.ptx.emka.junit.StoredValue.B_SERVERS;
+import static su.ptx.emka.junit.V.ACS;
+import static su.ptx.emka.junit.V.B_SERVERS;
 
 public final class EmKaExtension extends DelegatingParameterResolver implements BeforeEachCallback {
     public EmKaExtension() {
