@@ -31,12 +31,6 @@ class EmKaTests {
 
     @Test
     void can_start_stop_start() {
-        withStartedEmKa(ek -> {
-            try {
-                ek.stop().start();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        withStartedEmKa(ek -> ek.stop().start());
     }
 }
