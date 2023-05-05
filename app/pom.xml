@@ -23,6 +23,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.microbean</groupId>
+            <artifactId>microbean-microprofile-config</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
