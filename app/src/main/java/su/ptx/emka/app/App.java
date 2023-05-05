@@ -10,5 +10,9 @@ public class App {
         var k = new KRaftee();
         k.start(0, 0, null);
         out.println(k.bootstrapServers());
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            k.stop();
+            out.println("See ya!");
+        }));
     }
 }
