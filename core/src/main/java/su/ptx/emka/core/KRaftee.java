@@ -86,18 +86,19 @@ public final class KRaftee implements EmKa {
     /**
      * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
      */
-    private static File formatLogDir(File logDir, int nodeId) {
-        //TODO: Do nothing if dir already formatted
-        new BrokerMetadataCheckpoint(
-                new File(logDir, "meta.properties")).write(
+    private static File formatLogDir(File logd, int nodeId) {
+        var metaProps = new File(logd, "meta.properties");
+        if (metaProps.exists()) {
+            return logd;
+        }
+        new BrokerMetadataCheckpoint(metaProps).write(
                 new MetaProperties(Uuid.randomUuid().toString(), nodeId).toProperties());
-        var bd = new BootstrapDirectory(logDir.toString(), Optional.empty());
-        var bm = BootstrapMetadata.fromVersion(MetadataVersion.latest(), "");
         try {
-            bd.writeBinaryFile(bm);
+            new BootstrapDirectory(logd.toString(), Optional.empty()).writeBinaryFile(
+                    BootstrapMetadata.fromVersion(MetadataVersion.latest(), ""));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return logDir;
+        return logd;
     }
 }
