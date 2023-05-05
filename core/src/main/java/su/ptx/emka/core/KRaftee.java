@@ -37,7 +37,7 @@ public final class KRaftee implements EmKa {
         return start(0, 0, null);
     }
 
-    public synchronized EmKa start(int conp, int brop, File logd) {
+    public synchronized EmKa start(int brop, int conp, File logd) {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
@@ -49,15 +49,15 @@ public final class KRaftee implements EmKa {
             }
         }
         var nodeId = 1;
-        conp = FREE_PORTS.applyAsInt(conp);
         brop = FREE_PORTS.applyAsInt(brop);
+        conp = FREE_PORTS.applyAsInt(conp);
         server = new KafkaRaftServer(
                 new KafkaConfig(
                         Map.of(
                                 "process.roles", "controller,broker",
                                 "node.id", nodeId,
                                 "controller.quorum.voters", nodeId + "@localhost:" + conp,
-                                "listeners", "CON://localhost:%d,BRO://localhost:%d".formatted(conp, brop),
+                                "listeners", "BRO://localhost:%d,CON://localhost:%d".formatted(brop, conp),
                                 "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
                                 "controller.listener.names", "CON",
                                 "inter.broker.listener.name", "BRO",
