@@ -87,6 +87,8 @@ public final class KRaftee implements EmKa {
      * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
      */
     private static File formatLogDir(File logd, int nodeId) {
+        //noinspection ResultOfMethodCallIgnored
+        logd.mkdirs();
         var metaProps = new File(logd, "meta.properties");
         if (metaProps.exists()) {
             return logd;
