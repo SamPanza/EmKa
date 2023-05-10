@@ -35,10 +35,31 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+
                 <configuration>
                     <skip>false</skip>
-                    <mainClass>su.ptx.emka.app.App</mainClass>
                 </configuration>
+
+                <executions>
+                    <execution>
+                        <id>j</id>
+                        <configuration>
+                            <mainClass>su.ptx.emka.app.App</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>e</id>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>su.ptx.emka.app.App</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

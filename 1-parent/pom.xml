@@ -50,6 +50,7 @@
                     <configuration>
                         <skip>true</skip>
                         <mainClass>none</mainClass>
+                        <executable>none</executable>
                     </configuration>
                 </plugin>
             </plugins>
