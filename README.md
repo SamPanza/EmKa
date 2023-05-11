@@ -1,14 +1,8 @@
 # EmKa
 
 ```shell
-mvn -am -pl app compile exec:java@j
+mvn -am -pl app spring-boot:run
 ```
-
-```shell
-mvn -am -pl app compile exec:exec@e
-```
-
-Both unfriendly to `Ctrl+C`: `The build was canceled` & that's it
 
 ```shell
 mvn -am -pl app package
