@@ -12,15 +12,15 @@ import static org.junit.platform.commons.support.ModifierSupport.isNotStatic;
 import static org.junit.platform.commons.support.ReflectionSupport.findFields;
 
 //TODO: Compose, don't inherit!
-public final class EmKaExtension extends DelegatingParameterResolver implements BeforeEachCallback, TestInstancePostProcessor {
+public final class EmKaExtension extends DelegatingParamRezolvr implements BeforeEachCallback, TestInstancePostProcessor {
     private final FieldResolver[] frs;
 
     public EmKaExtension() {
         super(
-                new ParameterResolverAdapter(new BootstrapServersParamRezolvr()),
-                new ParameterResolverAdapter(new AdminParamRezolvr()),
-                new ParameterResolverAdapter(new ProducerParamRezolvr()),
-                new ParameterResolverAdapter(new ConsumerParamRezolvr()));
+                new BootstrapServersParamRezolvr(),
+                new AdminParamRezolvr(),
+                new ProducerParamRezolvr(),
+                new ConsumerParamRezolvr());
         frs = new FieldResolver[]{};
     }
 
