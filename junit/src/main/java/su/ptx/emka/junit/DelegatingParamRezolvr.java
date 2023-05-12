@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static java.util.Arrays.stream;
 
-class DelegatingParamRezolvr implements ParameterResolver {
+final class DelegatingParamRezolvr implements ParameterResolver {
     private final ParamRezolvr[] rezolvrs;
 
     public DelegatingParamRezolvr(ParamRezolvr... rezolvrs) {
@@ -16,7 +16,7 @@ class DelegatingParamRezolvr implements ParameterResolver {
     }
 
     @Override
-    public final boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
         return firstRezolvrSupporting(pc).isPresent();
     }
 

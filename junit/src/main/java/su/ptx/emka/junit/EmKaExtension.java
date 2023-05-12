@@ -3,6 +3,7 @@ package su.ptx.emka.junit;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import su.ptx.emka.core.EmKa;
 
@@ -11,12 +12,12 @@ import static org.junit.platform.commons.support.ModifierSupport.isNotFinal;
 import static org.junit.platform.commons.support.ModifierSupport.isNotStatic;
 import static org.junit.platform.commons.support.ReflectionSupport.findFields;
 
-//TODO: Compose, don't inherit!
-public final class EmKaExtension extends DelegatingParamRezolvr implements BeforeEachCallback, TestInstancePostProcessor {
+public final class EmKaExtension implements BeforeEachCallback, ParameterResolver, TestInstancePostProcessor {
+    private final ParameterResolver pr;
     private final FieldResolver[] frs;
 
     public EmKaExtension() {
-        super(
+        pr = new DelegatingParamRezolvr(
                 new BootstrapServersParamRezolvr(),
                 new AdminParamRezolvr(),
                 new ProducerParamRezolvr(),
@@ -34,8 +35,13 @@ public final class EmKaExtension extends DelegatingParamRezolvr implements Befor
     }
 
     @Override
+    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+        return pr.supportsParameter(pc, ec);
+    }
+
+    @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        return V.acs.get(ec).pass(super.resolveParameter(pc, ec));
+        return V.acs.get(ec).pass(pr.resolveParameter(pc, ec));
     }
 
     @Override
