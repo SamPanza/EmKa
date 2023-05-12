@@ -1,10 +1,16 @@
 package su.ptx.emka.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
+import su.ptx.emka.core.EmKa;
 
-//TODO: Move V & Acs functionality here
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
+
 interface ExtCtx {
+    void beforeEach();
+
     String b_servers();
+
+    <T> T pass(T o);
 
     static ExtCtx of(ExtensionContext ec) {
         final class Impl implements ExtCtx {
@@ -15,9 +21,26 @@ interface ExtCtx {
             }
 
             @Override
-            public String b_servers() {
-                return V.b_servers.get(ec);
+            public void beforeEach() {
+                var acs = new Acs();
+                ec.getStore(NS).put("acs", acs);
+                var emKa = EmKa.create();
+                acs.pass(emKa);
+                emKa.start();
+                ec.getStore(NS).put("b_servers", emKa.bootstrapServers());
             }
+
+            @Override
+            public String b_servers() {
+                return ec.getStore(NS).get("b_servers", String.class);
+            }
+
+            @Override
+            public <T> T pass(T o) {
+                return ec.getStore(NS).get("acs", Acs.class).pass(o);
+            }
+
+            private static final ExtensionContext.Namespace NS = create("su.ptx.emka");
         }
         return new Impl(ec);
     }

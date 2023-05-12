@@ -4,7 +4,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
-import su.ptx.emka.core.EmKa;
 
 public final class EmKaExtension implements BeforeEachCallback, ParameterResolver/*, TestInstancePostProcessor*/ {
     private final ParameterResolver pr;
@@ -21,11 +20,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
 
     @Override
     public void beforeEach(ExtensionContext ec) {
-        var acs = V.acs.put(ec, new Acs());
-        var emKa = EmKa.create();
-        acs.pass(emKa);
-        emKa.start();
-        V.b_servers.put(ec, emKa.bootstrapServers());
+        ExtCtx.of(ec).beforeEach();
     }
 
     @Override
@@ -35,7 +30,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        return V.acs.get(ec).pass(pr.resolveParameter(pc, ec));
+        return ExtCtx.of(ec).pass(pr.resolveParameter(pc, ec));
     }
 
     /*@Override

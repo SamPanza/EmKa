@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EmKaExtension;
@@ -22,6 +23,7 @@ import static su.ptx.emka.junit.alien.U.startThreadAndWaitFor;
 class ProducerAndConsumerAsParametersTest {
     @Test
     @ExtendWith(EmKaExtension.class)
+    @DisplayName("produce & consume")
     void test(Producer<Integer, Integer> p, Consumer<Integer, Integer> c) throws InterruptedException {
         assertNotNull(p);
         assertNotNull(c);
