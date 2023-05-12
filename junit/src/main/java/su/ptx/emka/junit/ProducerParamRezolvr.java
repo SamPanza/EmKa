@@ -15,11 +15,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.apache.kafka.common.utils.Bytes;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -28,20 +24,19 @@ import java.util.UUID;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-final class ProducerParameterResolver implements ParameterResolver {
+final class ProducerParamRezolvr implements ParamRezolvr {
     @Override
-    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return Producer.class.isAssignableFrom(pc.getParameter().getType());
+    public boolean supports(ParamCtx pc) {
+        return pc.assignableTo(Producer.class);
     }
 
     @Override
-    public Producer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        //TODO: To utilities
-        var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
+    public Object resolve(ParamCtx pc, ExtCtx ec) {
+        var typeArgs = pc.typeArgs();
         return new KafkaProducer<>(Map.of(
-                "bootstrap.servers", V.b_servers.get(ec),
-                "key.serializer", serializers.get(atas[0]),
-                "value.serializer", serializers.get(atas[1])));
+                "bootstrap.servers", ec.b_servers(),
+                "key.serializer", serializers.get(typeArgs[0]),
+                "value.serializer", serializers.get(typeArgs[1])));
     }
 
     private static final Map<? extends Type, Class<? extends Serializer<?>>> serializers = ofEntries(

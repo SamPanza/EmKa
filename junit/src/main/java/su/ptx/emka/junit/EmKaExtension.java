@@ -19,7 +19,7 @@ public final class EmKaExtension extends DelegatingParameterResolver implements 
         super(
                 new ParameterResolverAdapter(new BootstrapServersParamRezolvr()),
                 new ParameterResolverAdapter(new AdminParamRezolvr()),
-                new ProducerParameterResolver(),
+                new ParameterResolverAdapter(new ProducerParamRezolvr()),
                 new ConsumerParameterResolver());
         frs = new FieldResolver[]{};
     }
