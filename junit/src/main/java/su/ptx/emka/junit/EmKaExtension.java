@@ -30,7 +30,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        return ExtCtx.of(ec).pass(pr.resolveParameter(pc, ec));
+        return pr.resolveParameter(pc, ec);
     }
 
     /*@Override
