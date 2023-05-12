@@ -13,13 +13,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 // 1) annotate test class field
 // 2) annotate test method parameter
 // 3) non-default group
-// 4) non-default autoOffsetReset
+// 4) non-default resetTo
 public @interface EkConsumer {
     String group() default "";
 
-    AutoOffsetReset autoOffsetReset() default AutoOffsetReset.earliest;
+    ResetTo resetTo() default ResetTo.earliest;
 
-    enum AutoOffsetReset {
+    //https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset
+    //https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#auto-offset-reset
+    enum ResetTo {
         latest, earliest, none
     }
 }

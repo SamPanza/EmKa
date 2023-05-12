@@ -27,7 +27,6 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
-import static su.ptx.emka.junit.V.B_SERVERS;
 
 final class ConsumerParameterResolver implements ParameterResolver {
     @EkConsumer
@@ -53,11 +52,11 @@ final class ConsumerParameterResolver implements ParameterResolver {
         var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
         var ekc = pc.findAnnotation(EkConsumer.class).orElse(EKC);
         return new KafkaConsumer<>(Map.of(
-                "bootstrap.servers", B_SERVERS.get(ec),
+                "bootstrap.servers", V.b_servers.get(ec),
                 "key.deserializer", deserializers.get(atas[0]),
                 "value.deserializer", deserializers.get(atas[1]),
                 "group.id", ekc.group().isBlank() ? "g_" + UUID.randomUUID() : ekc.group(),
-                "auto.offset.reset", ekc.autoOffsetReset().name()));
+                "auto.offset.reset", ekc.resetTo().name()));
     }
 
     private static final Map<? extends Type, Class<? extends Deserializer<?>>> deserializers = ofEntries(

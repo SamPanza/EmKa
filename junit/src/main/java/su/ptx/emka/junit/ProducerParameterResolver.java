@@ -27,7 +27,6 @@ import java.util.UUID;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
-import static su.ptx.emka.junit.V.B_SERVERS;
 
 final class ProducerParameterResolver implements ParameterResolver {
     @Override
@@ -40,7 +39,7 @@ final class ProducerParameterResolver implements ParameterResolver {
         //TODO: To utilities
         var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
         return new KafkaProducer<>(Map.of(
-                "bootstrap.servers", B_SERVERS.get(ec),
+                "bootstrap.servers", V.b_servers.get(ec),
                 "key.serializer", serializers.get(atas[0]),
                 "value.serializer", serializers.get(atas[1])));
     }
