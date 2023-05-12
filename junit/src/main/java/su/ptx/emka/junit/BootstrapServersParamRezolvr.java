@@ -8,6 +8,6 @@ final class BootstrapServersParamRezolvr implements ParamRezolvr {
 
     @Override
     public String resolve(ParamCtx pc, ExtCtx ec) {
-        return ec.b_servers();
+        return ec.emKa().bootstrapServers();
     }
 }

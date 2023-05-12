@@ -49,7 +49,7 @@ final class ConsumerParamRezolvr implements ParamRezolvr {
         var k = pc.find(Konsumer.class).orElse(K);
         var typeArgs = pc.typeArgs();
         var c = new KafkaConsumer<>(Map.of(
-                "bootstrap.servers", ec.b_servers(),
+                "bootstrap.servers", ec.emKa().bootstrapServers(),
                 "key.deserializer", deserializers.get(typeArgs[0]),
                 "value.deserializer", deserializers.get(typeArgs[1]),
                 "group.id", k.group().isBlank() ? "g_" + UUID.randomUUID() : k.group(),

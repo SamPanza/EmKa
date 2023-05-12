@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 interface ExtCtx {
     void beforeEach();
 
-    String b_servers();
+    EmKa emKa();
 
     static ExtCtx of(ExtensionContext ec) {
         final class Impl implements ExtCtx {
@@ -28,8 +28,8 @@ interface ExtCtx {
             }
 
             @Override
-            public String b_servers() {
-                return ec.getStore(NS).get("emKa", EmKa.class).bootstrapServers();
+            public EmKa emKa() {
+                return ec.getStore(NS).get("emKa", EmKa.class);
             }
         }
         return new Impl(ec);
