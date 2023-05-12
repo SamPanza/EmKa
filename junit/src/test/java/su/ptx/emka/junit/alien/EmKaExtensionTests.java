@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.BootstrapServers;
 import su.ptx.emka.junit.EmKaExtension;
 
 import java.util.HashSet;
@@ -18,17 +17,14 @@ import static java.lang.String.format;
 import static java.time.Duration.ofSeconds;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EmKaExtension.class)
 class EmKaExtensionTests {
     @Test
     void createTopics_send_subscribe_poll(
-            @BootstrapServers String b_servers,
             Admin admin,
             Producer<Integer, String> producer,
             Consumer<Integer, String> consumer) throws InterruptedException, ExecutionException {
-        assertTrue(b_servers.matches("localhost:\\d\\d\\d\\d+"));
         var topic = "Topeg";
         var numPartitions = 3;
         admin.createTopics(singleton(new NewTopic(topic, numPartitions, (short) 1))).all().get();
