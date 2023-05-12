@@ -29,13 +29,13 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
 final class ConsumerParameterResolver implements ParameterResolver {
-    @EkConsumer
+    @Konsumer
     private static final boolean b = true;
-    private static final EkConsumer EKC;
+    private static final Konsumer K;
 
     static {
         try {
-            EKC = ConsumerParameterResolver.class.getDeclaredField("b").getDeclaredAnnotation(EkConsumer.class);
+            K = ConsumerParameterResolver.class.getDeclaredField("b").getDeclaredAnnotation(Konsumer.class);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -43,20 +43,20 @@ final class ConsumerParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return pc.isAnnotated(EkConsumer.class) || Consumer.class.isAssignableFrom(pc.getParameter().getType());
+        return pc.isAnnotated(Konsumer.class) || Consumer.class.isAssignableFrom(pc.getParameter().getType());
     }
 
     @Override
     public Consumer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
         //TODO: To utilities
         var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
-        var ekc = pc.findAnnotation(EkConsumer.class).orElse(EKC);
+        var k = pc.findAnnotation(Konsumer.class).orElse(K);
         return new KafkaConsumer<>(Map.of(
                 "bootstrap.servers", V.b_servers.get(ec),
                 "key.deserializer", deserializers.get(atas[0]),
                 "value.deserializer", deserializers.get(atas[1]),
-                "group.id", ekc.group().isBlank() ? "g_" + UUID.randomUUID() : ekc.group(),
-                "auto.offset.reset", ekc.resetTo().name()));
+                "group.id", k.group().isBlank() ? "g_" + UUID.randomUUID() : k.group(),
+                "auto.offset.reset", k.resetTo().name()));
     }
 
     private static final Map<? extends Type, Class<? extends Deserializer<?>>> deserializers = ofEntries(

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 final class BootstrapServersParameterResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return pc.isAnnotated(EkBootstrapServers.class);
+        return pc.isAnnotated(BootstrapServers.class);
     }
 
     @Override

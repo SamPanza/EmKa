@@ -9,5 +9,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER})
-public @interface EkBootstrapServers {
+public @interface BootstrapServers {
 }

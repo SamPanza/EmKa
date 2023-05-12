@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.EkBootstrapServers;
+import su.ptx.emka.junit.BootstrapServers;
 import su.ptx.emka.junit.EmKaExtension;
 
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EmKaExtensionTests {
     @Test
     void createTopics_send_subscribe_poll(
-            @EkBootstrapServers String b_servers,
+            @BootstrapServers String b_servers,
             Admin admin,
             Producer<Integer, String> producer,
             Consumer<Integer, String> consumer) throws InterruptedException, ExecutionException {
