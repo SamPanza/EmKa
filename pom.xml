@@ -15,5 +15,6 @@
         <module>core</module>
         <module>junit</module>
         <module>app</module>
+        <module>report</module>
     </modules>
 </project>

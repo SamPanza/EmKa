@@ -22,6 +22,18 @@
             </dependency>
 
             <dependency>
+                <groupId>su.ptx.emka</groupId>
+                <artifactId>emka-junit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>su.ptx.emka</groupId>
+                <artifactId>emka-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka_2.13</artifactId>
                 <version>${kafka.version}</version>

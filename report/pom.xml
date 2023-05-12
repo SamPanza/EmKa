@@ -11,40 +11,21 @@
         <relativePath>../1-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>emka-core</artifactId>
+    <artifactId>emka-report</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.13</artifactId>
-        </dependency>
-
-        <!--FOR: org.apache.kafka.metadata.bootstrap.*-->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-metadata</artifactId>
-        </dependency>
-
-        <!--FOR: org.apache.kafka.server.common.MetadataVersion-->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-server-common</artifactId>
+            <groupId>su.ptx.emka</groupId>
+            <artifactId>emka-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <scope>compile</scope>
+            <groupId>su.ptx.emka</groupId>
+            <artifactId>emka-junit</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>su.ptx.emka</groupId>
+            <artifactId>emka-app</artifactId>
         </dependency>
     </dependencies>
 
@@ -55,11 +36,20 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>report-aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <skipIfEmpty>true</skipIfEmpty>
+                </configuration>
             </plugin>
         </plugins>
     </build>
