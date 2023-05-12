@@ -14,6 +14,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 // 2) annotate test method parameter
 // 3) non-default group
 // 4) non-default resetTo
+
+//TODO: subscribeTo
 public @interface Konsumer {
     String group() default "";
 
