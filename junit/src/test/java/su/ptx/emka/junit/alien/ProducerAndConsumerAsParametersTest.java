@@ -1,48 +1,44 @@
 package su.ptx.emka.junit.alien;
 
 import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EmKaExtension;
+import su.ptx.emka.junit.Konsumer;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.stream.IntStream;
+import java.util.HashSet;
+import java.util.Set;
 
-import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static su.ptx.emka.junit.alien.U.startThreadAndWaitFor;
 
 class ProducerAndConsumerAsParametersTest {
+    private static final String TOPIC = "1";
+
     @Test
     @ExtendWith(EmKaExtension.class)
     @DisplayName("produce & consume")
-    void test(Producer<Integer, Integer> p, Consumer<Integer, Integer> c) throws InterruptedException {
+    void test(Producer<Integer, Integer> p,
+              @Konsumer(subsribeTo = TOPIC) Consumer<Integer, Integer> c) throws InterruptedException {
         assertNotNull(p);
         assertNotNull(c);
-        var t = "1";
-        var sent = IntStream.rangeClosed(1, 5).boxed().collect(toUnmodifiableSet());
+        var sent = Set.of(1, 2, 3, 4, 5);
         sent.stream()
-                .map(v -> new ProducerRecord<Integer, Integer>(t, v))
+                .map(v -> new ProducerRecord<Integer, Integer>(TOPIC, v))
                 .forEach(p::send);
-        Collection<ConsumerRecord<Integer, Integer>> received = new ArrayBlockingQueue<>(sent.size());
+        Set<Integer> received = new HashSet<>();
         startThreadAndWaitFor(() -> {
-            c.subscribe(singleton(t));
             do {
                 for (var cr : c.poll(Duration.ofSeconds(1))) {
-                    received.add(cr);
+                    received.add(cr.value());
                 }
             } while (received.size() < sent.size());
         }, 10_000);
-        assertEquals(
-                sent,
-                received.stream().map(ConsumerRecord::value).collect(toUnmodifiableSet()));
+        assertEquals(sent, received);
     }
 }

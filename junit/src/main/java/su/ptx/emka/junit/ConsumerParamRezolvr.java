@@ -18,7 +18,9 @@ import org.apache.kafka.common.utils.Bytes;
 
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Map.entry;
@@ -46,12 +48,18 @@ final class ConsumerParamRezolvr implements ParamRezolvr {
     public Object resolve(ParamCtx pc, ExtCtx ec) {
         var k = pc.find(Konsumer.class).orElse(K);
         var typeArgs = pc.typeArgs();
-        return new KafkaConsumer<>(Map.of(
+        var c = new KafkaConsumer<>(Map.of(
                 "bootstrap.servers", ec.b_servers(),
                 "key.deserializer", deserializers.get(typeArgs[0]),
                 "value.deserializer", deserializers.get(typeArgs[1]),
                 "group.id", k.group().isBlank() ? "g_" + UUID.randomUUID() : k.group(),
                 "auto.offset.reset", k.resetTo().name()));
+        Optional.of(k)
+                .map(Konsumer::subsribeTo)
+                .filter(t -> !t.isEmpty())
+                .map(Collections::singleton)
+                .ifPresent(c::subscribe);
+        return c;
     }
 
     private static final Map<? extends Type, Class<? extends Deserializer<?>>> deserializers = ofEntries(
