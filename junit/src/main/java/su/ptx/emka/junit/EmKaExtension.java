@@ -4,17 +4,11 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import su.ptx.emka.core.EmKa;
 
-import static org.junit.platform.commons.support.HierarchyTraversalMode.BOTTOM_UP;
-import static org.junit.platform.commons.support.ModifierSupport.isNotFinal;
-import static org.junit.platform.commons.support.ModifierSupport.isNotStatic;
-import static org.junit.platform.commons.support.ReflectionSupport.findFields;
-
-public final class EmKaExtension implements BeforeEachCallback, ParameterResolver, TestInstancePostProcessor {
+public final class EmKaExtension implements BeforeEachCallback, ParameterResolver/*, TestInstancePostProcessor*/ {
     private final ParameterResolver pr;
-    private final FieldResolver[] frs;
+    //private final FieldResolver[] frs;
 
     public EmKaExtension() {
         pr = new DelegatingParamRezolvr(
@@ -22,7 +16,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
                 new AdminParamRezolvr(),
                 new ProducerParamRezolvr(),
                 new ConsumerParamRezolvr());
-        frs = new FieldResolver[]{};
+        //frs = new FieldResolver[]{};
     }
 
     @Override
@@ -44,7 +38,7 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
         return V.acs.get(ec).pass(pr.resolveParameter(pc, ec));
     }
 
-    @Override
+    /*@Override
     public void postProcessTestInstance(Object instance, ExtensionContext ec) {
         var fcs = findFields(instance.getClass(), f -> isNotStatic(f) && isNotFinal(f), BOTTOM_UP).stream()
                 .map(f -> new FieldContext(f, instance))
@@ -57,5 +51,5 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
                 }
             }
         }
-    }
+    }*/
 }
