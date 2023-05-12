@@ -2,7 +2,7 @@ package su.ptx.emka.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-//TODO: Move V functionality here
+//TODO: Move V & Acs functionality here
 interface ExtCtx {
     String b_servers();
 

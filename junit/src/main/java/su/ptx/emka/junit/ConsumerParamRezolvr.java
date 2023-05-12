@@ -15,11 +15,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.utils.Bytes;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -28,33 +24,32 @@ import java.util.UUID;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-final class ConsumerParameterResolver implements ParameterResolver {
+final class ConsumerParamRezolvr implements ParamRezolvr {
     @Konsumer
-    private static final boolean b = true;
+    private static final boolean _k = true;
     private static final Konsumer K;
 
     static {
         try {
-            K = ConsumerParameterResolver.class.getDeclaredField("b").getDeclaredAnnotation(Konsumer.class);
+            K = ConsumerParamRezolvr.class.getDeclaredField("_k").getDeclaredAnnotation(Konsumer.class);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return pc.isAnnotated(Konsumer.class) || Consumer.class.isAssignableFrom(pc.getParameter().getType());
+    public boolean supports(ParamCtx pc) {
+        return pc.annotatedWith(Konsumer.class) || pc.assignableTo(Consumer.class);
     }
 
     @Override
-    public Consumer<?, ?> resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        //TODO: To utilities
-        var atas = ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
-        var k = pc.findAnnotation(Konsumer.class).orElse(K);
+    public Object resolve(ParamCtx pc, ExtCtx ec) {
+        var k = pc.find(Konsumer.class).orElse(K);
+        var typeArgs = pc.typeArgs();
         return new KafkaConsumer<>(Map.of(
-                "bootstrap.servers", V.b_servers.get(ec),
-                "key.deserializer", deserializers.get(atas[0]),
-                "value.deserializer", deserializers.get(atas[1]),
+                "bootstrap.servers", ec.b_servers(),
+                "key.deserializer", deserializers.get(typeArgs[0]),
+                "value.deserializer", deserializers.get(typeArgs[1]),
                 "group.id", k.group().isBlank() ? "g_" + UUID.randomUUID() : k.group(),
                 "auto.offset.reset", k.resetTo().name()));
     }
