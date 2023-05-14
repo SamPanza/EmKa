@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-interface ParamCtx {
+interface Target {
     boolean assignableTo(Class<?> c);
 
     boolean annotatedWith(Class<? extends Annotation> ac);
@@ -16,8 +16,8 @@ interface ParamCtx {
 
     Type[] typeArgs();
 
-    static ParamCtx of(ParameterContext pc) {
-        final class Impl implements ParamCtx {
+    static Target of(ParameterContext pc) {
+        final class Impl implements Target {
             private final ParameterContext pc;
 
             private Impl(ParameterContext pc) {

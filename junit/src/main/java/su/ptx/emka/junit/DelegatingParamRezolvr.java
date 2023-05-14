@@ -24,11 +24,11 @@ final class DelegatingParamRezolvr implements ParameterResolver {
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         //NB: or else throw?
         return firstRezolvrSupporting(pc)
-                .map(r -> r.resolve(ParamCtx.of(pc), ExtCtx.of(ec).b_servers()))
+                .map(r -> r.resolve(Target.of(pc), ExtCtx.of(ec).b_servers()))
                 .orElse(null);
     }
 
     private Optional<ParamRezolvr> firstRezolvrSupporting(ParameterContext pc) {
-        return stream(rezolvrs).filter(r -> r.supports(ParamCtx.of(pc))).findFirst();
+        return stream(rezolvrs).filter(r -> r.supports(Target.of(pc))).findFirst();
     }
 }

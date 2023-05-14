@@ -1,7 +1,7 @@
 package su.ptx.emka.junit;
 
 interface ParamRezolvr {
-    boolean supports(ParamCtx pc);
+    boolean supports(Target pc);
 
-    Object resolve(ParamCtx pc, String b_servers);
+    Object resolve(Target pc, String b_servers);
 }

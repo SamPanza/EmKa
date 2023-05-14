@@ -26,12 +26,12 @@ import static java.util.Map.ofEntries;
 
 final class ProducerParamRezolvr implements ParamRezolvr {
     @Override
-    public boolean supports(ParamCtx pc) {
+    public boolean supports(Target pc) {
         return pc.assignableTo(Producer.class);
     }
 
     @Override
-    public Object resolve(ParamCtx pc, String b_servers) {
+    public Object resolve(Target pc, String b_servers) {
         var typeArgs = pc.typeArgs();
         return new KafkaProducer<>(Map.of(
                 "bootstrap.servers", b_servers,

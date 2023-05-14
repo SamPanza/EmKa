@@ -40,12 +40,12 @@ final class ConsumerParamRezolvr implements ParamRezolvr {
     }
 
     @Override
-    public boolean supports(ParamCtx pc) {
+    public boolean supports(Target pc) {
         return pc.annotatedWith(Konsumer.class) || pc.assignableTo(Consumer.class);
     }
 
     @Override
-    public Object resolve(ParamCtx pc, String b_servers) {
+    public Object resolve(Target pc, String b_servers) {
         var k = pc.find(Konsumer.class).orElse(K);
         var typeArgs = pc.typeArgs();
         var c = new KafkaConsumer<>(Map.of(
