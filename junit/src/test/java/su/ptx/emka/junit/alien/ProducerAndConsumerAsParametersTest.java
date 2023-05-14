@@ -9,10 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import su.ptx.emka.junit.EmKaExtension;
 import su.ptx.emka.junit.Konsumer;
 
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static su.ptx.emka.junit.alien.U.startThreadAndWaitFor;
@@ -34,7 +34,7 @@ class ProducerAndConsumerAsParametersTest {
         Set<Integer> received = new HashSet<>();
         startThreadAndWaitFor(() -> {
             do {
-                for (var cr : c.poll(Duration.ofSeconds(1))) {
+                for (var cr : c.poll(ofSeconds(1))) {
                     received.add(cr.value());
                 }
             } while (received.size() < sent.size());
