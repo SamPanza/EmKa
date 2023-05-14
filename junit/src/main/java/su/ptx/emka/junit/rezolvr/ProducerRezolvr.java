@@ -1,4 +1,4 @@
-package su.ptx.emka.junit;
+package su.ptx.emka.junit.rezolvr;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.apache.kafka.common.utils.Bytes;
+import su.ptx.emka.junit.target.Target;
 
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
@@ -24,15 +25,15 @@ import java.util.UUID;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-final class ProducerParamRezolvr implements ParamRezolvr {
+final class ProducerRezolvr implements Rezolvr<Producer<?, ?>> {
     @Override
-    public boolean supports(Target pc) {
-        return pc.assignableTo(Producer.class);
+    public boolean test(Target t) {
+        return t.assignableTo(Producer.class);
     }
 
     @Override
-    public Object resolve(Target pc, String b_servers) {
-        var typeArgs = pc.typeArgs();
+    public Producer<?, ?> apply(Target t, String b_servers) {
+        var typeArgs = t.typeArgs();
         return new KafkaProducer<>(Map.of(
                 "bootstrap.servers", b_servers,
                 "key.serializer", serializers.get(typeArgs[0]),

@@ -15,7 +15,7 @@ import java.util.Set;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ProducerAndConsumerAsParametersTest {
+class ClientsAsParametersTest {
     private static final String topic = "1";
 
     @Test

@@ -1,4 +1,4 @@
-package su.ptx.emka.junit;
+package su.ptx.emka.junit.rezolvr;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -15,6 +15,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.utils.Bytes;
+import su.ptx.emka.junit.Konsumer;
+import su.ptx.emka.junit.target.Target;
 
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
@@ -26,26 +28,26 @@ import java.util.UUID;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-final class ConsumerParamRezolvr implements ParamRezolvr {
+final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
     @Konsumer
     private static final boolean _k = true;
     private static final Konsumer K;
 
     static {
         try {
-            K = ConsumerParamRezolvr.class.getDeclaredField("_k").getDeclaredAnnotation(Konsumer.class);
+            K = ConsumerRezolvr.class.getDeclaredField("_k").getDeclaredAnnotation(Konsumer.class);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean supports(Target pc) {
-        return pc.annotatedWith(Konsumer.class) || pc.assignableTo(Consumer.class);
+    public boolean test(Target t) {
+        return t.annotatedWith(Konsumer.class) || t.assignableTo(Consumer.class);
     }
 
     @Override
-    public Object resolve(Target pc, String b_servers) {
+    public Consumer<?, ?> apply(Target pc, String b_servers) {
         var k = pc.find(Konsumer.class).orElse(K);
         var typeArgs = pc.typeArgs();
         var c = new KafkaConsumer<>(Map.of(
