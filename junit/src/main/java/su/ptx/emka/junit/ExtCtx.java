@@ -1,13 +1,13 @@
 package su.ptx.emka.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import su.ptx.emka.core.EmKa;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static java.util.Optional.ofNullable;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 interface ExtCtx {
     <T> T count(T o);
@@ -15,56 +15,46 @@ interface ExtCtx {
     String b_servers();
 
     static ExtCtx of(ExtensionContext ec) {
-        final class Impl implements ExtCtx {
-            private static final ExtensionContext.Namespace NS = create("su.ptx.emka");
-            private final ExtensionContext ec;
+        final class KeptAutoCloseables implements Store.CloseableResource {
+            private final Queue<AutoCloseable> kacs = new LinkedBlockingQueue<>();
 
-            private Impl(ExtensionContext ec) {
-                this.ec = ec;
+            private <T> T keep(T o) {
+                if (o instanceof AutoCloseable ac) {
+                    kacs.add(ac);
+                }
+                return o;
+            }
+
+            Object head() {
+                return kacs.element();
             }
 
             @Override
-            public <T> T count(T o) {
-                return ofNullable(ec.getStore(NS).get("toClose", ToClose.class))
-                        .orElseGet(() -> {
-                            var toClose = new ToClose();
-                            ec.getStore(NS).put("toClose", toClose);
-                            return toClose;
-                        })
-                        .add(o);
-            }
-
-            @Override
-            public String b_servers() {
-                return ((EmKa) ec.getStore(NS).get("toClose", ToClose.class).head()).bootstrapServers();
-            }
-
-            private static final class ToClose implements ExtensionContext.Store.CloseableResource {
-                private final Queue<AutoCloseable> acs = new LinkedBlockingQueue<>();
-
-                private <T> T add(T o) {
-                    if (o instanceof AutoCloseable ac) {
-                        acs.add(ac);
-                    }
-                    return o;
-                }
-
-                Object head() {
-                    return acs.element();
-                }
-
-                @Override
-                public void close() {
-                    while (!acs.isEmpty()) {
-                        try {
-                            acs.remove().close();
-                        } catch (Exception e) {
-                            //NB: Silence?
-                        }
+            public void close() {
+                while (!kacs.isEmpty()) {
+                    try {
+                        kacs.remove().close();
+                    } catch (Exception e) {
+                        //TODO: log warn
                     }
                 }
             }
         }
-        return new Impl(ec);
+        var store = ec.getStore(GLOBAL);
+        return new ExtCtx() {
+            @Override
+            public <T> T count(T o) {
+                return kacs().keep(o);
+            }
+
+            @Override
+            public String b_servers() {
+                return ((EmKa) kacs().head()).bootstrapServers();
+            }
+
+            KeptAutoCloseables kacs() {
+                return store.getOrComputeIfAbsent(KeptAutoCloseables.class);
+            }
+        };
     }
 }

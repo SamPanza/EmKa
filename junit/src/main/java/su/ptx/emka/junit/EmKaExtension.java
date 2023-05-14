@@ -6,9 +6,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import su.ptx.emka.core.EmKa;
 
-public final class EmKaExtension implements BeforeEachCallback, ParameterResolver/*, TestInstancePostProcessor*/ {
+public final class EmKaExtension implements BeforeEachCallback, ParameterResolver {
     private final ParameterResolver pr;
-    //private final FieldResolver[] frs;
 
     public EmKaExtension() {
         pr = new DelegatingParamRezolvr(
@@ -16,13 +15,11 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
                 new AdminParamRezolvr(),
                 new ProducerParamRezolvr(),
                 new ConsumerParamRezolvr());
-        //frs = new FieldResolver[]{};
     }
 
     @Override
     public void beforeEach(ExtensionContext ec) {
-        //noinspection resource
-        ExtCtx.of(ec).count(EmKa.create().start());
+        ExtCtx.of(ec).count(EmKa.create()).start();
     }
 
     @Override
@@ -34,19 +31,4 @@ public final class EmKaExtension implements BeforeEachCallback, ParameterResolve
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         return ExtCtx.of(ec).count(pr.resolveParameter(pc, ec));
     }
-
-    /*@Override
-    public void postProcessTestInstance(Object instance, ExtensionContext ec) {
-        var fcs = findFields(instance.getClass(), f -> isNotStatic(f) && isNotFinal(f), BOTTOM_UP).stream()
-                .map(f -> new FieldContext(f, instance))
-                .filter(fc -> fc.get() == null)
-                .toArray(FieldContext[]::new);
-        for (var fr : frs) {
-            for (var fc : fcs) {
-                if (fr.supports(fc, ec)) {
-                    fc.set(fr.resolve(fc, ec));
-                }
-            }
-        }
-    }*/
 }
