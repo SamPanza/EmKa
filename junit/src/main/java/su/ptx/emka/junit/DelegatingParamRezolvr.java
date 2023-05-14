@@ -23,7 +23,9 @@ final class DelegatingParamRezolvr implements ParameterResolver {
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
         //NB: or else throw?
-        return firstRezolvrSupporting(pc).map(r -> r.resolve(ParamCtx.of(pc), ExtCtx.of(ec))).orElse(null);
+        return firstRezolvrSupporting(pc)
+                .map(r -> r.resolve(ParamCtx.of(pc), ExtCtx.of(ec).b_servers()))
+                .orElse(null);
     }
 
     private Optional<ParamRezolvr> firstRezolvrSupporting(ParameterContext pc) {

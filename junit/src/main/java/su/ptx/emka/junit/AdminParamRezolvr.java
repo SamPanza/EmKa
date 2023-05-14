@@ -11,8 +11,8 @@ final class AdminParamRezolvr implements ParamRezolvr {
     }
 
     @Override
-    public Object resolve(ParamCtx pc, ExtCtx ec) {
+    public Object resolve(ParamCtx pc, String b_servers) {
         return Admin.create(Map.of(
-                "bootstrap.servers", ec.b_servers()));
+                "bootstrap.servers", b_servers));
     }
 }

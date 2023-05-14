@@ -31,10 +31,10 @@ final class ProducerParamRezolvr implements ParamRezolvr {
     }
 
     @Override
-    public Object resolve(ParamCtx pc, ExtCtx ec) {
+    public Object resolve(ParamCtx pc, String b_servers) {
         var typeArgs = pc.typeArgs();
         return new KafkaProducer<>(Map.of(
-                "bootstrap.servers", ec.b_servers(),
+                "bootstrap.servers", b_servers,
                 "key.serializer", serializers.get(typeArgs[0]),
                 "value.serializer", serializers.get(typeArgs[1])));
     }

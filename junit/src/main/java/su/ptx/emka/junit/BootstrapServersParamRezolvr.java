@@ -7,7 +7,7 @@ final class BootstrapServersParamRezolvr implements ParamRezolvr {
     }
 
     @Override
-    public String resolve(ParamCtx pc, ExtCtx ec) {
-        return ec.b_servers();
+    public String resolve(ParamCtx pc, String b_servers) {
+        return b_servers;
     }
 }
