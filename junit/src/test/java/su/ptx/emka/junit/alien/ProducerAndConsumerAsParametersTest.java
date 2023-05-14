@@ -14,31 +14,29 @@ import java.util.Set;
 
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static su.ptx.emka.junit.alien.U.startThreadAndWaitFor;
 
 class ProducerAndConsumerAsParametersTest {
-    private static final String TOPIC = "1";
+    private static final String topic = "1";
 
     @Test
     @ExtendWith(EmKaExtension.class)
-    @DisplayName("produce & consume")
+    @DisplayName("consume & produce")
     void test(Producer<Integer, Integer> p,
-              @Konsumer(subsribeTo = TOPIC) Consumer<Integer, Integer> c) throws InterruptedException {
-        assertNotNull(p);
-        assertNotNull(c);
+              @Konsumer(subsribeTo = topic) Consumer<Integer, Integer> c) throws InterruptedException {
         var sent = Set.of(1, 2, 3, 4, 5);
-        sent.stream()
-                .map(v -> new ProducerRecord<Integer, Integer>(TOPIC, v))
-                .forEach(p::send);
         Set<Integer> received = new HashSet<>();
-        startThreadAndWaitFor(() -> {
+        var poll = new Thread(() -> {
             do {
                 for (var cr : c.poll(ofSeconds(1))) {
                     received.add(cr.value());
                 }
             } while (received.size() < sent.size());
-        }, 10_000);
+        });
+        poll.start();
+        sent.stream()
+                .map(v -> new ProducerRecord<Integer, Integer>(topic, v))
+                .forEach(p::send);
+        poll.join(10_000);
         assertEquals(sent, received);
     }
 }
