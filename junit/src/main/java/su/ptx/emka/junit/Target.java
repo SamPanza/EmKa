@@ -17,13 +17,7 @@ interface Target {
     Type[] typeArgs();
 
     static Target of(ParameterContext pc) {
-        final class Impl implements Target {
-            private final ParameterContext pc;
-
-            private Impl(ParameterContext pc) {
-                this.pc = pc;
-            }
-
+        return new Target() {
             @Override
             public boolean assignableTo(Class<?> c) {
                 return c.isAssignableFrom(pc.getParameter().getType());
@@ -43,7 +37,6 @@ interface Target {
             public Type[] typeArgs() {
                 return ((ParameterizedType) pc.getParameter().getParameterizedType()).getActualTypeArguments();
             }
-        }
-        return new Impl(pc);
+        };
     }
 }
