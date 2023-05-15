@@ -9,11 +9,14 @@ import su.ptx.emka.junit.EmKaExtension;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BootstrapServersAsParameterTest {
+@ExtendWith(EmKaExtension.class)
+class BserversAsFieldTest {
+    @BootstrapServers
+    private String b_servers;
+
     @Test
-    @ExtendWith(EmKaExtension.class)
-    @DisplayName("IF EmKa started THEN b_servers OK")
-    void test(@BootstrapServers String b_servers) {
+    @DisplayName("IF EmKaExtension is on test class THEN b_servers field is OK")
+    void test() {
         assertNotNull(b_servers);
         assertTrue(b_servers.matches("localhost:\\d{4,}"));
     }
