@@ -2,7 +2,7 @@ package su.ptx.emka.junit.ctx;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import su.ptx.emka.core.EmKa;
+import su.ptx.emka.core.EmKaServer;
 
 import java.util.function.Supplier;
 
@@ -25,7 +25,7 @@ final class EmKaCtx implements Ctx {
     public String b_servers() {
         return stor.get().getOrComputeIfAbsent(
                 "b_servers",
-                k -> pass(EmKa.create()).start().bootstrapServers(),
+                k -> pass(EmKaServer.create()).start().bootstrapServers(),
                 String.class);
     }
 }
