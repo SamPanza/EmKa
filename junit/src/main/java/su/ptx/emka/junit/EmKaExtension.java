@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import su.ptx.emka.core.EmKa;
+import su.ptx.emka.junit.rezolvr.Rezolvrs;
 import su.ptx.emka.junit.target.Target;
 
 import java.util.Queue;
@@ -14,44 +15,34 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.junit.platform.commons.support.HierarchyTraversalMode.BOTTOM_UP;
-import static org.junit.platform.commons.support.ModifierSupport.isNotFinal;
-import static org.junit.platform.commons.support.ModifierSupport.isNotStatic;
 import static org.junit.platform.commons.support.ReflectionSupport.findFields;
-import static su.ptx.emka.junit.rezolvr.Rezolvrs.rezolvrs;
 
 public final class EmKaExtension implements ParameterResolver, TestInstancePostProcessor {
+    private final Rezolvrs r = new Rezolvrs();
+
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        var t = Target.of(pc.getParameter());
-        return rezolvrs().anyMatch(r -> r.test(t));
+        return r.test(Target.of(pc.getParameter()));
     }
 
     @Override
     public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        var t = Target.of(pc.getParameter());
         var c = Ec.of(ec);
-        return rezolvrs()
-                .filter(r -> r.test(t))
-                .map(r -> r.apply(t, c.b_servers()))
-                .map(c::pass)
-                .findFirst()
-                .orElseThrow();
+        return r.apply(Target.of(pc.getParameter()), c.b_servers()).map(c::pass).orElseThrow();
     }
 
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext ec) {
         var c = Ec.of(ec);
-        for (var f : findFields(
-                testInstance.getClass(),
-                f -> isNotStatic(f) && isNotFinal(f) && new InstanceField(testInstance, f).get() == null,
-                BOTTOM_UP)) {
-            var t = Target.of(f);
-            rezolvrs()
-                    .filter(r -> r.test(t))
-                    .map(r -> r.apply(t, c.b_servers()))
-                    .map(c::pass)
-                    .findFirst()
-                    .ifPresent(new InstanceField(testInstance, f));
+        for (var f : findFields(testInstance.getClass(), f -> true, BOTTOM_UP)) {
+            r.apply(Target.of(f), c.b_servers()).map(c::pass).ifPresent(v -> {
+                f.setAccessible(true);
+                try {
+                    f.set(testInstance, v);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
