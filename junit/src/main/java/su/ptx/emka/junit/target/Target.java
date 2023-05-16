@@ -15,11 +15,11 @@ public interface Target {
 
     Type[] typeArgs();
 
-    static Target of(Parameter p) {
+    static Target ofParameter(Parameter p) {
         return new PTarget(p);
     }
 
-    static Target of(Field f) {
+    static Target ofField(Field f) {
         return new FTarget(f);
     }
 }

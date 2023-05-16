@@ -7,7 +7,7 @@ public interface Ctx {
 
     String b_servers();
 
-    static Ctx of(ExtensionContext ec) {
+    static Ctx ofExtensionContext(ExtensionContext ec) {
         return new EmKaCtx(ec);
     }
 }

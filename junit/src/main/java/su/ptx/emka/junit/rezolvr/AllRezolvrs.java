@@ -6,10 +6,11 @@ import su.ptx.emka.junit.target.Target;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public final class Rezolvrs implements Rezolvr<Optional<?>> {
+import static su.ptx.emka.junit.rezolvr.Rezolvr.rezolv;
+import static su.ptx.emka.junit.rezolvr.Rezolvr.supports;
+
+public final class AllRezolvrs implements Rezolvr<Optional<?>> {
     private final Collection<Rezolvr<?>> rezolvrs = List.of(
             new BootstrapServersRezolvr(),
             new AdminRezolvr(),
@@ -31,11 +32,4 @@ public final class Rezolvrs implements Rezolvr<Optional<?>> {
                 .map(c::pass);
     }
 
-    private static Predicate<Rezolvr<?>> supports(Target t) {
-        return r -> r.test(t);
-    }
-
-    private static Function<Rezolvr<?>, ?> rezolv(Target t, Ctx c) {
-        return r -> r.apply(t, c);
-    }
 }
