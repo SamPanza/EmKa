@@ -1,6 +1,7 @@
 package su.ptx.emka.junit.rezolvr;
 
 import org.apache.kafka.clients.admin.Admin;
+import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 import java.util.Map;
@@ -12,8 +13,8 @@ final class AdminRezolvr implements Rezolvr<Admin> {
     }
 
     @Override
-    public Admin apply(Target t, String b_servers) {
+    public Admin apply(Target t, Ctx c) {
         return Admin.create(Map.of(
-                "bootstrap.servers", b_servers));
+                "bootstrap.servers", c.b_servers()));
     }
 }

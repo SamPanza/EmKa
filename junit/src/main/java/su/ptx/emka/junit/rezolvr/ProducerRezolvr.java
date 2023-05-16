@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.apache.kafka.common.utils.Bytes;
+import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 import java.lang.reflect.Type;
@@ -32,10 +33,10 @@ final class ProducerRezolvr implements Rezolvr<Producer<?, ?>> {
     }
 
     @Override
-    public Producer<?, ?> apply(Target t, String b_servers) {
+    public Producer<?, ?> apply(Target t, Ctx c) {
         var typeArgs = t.typeArgs();
         return new KafkaProducer<>(Map.of(
-                "bootstrap.servers", b_servers,
+                "bootstrap.servers", c.b_servers(),
                 "key.serializer", serializers.get(typeArgs[0]),
                 "value.serializer", serializers.get(typeArgs[1])));
     }

@@ -16,6 +16,7 @@ import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.utils.Bytes;
 import su.ptx.emka.junit.Konsumer;
+import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 import java.lang.reflect.Type;
@@ -30,12 +31,12 @@ import static java.util.Map.ofEntries;
 
 final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
     @Konsumer
-    private static final boolean _k = true;
-    private static final Konsumer K;
+    private static final boolean x = true;
+    private static final Konsumer A;
 
     static {
         try {
-            K = ConsumerRezolvr.class.getDeclaredField("_k").getDeclaredAnnotation(Konsumer.class);
+            A = ConsumerRezolvr.class.getDeclaredField("x").getDeclaredAnnotation(Konsumer.class);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -47,21 +48,21 @@ final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
     }
 
     @Override
-    public Consumer<?, ?> apply(Target pc, String b_servers) {
-        var k = pc.find(Konsumer.class).orElse(K);
+    public Consumer<?, ?> apply(Target pc, Ctx c) {
+        var a = pc.find(Konsumer.class).orElse(A);
         var typeArgs = pc.typeArgs();
-        var c = new KafkaConsumer<>(Map.of(
-                "bootstrap.servers", b_servers,
+        var kc = new KafkaConsumer<>(Map.of(
+                "bootstrap.servers", c.b_servers(),
                 "key.deserializer", deserializers.get(typeArgs[0]),
                 "value.deserializer", deserializers.get(typeArgs[1]),
-                "group.id", k.group().isBlank() ? "g_" + UUID.randomUUID() : k.group(),
-                "auto.offset.reset", k.resetTo().name()));
-        Optional.of(k)
+                "group.id", a.group().isBlank() ? "g_" + UUID.randomUUID() : a.group(),
+                "auto.offset.reset", a.resetTo().name()));
+        Optional.of(a)
                 .map(Konsumer::subsribeTo)
                 .filter(t -> !t.isEmpty())
                 .map(Collections::singleton)
-                .ifPresent(c::subscribe);
-        return c;
+                .ifPresent(kc::subscribe);
+        return kc;
     }
 
     private static final Map<? extends Type, Class<? extends Deserializer<?>>> deserializers = ofEntries(
