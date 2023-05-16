@@ -15,7 +15,7 @@ import java.util.Set;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ClientsAsParametersTest {
+class ClientsAsParamsTest {
     private static final String topic = "1";
 
     @Test
@@ -27,7 +27,7 @@ class ClientsAsParametersTest {
         Set<Integer> received = new HashSet<>();
         var poll = new Thread(() -> {
             do {
-                for (var cr : c.poll(ofSeconds(1))) {
+                for (var cr : c.poll(ofSeconds(5))) {
                     received.add(cr.value());
                 }
             } while (received.size() < sent.size());

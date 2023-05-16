@@ -1,6 +1,7 @@
 package su.ptx.emka.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
@@ -14,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.junit.platform.commons.support.HierarchyTraversalMode.BOTTOM_UP;
 import static org.junit.platform.commons.support.ModifierSupport.isNotFinal;
 import static org.junit.platform.commons.support.ModifierSupport.isNotStatic;
@@ -35,7 +36,7 @@ public final class EmKaExtension implements ParameterResolver, TestInstancePostP
         return rezolvrs()
                 .filter(r -> r.test(t))
                 .map(r -> r.apply(t, c.b_servers()))
-                .map(c::count)
+                .map(c::pass)
                 .findFirst()
                 .orElseThrow();
     }
@@ -43,7 +44,6 @@ public final class EmKaExtension implements ParameterResolver, TestInstancePostP
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext ec) {
         var c = Ec.of(ec);
-        c.count(EmKa.create()).start();
         Function<Field, ?> get = f -> {
             try {
                 f.setAccessible(true);
@@ -67,57 +67,58 @@ public final class EmKaExtension implements ParameterResolver, TestInstancePostP
             rezolvrs()
                     .filter(r -> r.test(t))
                     .map(r -> r.apply(t, c.b_servers()))
-                    .map(c::count)
+                    .map(c::pass)
                     .findFirst()
                     .ifPresent(v -> set.accept(f, v));
         }
     }
 
     private interface Ec {
-        <T> T count(T o);
+        <T> T pass(T o);
 
         String b_servers();
 
         static Ec of(ExtensionContext ec) {
-            final class Kacs implements CloseableResource {
-                private final Queue<AutoCloseable> kacs = new LinkedBlockingQueue<>();
+            final class Acs implements CloseableResource {
+                private final Queue<AutoCloseable> acs = new LinkedBlockingQueue<>();
 
-                private <T> T keep(T o) {
+                private <T> T pass(T o) {
+                    if (o instanceof EmKa) {
+                        System.err.println("EmKa passed");
+                    }
                     if (o instanceof AutoCloseable ac) {
-                        kacs.add(ac);
+                        acs.add(ac);
                     }
                     return o;
                 }
 
-                Object head() {
-                    return kacs.element();
-                }
-
                 @Override
                 public void close() {
-                    while (!kacs.isEmpty()) {
+                    while (!acs.isEmpty()) {
                         try {
-                            kacs.remove().close();
+                            acs.remove().close();
                         } catch (Exception e) {
                             //TODO: log warn
                         }
                     }
+                    System.err.println("Acs closed");
                 }
             }
-            var store = ec.getStore(GLOBAL);
             return new Ec() {
+                private static final Namespace NS = create("su.ptx.emka");
+
                 @Override
-                public <T> T count(T o) {
-                    return kacs().keep(o);
+                public <T> T pass(T o) {
+                    return ec.getStore(NS).getOrComputeIfAbsent(Acs.class).pass(o);
                 }
 
                 @Override
-                public String b_servers() {
-                    return ((EmKa) kacs().head()).bootstrapServers();
-                }
+                public synchronized String b_servers() {
+                    return ec.getStore(NS).getOrComputeIfAbsent(
+                            "b_servers",
+                            k -> pass(EmKa.create()).start().bootstrapServers(),
+                            String.class);
 
-                Kacs kacs() {
-                    return store.getOrComputeIfAbsent(Kacs.class);
                 }
             };
         }

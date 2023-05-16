@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class AdminAsParameterTest {
+class AdminAsParamTest {
     @Test
     @ExtendWith(EmKaExtension.class)
     @DisplayName("Admin describes cluster")
