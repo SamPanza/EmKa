@@ -1,3 +1,5 @@
+[![Hits-of-Code](https://hitsofcode.com/github/SamPanza/EmKa?branch=main)](https://hitsofcode.com/github/SamPanza/EmKa/view?branch=main)
+
 First, **EmKa** is a
 [JUnit 5](https://junit.org/junit5/) [extension](https://junit.org/junit5/docs/current/user-guide/#extensions)
 that automatically starts / stops a single-broker [Kafka](https://kafka.apache.org/) server on arbitrarily available ports
