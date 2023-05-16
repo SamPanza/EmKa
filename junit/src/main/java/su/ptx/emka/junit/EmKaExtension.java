@@ -9,11 +9,8 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import su.ptx.emka.core.EmKa;
 import su.ptx.emka.junit.target.Target;
 
-import java.lang.reflect.Field;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.junit.platform.commons.support.HierarchyTraversalMode.BOTTOM_UP;
@@ -44,24 +41,9 @@ public final class EmKaExtension implements ParameterResolver, TestInstancePostP
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext ec) {
         var c = Ec.of(ec);
-        Function<Field, ?> get = f -> {
-            try {
-                f.setAccessible(true);
-                return f.get(testInstance);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        BiConsumer<Field, Object> set = (f, v) -> {
-            try {
-                f.set(testInstance, v);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        };
         for (var f : findFields(
                 testInstance.getClass(),
-                f -> isNotStatic(f) && isNotFinal(f) && get.apply(f) == null,
+                f -> isNotStatic(f) && isNotFinal(f) && new InstanceField(testInstance, f).get() == null,
                 BOTTOM_UP)) {
             var t = Target.of(f);
             rezolvrs()
@@ -69,7 +51,7 @@ public final class EmKaExtension implements ParameterResolver, TestInstancePostP
                     .map(r -> r.apply(t, c.b_servers()))
                     .map(c::pass)
                     .findFirst()
-                    .ifPresent(v -> set.accept(f, v));
+                    .ifPresent(new InstanceField(testInstance, f));
         }
     }
 
