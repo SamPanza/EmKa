@@ -1,4 +1,4 @@
-name: mvn verify
+name: build
 on:
   push:
     branches: [ "main" ]
@@ -15,5 +15,5 @@ jobs:
         java-version: '20'
         distribution: 'liberica'
         cache: maven
-    - name: mvn verify
+    - name: build
       run: mvn --batch-mode verify
