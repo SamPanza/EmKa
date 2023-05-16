@@ -12,7 +12,7 @@ import static su.ptx.emka.junit.ctx.Ctx.ofExtensionContext;
 import static su.ptx.emka.junit.target.Target.ofField;
 import static su.ptx.emka.junit.target.Target.ofParameter;
 
-public final class EmKaExtension implements ParameterResolver, TestInstancePostProcessor {
+final class EmKaExtension implements ParameterResolver, TestInstancePostProcessor {
     private final AllRezolvrs allRezolvrs = new AllRezolvrs();
 
     @Override

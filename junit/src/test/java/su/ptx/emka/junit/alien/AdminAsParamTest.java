@@ -4,8 +4,7 @@ import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.common.Uuid;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.EmKaExtension;
+import su.ptx.emka.junit.EmKa;
 
 import java.util.concurrent.ExecutionException;
 
@@ -15,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@EmKa
 class AdminAsParamTest {
     @Test
-    @ExtendWith(EmKaExtension.class)
     @DisplayName("Admin describes cluster")
     void test(Admin admin) throws ExecutionException, InterruptedException {
         assertNotNull(admin);

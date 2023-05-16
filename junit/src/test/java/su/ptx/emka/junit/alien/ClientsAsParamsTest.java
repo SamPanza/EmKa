@@ -9,8 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
-import org.junit.jupiter.api.extension.ExtendWith;
-import su.ptx.emka.junit.EmKaExtension;
+import su.ptx.emka.junit.EmKa;
 import su.ptx.emka.junit.Konsumer;
 
 import java.util.HashSet;
@@ -22,7 +21,7 @@ import static java.util.Collections.singleton;
 import static java.util.Optional.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(EmKaExtension.class)
+@EmKa
 class ClientsAsParamsTest {
     private static final String topic = "1";
 
