@@ -1,5 +1,5 @@
-[![Hits-of-Code](https://hitsofcode.com/github/SamPanza/EmKa?branch=main)](https://hitsofcode.com/github/SamPanza/EmKa/view?branch=main)
 [![build](https://github.com/SamPanza/EmKa/actions/workflows/build.yml/badge.svg)](https://github.com/SamPanza/EmKa/actions/workflows/build.yml)
+[![Hits-of-Code](https://hitsofcode.com/github/SamPanza/EmKa?branch=main)](https://hitsofcode.com/github/SamPanza/EmKa/view?branch=main)
 
 First, **EmKa** is a
 [JUnit 5](https://junit.org/junit5/) [extension](https://junit.org/junit5/docs/current/user-guide/#extensions)
