@@ -25,21 +25,3 @@ jobs:
         with:
           file: site/target/site/jacoco-aggregate/jacoco.xml
           fail_ci_if_error: true
-
-      - uses: cicirello/jacoco-badge-generator@v2
-        with:
-          jacoco-csv-file: site/target/site/jacoco-aggregate/jacoco.csv
-          generate-coverage-badge: false
-          generate-branches-badge: false
-          generate-coverage-endpoint: true
-          coverage-endpoint-filename: coverage.json
-          generate-branches-endpoint: true
-          branches-endpoint-filename: branches.json
-          generate-summary: true
-          summary-filename: jacoco-summary.json
-          fail-on-coverage-decrease: true
-          fail-on-branches-decrease: true
-
-      - uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
