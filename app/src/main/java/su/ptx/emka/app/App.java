@@ -1,7 +1,7 @@
 package su.ptx.emka.app;
 
 import org.eclipse.microprofile.config.ConfigProvider;
-import su.ptx.emka.core.KRaftee;
+import su.ptx.emka.core.EmKaServer;
 
 import java.io.File;
 
@@ -16,11 +16,11 @@ public class App {
         out.format("brop=%d, conp=%d, logd=%s\n", brop, conp, logd);
 
         @SuppressWarnings("resource")
-        var k = new KRaftee();
-        k.start(brop, conp, logd);
-        out.println(k.bootstrapServers());
+        var emKaServer = EmKaServer.create();
+        emKaServer.start(brop, conp, logd);
+        out.println(emKaServer.bootstrapServers());
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            k.stop();
+            emKaServer.stop();
             out.println("See ya!");
         }));
     }
