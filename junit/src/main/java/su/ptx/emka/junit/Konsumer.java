@@ -21,7 +21,7 @@ public @interface Konsumer {
 
     ResetTo resetTo() default ResetTo.earliest;
 
-    String subsribeTo() default "";
+    String subscribeTo() default "";
 
     //https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset
     //https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#auto-offset-reset
