@@ -21,6 +21,11 @@ jobs:
 
       - run: mvn --batch-mode verify
 
+      - uses: codecov/codecov-action@v3
+        with:
+          file: site/target/site/jacoco-aggregate/jacoco.xml
+          fail_ci_if_error: true
+
       - uses: cicirello/jacoco-badge-generator@v2
         with:
           jacoco-csv-file: site/target/site/jacoco-aggregate/jacoco.csv
