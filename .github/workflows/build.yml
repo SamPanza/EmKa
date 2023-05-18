@@ -28,6 +28,8 @@ jobs:
           generate-coverage-endpoint: true
           generate-branches-endpoint: true
           generate-summary: true
+          fail-on-coverage-decrease: true
+          fail-on-branches-decrease: true
 
       - uses: EndBug/add-and-commit@v9
         with:
