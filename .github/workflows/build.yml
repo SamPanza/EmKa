@@ -20,3 +20,13 @@ jobs:
           cache: maven
 
       - run: mvn --batch-mode verify
+
+      - uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: site/target/site/jacoco-aggregate/jacoco.csv
+          generate-branches-badge: yes
+          generate-coverage-endpoint: yes
+          generate-branches-endpoint: yes
+          generate-summary: yes
+
+      - uses: EndBug/add-and-commit@v9
