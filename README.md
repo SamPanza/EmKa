@@ -2,7 +2,7 @@
 ![Coverage](.github/badges/jacoco.svg)
 ![Branches](.github/badges/branches.svg)
 ![Lines-of-Code](https://img.shields.io/tokei/lines/github/SamPanza/EmKa?label=Lines-of-Code)
-[![Hits-of-Code](https://hitsofcode.com/github/SamPanza/EmKa?branch=main)](https://hitsofcode.com/github/SamPanza/EmKa/view?branch=main)
+[![Hits-of-Code](https://img.shields.io/badge/dynamic/json?label=Hits-of-Code&query=$.count&url=https://hitsofcode.com/github/SamPanza/EmKa/json?branch=main)](https://hitsofcode.com/github/SamPanza/EmKa/view?branch=main)
 
 **EmKa** is a [JUnit 5](https://junit.org/junit5/) [extension](https://junit.org/junit5/docs/current/user-guide/#extensions)
 that automatically starts / stops a single-broker [Kafka](https://kafka.apache.org/) server on arbitrarily available ports
