@@ -24,10 +24,10 @@ jobs:
       - uses: cicirello/jacoco-badge-generator@v2
         with:
           jacoco-csv-file: site/target/site/jacoco-aggregate/jacoco.csv
-          generate-branches-badge: yes
-          generate-coverage-endpoint: yes
-          generate-branches-endpoint: yes
-          generate-summary: yes
+          generate-branches-badge: true
+          generate-coverage-endpoint: true
+          generate-branches-endpoint: true
+          generate-summary: true
 
       - uses: EndBug/add-and-commit@v9
         with:
