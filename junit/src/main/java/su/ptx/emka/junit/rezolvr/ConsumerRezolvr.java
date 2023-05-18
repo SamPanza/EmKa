@@ -58,7 +58,7 @@ final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
                 "group.id", a.group().isBlank() ? "g_" + UUID.randomUUID() : a.group(),
                 "auto.offset.reset", a.resetTo().name()));
         Optional.of(a)
-                .map(Konsumer::subsribeTo)
+                .map(Konsumer::subscribeTo)
                 .filter(t -> !t.isEmpty())
                 .map(Collections::singleton)
                 .ifPresent(kc::subscribe);
