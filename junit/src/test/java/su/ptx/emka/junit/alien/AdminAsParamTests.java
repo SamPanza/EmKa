@@ -2,7 +2,6 @@ package su.ptx.emka.junit.alien;
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.common.Uuid;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import su.ptx.emka.junit.EmKa;
 
@@ -15,10 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @EmKa
-class AdminAsParamTest {
+class AdminAsParamTests {
     @Test
-    @DisplayName("Admin describes cluster")
-    void test(Admin admin) throws ExecutionException, InterruptedException {
+    void resolvedAndOperates(Admin admin) throws ExecutionException, InterruptedException {
         assertNotNull(admin);
         var cluster = admin.describeCluster();
 

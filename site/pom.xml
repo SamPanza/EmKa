@@ -17,15 +17,19 @@
         <dependency>
             <groupId>su.ptx.emka</groupId>
             <artifactId>emka-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>su.ptx.emka</groupId>
             <artifactId>emka-junit</artifactId>
+            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>su.ptx.emka</groupId>
             <artifactId>emka-app</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
