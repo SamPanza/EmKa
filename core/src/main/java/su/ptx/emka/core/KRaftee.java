@@ -20,7 +20,7 @@ final class KRaftee implements EmKaServer {
     }
 
     @Override
-    public synchronized EmKaServer start(int brokerPort, int controllerPort, File dir) {
+    public synchronized EmKaServer run(int brokerPort, int controllerPort, File dir) {
         if (server != null) {
             throw new IllegalStateException("Server already started");
         }
@@ -49,13 +49,12 @@ final class KRaftee implements EmKaServer {
     }
 
     @Override
-    public synchronized EmKaServer stop() {
+    public synchronized void close() {
         if (server != null) {
             bootstrapServers = null;
             server.shutdown();
             server.awaitShutdown();
             server = null;
         }
-        return this;
     }
 }

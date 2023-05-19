@@ -25,7 +25,7 @@ final class EmKaCtx implements Ctx {
     public String b_servers() {
         return stor.get().getOrComputeIfAbsent(
                 "b_servers",
-                k -> pass(EmKaServer.create()).start().bootstrapServers(),
+                k -> pass(EmKaServer.create()).run().bootstrapServers(),
                 String.class);
     }
 }

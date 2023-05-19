@@ -9,17 +9,12 @@ public interface EmKaServer extends AutoCloseable {
 
     String bootstrapServers();
 
-    default EmKaServer start() {
-        return start(0, 0, null);
+    default EmKaServer run() {
+        return run(0, 0, null);
     }
 
-    EmKaServer start(int port1, int port2, File dir);
-
-    EmKaServer stop();
+    EmKaServer run(int port1, int port2, File dir);
 
     @Override
-    default void close() {
-        //noinspection resource
-        stop();
-    }
+    void close();
 }

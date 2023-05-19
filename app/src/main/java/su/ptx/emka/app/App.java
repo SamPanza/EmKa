@@ -17,10 +17,10 @@ public class App {
 
         @SuppressWarnings("resource")
         var emKaServer = EmKaServer.create();
-        emKaServer.start(brop, conp, logd);
+        emKaServer.run(brop, conp, logd);
         out.println(emKaServer.bootstrapServers());
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            emKaServer.stop();
+            emKaServer.close();
             out.println("See ya!");
         }));
     }
