@@ -1,5 +1,6 @@
 package su.ptx.emka.app;
 
+import static java.lang.Runtime.getRuntime;
 import static java.lang.System.out;
 
 import java.io.File;
@@ -12,19 +13,23 @@ import su.ptx.emka.core.EmKaServer;
 public class App {
   /**
    * main.
+   *
+   * @param args Not used
    */
   public static void main(String[] args) {
     var config = ConfigProvider.getConfig();
-    int brop = config.getOptionalValue("brop", int.class).orElse(9092);
-    int conp = config.getOptionalValue("conp", int.class).orElse(9093);
-    File logd = config.getOptionalValue("logd", File.class).orElse(new File("/tmp/emka"));
-    out.format("brop=%d, conp=%d, logd=%s\n", brop, conp, logd);
+    int b = config.getOptionalValue("b", int.class).orElse(9092);
+    int c = config.getOptionalValue("c", int.class).orElse(9093);
+    //TODO: Empty string
+    File d = config.getOptionalValue("d", File.class).orElse(new File("/tmp/emka"));
+    out.format("%d %d %s\n", b, c, d);
 
     @SuppressWarnings("resource")
     var emKaServer = EmKaServer.create();
-    emKaServer.run(brop, conp, logd);
+    emKaServer.run(b, c, d);
     out.println(emKaServer.bootstrapServers());
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+
+    getRuntime().addShutdownHook(new Thread(() -> {
       emKaServer.close();
       out.println("See ya!");
     }));
