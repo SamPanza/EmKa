@@ -57,4 +57,10 @@ final class KRaftee implements EmKaServer {
       server = null;
     }
   }
+
+  @Override
+  public String toString() {
+    //TODO controller port & log dir
+    return "%s".formatted(bootstrapServers);
+  }
 }

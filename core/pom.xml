@@ -19,13 +19,11 @@
       <artifactId>kafka_2.13</artifactId>
     </dependency>
 
-    <!--FOR: org.apache.kafka.metadata.bootstrap.*-->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-metadata</artifactId>
     </dependency>
 
-    <!--FOR: org.apache.kafka.server.common.MetadataVersion-->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-server-common</artifactId>
