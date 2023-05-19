@@ -5,13 +5,13 @@ import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 final class BootstrapServersRezolvr implements Rezolvr<String> {
-    @Override
-    public boolean test(Target t) {
-        return t.annotatedWith(BootstrapServers.class);
-    }
+  @Override
+  public boolean test(Target t) {
+    return t.annotatedWith(BootstrapServers.class);
+  }
 
-    @Override
-    public String apply(Target t, Ctx c) {
-        return c.b_servers();
-    }
+  @Override
+  public String apply(Target t, Ctx c) {
+    return c.b_servers();
+  }
 }

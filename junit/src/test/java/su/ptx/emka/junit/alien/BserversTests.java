@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EmKa
 class BserversTests {
-    @BootstrapServers
-    private String bservers1;
+  @BootstrapServers
+  private String bservers1;
 
-    @Test
-    void bservers(@BootstrapServers String bservers2) {
-        assertTrue(bservers1.matches("localhost:\\d{4,}"));
-        assertEquals(bservers1, bservers2);
-    }
+  @Test
+  void bservers(@BootstrapServers String bservers2) {
+    assertTrue(bservers1.matches("localhost:\\d{4,}"));
+    assertEquals(bservers1, bservers2);
+  }
 }

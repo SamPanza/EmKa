@@ -7,19 +7,19 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 public interface Target {
-    boolean assignableTo(Class<?> c);
+  boolean assignableTo(Class<?> c);
 
-    boolean annotatedWith(Class<? extends Annotation> ac);
+  boolean annotatedWith(Class<? extends Annotation> ac);
 
-    <A extends Annotation> Optional<A> find(Class<A> ac);
+  <A extends Annotation> Optional<A> find(Class<A> ac);
 
-    Type[] typeArgs();
+  Type[] typeArgs();
 
-    static Target ofParameter(Parameter p) {
-        return new PTarget(p);
-    }
+  static Target ofParameter(Parameter p) {
+    return new PTarget(p);
+  }
 
-    static Target ofField(Field f) {
-        return new FTarget(f);
-    }
+  static Target ofField(Field f) {
+    return new FTarget(f);
+  }
 }

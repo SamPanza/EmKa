@@ -6,23 +6,23 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 final class Acs implements CloseableResource {
-    private final Queue<AutoCloseable> acs = new LinkedBlockingQueue<>();
+  private final Queue<AutoCloseable> acs = new LinkedBlockingQueue<>();
 
-    <T> T pass(T o) {
-        if (o instanceof AutoCloseable ac) {
-            acs.add(ac);
-        }
-        return o;
+  <T> T pass(T o) {
+    if (o instanceof AutoCloseable ac) {
+      acs.add(ac);
     }
+    return o;
+  }
 
-    @Override
-    public void close() {
-        while (!acs.isEmpty()) {
-            try {
-                acs.remove().close();
-            } catch (Exception e) {
-                //
-            }
-        }
+  @Override
+  public void close() {
+    while (!acs.isEmpty()) {
+      try {
+        acs.remove().close();
+      } catch (Exception e) {
+        //
+      }
     }
+  }
 }

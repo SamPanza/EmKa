@@ -17,15 +17,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 //TODO: subscribeTo
 public @interface Konsumer {
-    String group() default "";
+  String group() default "";
 
-    ResetTo resetTo() default ResetTo.earliest;
+  ResetTo resetTo() default ResetTo.earliest;
 
-    String subscribeTo() default "";
+  String subscribeTo() default "";
 
-    //https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset
-    //https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#auto-offset-reset
-    enum ResetTo {
-        latest, earliest, none
-    }
+  //https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset
+  //https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#auto-offset-reset
+  enum ResetTo {
+    latest, earliest, none
+  }
 }

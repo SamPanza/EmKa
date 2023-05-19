@@ -13,30 +13,30 @@ import static su.ptx.emka.junit.target.Target.ofField;
 import static su.ptx.emka.junit.target.Target.ofParameter;
 
 final class EmKaExtension implements ParameterResolver, TestInstancePostProcessor {
-    private final AllRezolvrs allRezolvrs = new AllRezolvrs();
+  private final AllRezolvrs allRezolvrs = new AllRezolvrs();
 
-    @Override
-    public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
-        return allRezolvrs.test(ofParameter(pc.getParameter()));
-    }
+  @Override
+  public boolean supportsParameter(ParameterContext pc, ExtensionContext ec) {
+    return allRezolvrs.test(ofParameter(pc.getParameter()));
+  }
 
-    @Override
-    public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
-        return allRezolvrs.apply(ofParameter(pc.getParameter()), ofExtensionContext(ec)).orElseThrow();
-    }
+  @Override
+  public Object resolveParameter(ParameterContext pc, ExtensionContext ec) {
+    return allRezolvrs.apply(ofParameter(pc.getParameter()), ofExtensionContext(ec)).orElseThrow();
+  }
 
-    @Override
-    public void postProcessTestInstance(Object testInstance, ExtensionContext ec) {
-        var c = ofExtensionContext(ec);
-        for (var f : findFields(testInstance.getClass(), f -> true, BOTTOM_UP)) {
-            allRezolvrs.apply(ofField(f), c).ifPresent(v -> {
-                f.setAccessible(true);
-                try {
-                    f.set(testInstance, v);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+  @Override
+  public void postProcessTestInstance(Object testInstance, ExtensionContext ec) {
+    var c = ofExtensionContext(ec);
+    for (var f : findFields(testInstance.getClass(), f -> true, BOTTOM_UP)) {
+      allRezolvrs.apply(ofField(f), c).ifPresent(v -> {
+        f.setAccessible(true);
+        try {
+          f.set(testInstance, v);
+        } catch (IllegalAccessException e) {
+          throw new RuntimeException(e);
         }
+      });
     }
+  }
 }

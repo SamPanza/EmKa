@@ -10,33 +10,33 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
 abstract class ATarget implements Target {
-    private final AnnotatedElement a;
+  private final AnnotatedElement a;
 
-    ATarget(AnnotatedElement a) {
-        this.a = a;
-    }
+  ATarget(AnnotatedElement a) {
+    this.a = a;
+  }
 
-    @Override
-    public final boolean assignableTo(Class<?> c) {
-        return c.isAssignableFrom(type());
-    }
+  @Override
+  public final boolean assignableTo(Class<?> c) {
+    return c.isAssignableFrom(type());
+  }
 
-    @Override
-    public final boolean annotatedWith(Class<? extends Annotation> ac) {
-        return isAnnotated(a, ac);
-    }
+  @Override
+  public final boolean annotatedWith(Class<? extends Annotation> ac) {
+    return isAnnotated(a, ac);
+  }
 
-    @Override
-    public final <A extends Annotation> Optional<A> find(Class<A> ac) {
-        return findAnnotation(a, ac);
-    }
+  @Override
+  public final <A extends Annotation> Optional<A> find(Class<A> ac) {
+    return findAnnotation(a, ac);
+  }
 
-    @Override
-    public final Type[] typeArgs() {
-        return ((ParameterizedType) paraType()).getActualTypeArguments();
-    }
+  @Override
+  public final Type[] typeArgs() {
+    return ((ParameterizedType) paraType()).getActualTypeArguments();
+  }
 
-    abstract Class<?> type();
+  abstract Class<?> type();
 
-    abstract Type paraType();
+  abstract Type paraType();
 }
