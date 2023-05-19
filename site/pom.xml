@@ -2,56 +2,56 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>su.ptx.emka</groupId>
-        <artifactId>emka-parent</artifactId>
-        <version>0-SNAPSHOT</version>
-        <relativePath>../1-parent/pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>su.ptx.emka</groupId>
+    <artifactId>emka-parent</artifactId>
+    <version>0-SNAPSHOT</version>
+    <relativePath>../1-parent/pom.xml</relativePath>
+  </parent>
 
-    <artifactId>emka-site</artifactId>
+  <artifactId>emka-site</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>su.ptx.emka</groupId>
-            <artifactId>emka-core</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-core</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>su.ptx.emka</groupId>
-            <artifactId>emka-junit</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-junit</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>su.ptx.emka</groupId>
-            <artifactId>emka-app</artifactId>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-app</artifactId>
+    </dependency>
+  </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <skipIfEmpty>true</skipIfEmpty>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <skipIfEmpty>true</skipIfEmpty>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
