@@ -41,6 +41,9 @@
             <goals>
               <goal>report-aggregate</goal>
             </goals>
+            <configuration>
+              <dataFileExcludes>**/target/jacoco-it.exec</dataFileExcludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

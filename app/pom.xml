@@ -38,6 +38,18 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
@@ -54,6 +66,8 @@
             </goals>
             <configuration>
               <jmxName>${app.object.name}</jmxName>
+              <!--suppress MavenModelInspection -->
+              <jvmArguments>${argLine}</jvmArguments>
             </configuration>
           </execution>
           <execution>
