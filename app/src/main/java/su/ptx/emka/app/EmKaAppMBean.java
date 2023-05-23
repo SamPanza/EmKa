@@ -1,6 +1,6 @@
 package su.ptx.emka.app;
 
-public interface EmkaAppMBean {
+public interface EmKaAppMBean {
   boolean isReady();
 
   void shutdown();

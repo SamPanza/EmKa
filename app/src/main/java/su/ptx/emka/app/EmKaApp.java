@@ -15,17 +15,17 @@ import su.ptx.emka.core.EmKaServer;
 /**
  * EmKa standalone application.
  */
-public class EmkaApp implements Runnable, EmkaAppMBean {
+public class EmKaApp implements Runnable, EmKaAppMBean {
   /**
    * main.
    */
   public static void main(String[] args) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-    new EmkaApp().run();
+    new EmKaApp().run();
   }
 
   private final EmKaServer server;
 
-  private EmkaApp() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+  private EmKaApp() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
     server = EmKaServer.create();
     getRuntime().addShutdownHook(new Thread(this::shutdown));
     var c = getClass();

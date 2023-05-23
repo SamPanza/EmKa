@@ -31,6 +31,10 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <app.object.name>su.ptx.emka.app:type=EmKaApp</app.object.name>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -43,18 +47,24 @@
               <goal>repackage</goal>
             </goals>
           </execution>
-          <!--execution>
+          <execution>
             <id>pre-integration-test</id>
             <goals>
               <goal>start</goal>
             </goals>
+            <configuration>
+              <jmxName>${app.object.name}</jmxName>
+            </configuration>
           </execution>
           <execution>
             <id>post-integration-test</id>
             <goals>
               <goal>stop</goal>
             </goals>
-          </execution-->
+            <configuration>
+              <jmxName>${app.object.name}</jmxName>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
