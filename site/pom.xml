@@ -42,7 +42,10 @@
               <goal>report-aggregate</goal>
             </goals>
             <configuration>
-              <dataFileExcludes>**/target/jacoco-it.exec</dataFileExcludes>
+              <dataFileIncludes>
+                <!--The goal can't load `jacoco-it.exec`-->
+                <include>**/jacoco.exec</include>
+              </dataFileIncludes>
             </configuration>
           </execution>
         </executions>
