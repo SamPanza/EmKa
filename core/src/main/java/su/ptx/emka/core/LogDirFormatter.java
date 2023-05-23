@@ -1,26 +1,26 @@
 package su.ptx.emka.core;
 
-import kafka.server.BrokerMetadataCheckpoint;
-import kafka.server.MetaProperties;
-import kafka.tools.StorageTool;
-import org.apache.kafka.common.Uuid;
-import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
-import org.apache.kafka.metadata.bootstrap.BootstrapMetadata;
-import org.apache.kafka.server.common.MetadataVersion;
-import scala.collection.immutable.Seq;
+import static java.nio.file.Files.createTempDirectory;
+import static java.util.Optional.empty;
+import static org.apache.kafka.common.Uuid.randomUuid;
+import static org.apache.kafka.metadata.bootstrap.BootstrapMetadata.fromVersion;
+import static org.apache.kafka.server.common.MetadataVersion.latest;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UncheckedIOException;
-import java.util.Optional;
+import kafka.server.BrokerMetadataCheckpoint;
+import kafka.server.MetaProperties;
+import kafka.tools.StorageTool;
+import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
+import org.apache.kafka.server.common.MetadataVersion;
+import scala.collection.immutable.Seq;
 
-import static java.nio.file.Files.createTempDirectory;
-
-final class LogDir {
+final class LogDirFormatter {
   private final File dir;
 
-  LogDir(File dir) {
+  LogDirFormatter(File dir) {
     this.dir = dir;
   }
 
@@ -44,14 +44,12 @@ final class LogDir {
     logDir.mkdirs();
     var metaProps = new File(logDir, "meta.properties");
     if (metaProps.exists()) {
-      //TODO: Compare nodeId with what's in logDir
       return logDir;
     }
     new BrokerMetadataCheckpoint(metaProps).write(
-      new MetaProperties(Uuid.randomUuid().toString(), nodeId).toProperties());
+      new MetaProperties(randomUuid().toString(), nodeId).toProperties());
     try {
-      new BootstrapDirectory(logDir.toString(), Optional.empty()).writeBinaryFile(
-        BootstrapMetadata.fromVersion(MetadataVersion.latest(), ""));
+      new BootstrapDirectory(logDir.toString(), empty()).writeBinaryFile(fromVersion(latest(), ""));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
