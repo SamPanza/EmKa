@@ -23,5 +23,5 @@ jobs:
 
       - uses: codecov/codecov-action@v3
         with:
-          file: site/target/site/jacoco-aggregate/jacoco.xml
+          files: core/target/site/jacoco/jacoco.xml,junit/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
