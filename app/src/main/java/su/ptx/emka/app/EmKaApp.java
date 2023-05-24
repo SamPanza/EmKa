@@ -42,11 +42,6 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
   }
 
   @Override
-  public boolean isReady() {
-    return server.bootstrapServers() != null;
-  }
-
-  @Override
   public void shutdown() {
     server.close();
   }
