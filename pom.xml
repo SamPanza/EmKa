@@ -13,8 +13,8 @@
     <module>0-bom</module>
     <module>1-parent</module>
     <module>core</module>
-    <module>junit</module>
     <module>app</module>
+    <module>junit</module>
     <module>site</module>
   </modules>
 </project>
