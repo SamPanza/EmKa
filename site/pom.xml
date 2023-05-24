@@ -37,16 +37,10 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>verify</phase>
+            <phase>post-integration-test</phase>
             <goals>
               <goal>report-aggregate</goal>
             </goals>
-            <configuration>
-              <!-- TODO: https://github.com/SamPanza/EmKa/issues/5 -->
-              <!--dataFileExcludes>
-                <exclude>**/jacoco-it.exec</exclude>
-              </dataFileExcludes-->
-            </configuration>
           </execution>
         </executions>
       </plugin>
