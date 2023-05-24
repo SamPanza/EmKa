@@ -20,16 +20,20 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
    * main.
    */
   public static void main(String[] args) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-    new EmKaApp().run();
+    EmKaApp app;
+    getPlatformMBeanServer().registerMBean(
+      app = new EmKaApp(),
+      new ObjectName(app.getClass().getPackageName(), "type", app.getClass().getSimpleName()));
+    getRuntime().addShutdownHook(new Thread(app::shutdown));
+    app.run();
+    System.err.println("Running");
   }
 
   private final EmKaServer server;
+  private boolean ready;
 
-  private EmKaApp() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+  private EmKaApp() {
     server = EmKaServer.create();
-    getRuntime().addShutdownHook(new Thread(this::shutdown));
-    var c = getClass();
-    getPlatformMBeanServer().registerMBean(this, new ObjectName("%s:type=%s".formatted(c.getPackageName(), c.getSimpleName())));
   }
 
   @Override
@@ -39,10 +43,17 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
       cfg.getOptionalValue("emka.bro.port", int.class).orElse(0),
       cfg.getOptionalValue("emka.con.port", int.class).orElse(0),
       cfg.getOptionalValue("emka.log.dir", File.class).orElse(null));
+    ready = true;
+  }
+
+  @Override
+  public boolean isReady() {
+    return ready;
   }
 
   @Override
   public void shutdown() {
+    ready = false;
     server.close();
   }
 }
