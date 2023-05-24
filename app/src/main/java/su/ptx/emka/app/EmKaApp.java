@@ -26,7 +26,6 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
       new ObjectName(app.getClass().getPackageName(), "type", app.getClass().getSimpleName()));
     getRuntime().addShutdownHook(new Thread(app::shutdown));
     app.run();
-    System.err.println("Running");
   }
 
   private final EmKaServer server;

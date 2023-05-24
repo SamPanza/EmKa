@@ -1,16 +1,15 @@
 package su.ptx.emka.junit.ctx;
 
+import java.util.Deque;
+import java.util.concurrent.LinkedBlockingDeque;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 final class Acs implements CloseableResource {
-  private final Queue<AutoCloseable> acs = new LinkedBlockingQueue<>();
+  private final Deque<AutoCloseable> acs = new LinkedBlockingDeque<>();
 
   <T> T pass(T o) {
     if (o instanceof AutoCloseable ac) {
-      acs.add(ac);
+      acs.push(ac);
     }
     return o;
   }
@@ -19,7 +18,7 @@ final class Acs implements CloseableResource {
   public void close() {
     while (!acs.isEmpty()) {
       try {
-        acs.remove().close();
+        acs.pop().close();
       } catch (Exception e) {
         //
       }
