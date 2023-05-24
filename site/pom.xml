@@ -11,34 +11,22 @@
     <relativePath>../1-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>emka-core</artifactId>
+  <artifactId>emka-site</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.13</artifactId>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-metadata</artifactId>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-junit</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-server-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-app</artifactId>
     </dependency>
   </dependencies>
 
@@ -49,11 +37,26 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
+            <phase>prepare-package</phase>
             <goals>
-              <goal>prepare-agent</goal>
+              <goal>report-aggregate</goal>
             </goals>
+            <configuration>
+              <!-- TODO: https://github.com/SamPanza/EmKa/issues/5 -->
+              <dataFileExcludes>
+                <exclude>**/jacoco-it.exec</exclude>
+              </dataFileExcludes>
+            </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <skipIfEmpty>true</skipIfEmpty>
+        </configuration>
       </plugin>
     </plugins>
   </build>

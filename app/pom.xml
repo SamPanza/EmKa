@@ -32,7 +32,7 @@
   </dependencies>
 
   <properties>
-    <app.object.name>su.ptx.emka.app:type=EmKaApp</app.object.name>
+    <EmKaAppObjectName>su.ptx.emka.app:type=EmKaApp</EmKaAppObjectName>
   </properties>
 
   <build>
@@ -40,6 +40,16 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+            <configuration>
+              <dumpOnExit>true</dumpOnExit>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -58,7 +68,7 @@
               <goal>start</goal>
             </goals>
             <configuration>
-              <jmxName>${app.object.name}</jmxName>
+              <jmxName>${EmKaAppObjectName}</jmxName>
               <jvmArguments>${argLine}</jvmArguments>
             </configuration>
           </execution>
@@ -68,7 +78,7 @@
               <goal>stop</goal>
             </goals>
             <configuration>
-              <jmxName>${app.object.name}</jmxName>
+              <jmxName>${EmKaAppObjectName}</jmxName>
             </configuration>
           </execution>
         </executions>
