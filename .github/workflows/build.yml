@@ -19,7 +19,7 @@ jobs:
           distribution: liberica
           cache: maven
 
-      - run: mvn --batch-mode verify
+      - run: ./mvnw --batch-mode verify
 
       - uses: codecov/codecov-action@v3
         with:
