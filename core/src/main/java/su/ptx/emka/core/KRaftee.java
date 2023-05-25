@@ -9,6 +9,7 @@ import kafka.server.KafkaRaftServer;
 import org.apache.kafka.common.utils.Time;
 import scala.Option;
 
+//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class KRaftee implements EmKaServer {
   private String bootstrapServers;
   private String logDirPath;
@@ -30,26 +31,26 @@ final class KRaftee implements EmKaServer {
       throw new IllegalStateException("Server already started");
     }
     var nodeId = 1;
-    var brokerPort = FREE_PORTS.applyAsInt(port1);
-    var controllerPort = FREE_PORTS.applyAsInt(port2);
+    var broPort = FREE_PORTS.applyAsInt(port1);
+    var conPort = FREE_PORTS.applyAsInt(port2);
     server = new KafkaRaftServer(
-      new KafkaConfig(
-        Map.of(
-          "process.roles", "broker,controller",
-          "node.id", nodeId,
-          "listeners", "BRO://localhost:%d,CON://localhost:%d".formatted(brokerPort, controllerPort),
-          "controller.quorum.voters", nodeId + "@localhost:" + controllerPort,
-          "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
-          "controller.listener.names", "CON",
-          "inter.broker.listener.name", "BRO",
-          "log.dir", logDirPath = new LogDirFormatter(dir).format(nodeId).getAbsolutePath(),
-          "offsets.topic.replication.factor", (short) 1,
-          "transaction.state.log.replication.factor", (short) 1),
-        false),
-      Time.SYSTEM,
-      Option.empty());
+        new KafkaConfig(
+            Map.of(
+                "process.roles", "broker,controller",
+                "node.id", nodeId,
+                "listeners", "BRO://localhost:%d,CON://localhost:%d".formatted(broPort, conPort),
+                "controller.quorum.voters", nodeId + "@localhost:" + conPort,
+                "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
+                "controller.listener.names", "CON",
+                "inter.broker.listener.name", "BRO",
+                "log.dir", logDirPath = new LogDirFormatter(dir).format(nodeId).getAbsolutePath(),
+                "offsets.topic.replication.factor", (short) 1,
+                "transaction.state.log.replication.factor", (short) 1),
+            false),
+        Time.SYSTEM,
+        Option.empty());
     server.startup();
-    bootstrapServers = "localhost:" + brokerPort;
+    bootstrapServers = "localhost:" + broPort;
     return this;
   }
 

@@ -2,6 +2,9 @@ package su.ptx.emka.core;
 
 import java.io.File;
 
+/**
+ * TODO: javadoc.
+ */
 public interface EmKaServer extends AutoCloseable {
   static EmKaServer create() {
     return new KRaftee();

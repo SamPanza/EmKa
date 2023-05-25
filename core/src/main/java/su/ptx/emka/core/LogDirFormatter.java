@@ -8,14 +8,10 @@ import static org.apache.kafka.server.common.MetadataVersion.latest;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import kafka.server.BrokerMetadataCheckpoint;
 import kafka.server.MetaProperties;
-import kafka.tools.StorageTool;
 import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
-import org.apache.kafka.server.common.MetadataVersion;
-import scala.collection.immutable.Seq;
 
 final class LogDirFormatter {
   private final File dir;
@@ -24,9 +20,6 @@ final class LogDirFormatter {
     this.dir = dir;
   }
 
-  /**
-   * See {@link StorageTool#formatCommand(PrintStream, Seq, MetaProperties, MetadataVersion, boolean)}
-   */
   File format(int nodeId) {
     final File logDir;
     if (dir == null) {
