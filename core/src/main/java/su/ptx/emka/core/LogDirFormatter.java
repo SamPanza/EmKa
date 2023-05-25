@@ -14,6 +14,7 @@ import kafka.server.MetaProperties;
 import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
 
 final class LogDirFormatter {
+  static final String META_PROPS = "meta.properties";
   private final File dir;
 
   LogDirFormatter(File dir) {
@@ -32,10 +33,10 @@ final class LogDirFormatter {
     } else {
       logDir = dir;
     }
-    //TODO: Don't ignore result
-    //noinspection ResultOfMethodCallIgnored
-    logDir.mkdirs();
-    var metaProps = new File(logDir, "meta.properties");
+    if (!logDir.exists() && !logDir.mkdirs()) {
+      throw new RuntimeException("Can't create directory " + logDir);
+    }
+    var metaProps = new File(logDir, META_PROPS);
     if (metaProps.exists()) {
       return logDir;
     }
