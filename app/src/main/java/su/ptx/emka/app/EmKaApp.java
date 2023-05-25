@@ -13,17 +13,22 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import su.ptx.emka.core.EmKaServer;
 
 /**
- * EmKa standalone application.
+ * TODO: javadoc.
  */
 public class EmKaApp implements Runnable, EmKaAppMBean {
   /**
-   * main.
+   * TODO: javadoc.
    */
-  public static void main(String[] args) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+  public static void main(String[] args)
+      throws
+      MalformedObjectNameException,
+      NotCompliantMBeanException,
+      InstanceAlreadyExistsException,
+      MBeanRegistrationException {
     EmKaApp app;
     getPlatformMBeanServer().registerMBean(
-      app = new EmKaApp(),
-      new ObjectName(app.getClass().getPackageName(), "type", app.getClass().getSimpleName()));
+        app = new EmKaApp(),
+        new ObjectName(app.getClass().getPackageName(), "type", app.getClass().getSimpleName()));
     getRuntime().addShutdownHook(new Thread(app::shutdown));
     app.run();
   }
@@ -39,9 +44,9 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
   public void run() {
     var cfg = ConfigProvider.getConfig();
     server.run(
-      cfg.getOptionalValue("emka.bro.port", int.class).orElse(0),
-      cfg.getOptionalValue("emka.con.port", int.class).orElse(0),
-      cfg.getOptionalValue("emka.log.dir", File.class).orElse(null));
+        cfg.getOptionalValue("emka.bro.port", int.class).orElse(0),
+        cfg.getOptionalValue("emka.con.port", int.class).orElse(0),
+        cfg.getOptionalValue("emka.log.dir", File.class).orElse(null));
     ready = true;
   }
 
