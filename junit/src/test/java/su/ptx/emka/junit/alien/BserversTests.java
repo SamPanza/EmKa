@@ -1,11 +1,11 @@
 package su.ptx.emka.junit.alien;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import su.ptx.emka.junit.BootstrapServers;
 import su.ptx.emka.junit.EmKa;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EmKa
 class BserversTests {

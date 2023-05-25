@@ -1,12 +1,11 @@
 package su.ptx.emka.core.alien;
 
-import org.junit.jupiter.api.Test;
-import su.ptx.emka.core.EmKaServer;
-
-import java.util.function.Consumer;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.function.Consumer;
+import org.junit.jupiter.api.Test;
+import su.ptx.emka.core.EmKaServer;
 
 class EmKaServerTests {
   private static void withCreatedEmKaServer(Consumer<EmKaServer> eksc) {
@@ -20,12 +19,12 @@ class EmKaServerTests {
   }
 
   @Test
-  void NO_bootstrapServers_until_run() {
+  void no_bootstrapServers_until_run() {
     withCreatedEmKaServer(eks -> assertNull(eks.bootstrapServers()));
   }
 
   @Test
-  void CANNOT_run_run() {
+  void cant_run_run() {
     withRunningEmKaServer(eks -> assertThrows(IllegalStateException.class, eks::run));
   }
 

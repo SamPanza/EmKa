@@ -1,17 +1,16 @@
 package su.ptx.emka.junit.alien;
 
-import org.apache.kafka.clients.admin.Admin;
-import org.apache.kafka.common.Uuid;
-import org.junit.jupiter.api.Test;
-import su.ptx.emka.junit.EmKa;
-
-import java.util.concurrent.ExecutionException;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.concurrent.ExecutionException;
+import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.common.Uuid;
+import org.junit.jupiter.api.Test;
+import su.ptx.emka.junit.EmKa;
 
 @EmKa
 class AdminAsParamTests {

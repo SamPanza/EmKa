@@ -21,7 +21,12 @@ import su.ptx.emka.junit.EmKa;
 @EmKa
 class AllClientsAsParamsTests {
   @Test
-  void create_produce_consume(Admin admin, Producer<Integer, Integer> producer, Consumer<Integer, Integer> consumer) throws ExecutionException, InterruptedException {
+  void create_produce_consume(Admin admin,
+                              Producer<Integer, Integer> producer,
+                              Consumer<Integer, Integer> consumer)
+      throws
+      ExecutionException,
+      InterruptedException {
     //[The French definite articles](https://www.thinkinfrench.com/grammar-lesson/french-definite-articles/) are
     //  Le (masculine singular)
     //  La (feminine singular)
@@ -46,8 +51,8 @@ class AllClientsAsParamsTests {
     poller.start();
 
     sent.stream()
-      .map(v -> new ProducerRecord<Integer, Integer>(topic, v))
-      .forEach(producer::send);
+        .map(v -> new ProducerRecord<Integer, Integer>(topic, v))
+        .forEach(producer::send);
 
     poller.join(10_000);
     assertEquals(sent, polled);
