@@ -17,7 +17,7 @@
     <dependencies>
       <dependency>
         <groupId>su.ptx.emka</groupId>
-        <artifactId>emka-core</artifactId>
+        <artifactId>emka-server</artifactId>
         <version>${project.version}</version>
       </dependency>
 
