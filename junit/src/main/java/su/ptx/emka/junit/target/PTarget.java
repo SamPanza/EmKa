@@ -3,21 +3,22 @@ package su.ptx.emka.junit.target;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 
+//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class PTarget extends ATarget {
-  private final Parameter p;
+  private final Parameter param;
 
-  PTarget(Parameter p) {
-    super(p);
-    this.p = p;
+  PTarget(Parameter parameter) {
+    super(parameter);
+    param = parameter;
   }
 
   @Override
   Class<?> type() {
-    return p.getType();
+    return param.getType();
   }
 
   @Override
   Type paraType() {
-    return p.getParameterizedType();
+    return param.getParameterizedType();
   }
 }

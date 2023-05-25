@@ -6,6 +6,9 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+/**
+ * TODO: javadoc.
+ */
 public interface Target {
   boolean assignableTo(Class<?> c);
 

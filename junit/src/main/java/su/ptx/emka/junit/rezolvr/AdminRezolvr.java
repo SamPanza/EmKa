@@ -1,10 +1,9 @@
 package su.ptx.emka.junit.rezolvr;
 
+import java.util.Map;
 import org.apache.kafka.clients.admin.Admin;
 import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
-
-import java.util.Map;
 
 final class AdminRezolvr implements Rezolvr<Admin> {
   @Override

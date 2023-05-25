@@ -1,19 +1,20 @@
 package su.ptx.emka.junit.target;
 
+import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
+import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
-import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
-
+//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 abstract class ATarget implements Target {
-  private final AnnotatedElement a;
+  private final AnnotatedElement elem;
 
-  ATarget(AnnotatedElement a) {
-    this.a = a;
+  ATarget(AnnotatedElement annotatedElement) {
+    elem = annotatedElement;
   }
 
   @Override
@@ -23,12 +24,12 @@ abstract class ATarget implements Target {
 
   @Override
   public final boolean annotatedWith(Class<? extends Annotation> ac) {
-    return isAnnotated(a, ac);
+    return isAnnotated(elem, ac);
   }
 
   @Override
   public final <A extends Annotation> Optional<A> find(Class<A> ac) {
-    return findAnnotation(a, ac);
+    return findAnnotation(elem, ac);
   }
 
   @Override

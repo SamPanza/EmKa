@@ -29,7 +29,7 @@ class AdminAsParamTests {
     var node = nodes.iterator().next();
     assertEquals(1, node.id());
     assertEquals("localhost", node.host());
-    assertFalse(node.hasRack()); //TODO: What is rack?
+    assertFalse(node.hasRack()); //NB: What is rack?
     assertEquals(node, cluster.controller().get());
 
     assertNull(cluster.authorizedOperations().get());
