@@ -1,4 +1,4 @@
-package su.ptx.emka.core;
+package su.ptx.emka.server;
 
 import static java.io.File.createTempFile;
 import static java.util.Objects.requireNonNull;
@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static su.ptx.emka.core.LogDirFormatter.META_PROPS;
+import static su.ptx.emka.server.LogDirFormatter.META_PROPS;
 
 import java.io.File;
 import java.io.FileNotFoundException;

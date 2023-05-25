@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import su.ptx.emka.core.EmKaServer;
+import su.ptx.emka.server.EmKaServer;
 
 final class EmKaCtx implements Ctx {
   private final Supplier<Store> stor;

@@ -1,4 +1,4 @@
-package su.ptx.emka.core;
+package su.ptx.emka.server;
 
 import java.io.File;
 

@@ -1,8 +1,8 @@
-package su.ptx.emka.core;
+package su.ptx.emka.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static su.ptx.emka.core.FreePorts.FREE_PORTS;
+import static su.ptx.emka.server.FreePorts.FREE_PORTS;
 
 import org.junit.jupiter.api.Test;
 

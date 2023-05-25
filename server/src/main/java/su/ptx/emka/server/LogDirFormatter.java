@@ -1,4 +1,4 @@
-package su.ptx.emka.core;
+package su.ptx.emka.server;
 
 import static java.nio.file.Files.createTempDirectory;
 import static java.util.Optional.empty;

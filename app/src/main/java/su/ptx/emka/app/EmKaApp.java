@@ -10,7 +10,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import org.eclipse.microprofile.config.ConfigProvider;
-import su.ptx.emka.core.EmKaServer;
+import su.ptx.emka.server.EmKaServer;
 
 /**
  * TODO: javadoc.

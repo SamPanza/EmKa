@@ -1,6 +1,6 @@
-package su.ptx.emka.core;
+package su.ptx.emka.server;
 
-import static su.ptx.emka.core.FreePorts.FREE_PORTS;
+import static su.ptx.emka.server.FreePorts.FREE_PORTS;
 
 import java.io.File;
 import java.util.Map;

@@ -1,11 +1,11 @@
-package su.ptx.emka.core.alien;
+package su.ptx.emka.server.alien;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
-import su.ptx.emka.core.EmKaServer;
+import su.ptx.emka.server.EmKaServer;
 
 class EmKaServerTests {
   private static void withCreatedEmKaServer(Consumer<EmKaServer> eksc) {
