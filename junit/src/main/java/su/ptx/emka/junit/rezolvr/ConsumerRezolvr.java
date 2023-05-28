@@ -25,7 +25,6 @@ import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.utils.Bytes;
 import su.ptx.emka.junit.Konsumer;
-import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
@@ -47,11 +46,11 @@ final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
   }
 
   @Override
-  public Consumer<?, ?> apply(Target pc, Ctx c) {
+  public Consumer<?, ?> apply(Target pc, String bservers) {
     var a = pc.find(Konsumer.class).orElse(A);
     var typeArgs = pc.typeArgs();
     var kc = new KafkaConsumer<>(Map.of(
-        "bootstrap.servers", c.b_servers(),
+        "bootstrap.servers", bservers,
         "key.deserializer", deserializers.get(typeArgs[0]),
         "value.deserializer", deserializers.get(typeArgs[1]),
         "group.id", a.group().isBlank() ? "g_" + UUID.randomUUID() : a.group(),

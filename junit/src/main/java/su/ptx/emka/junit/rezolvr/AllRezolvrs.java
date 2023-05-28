@@ -6,7 +6,6 @@ import static su.ptx.emka.junit.rezolvr.Rezolvr.supports;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import su.ptx.emka.junit.ctx.Ctx;
 import su.ptx.emka.junit.target.Target;
 
 /**
@@ -26,12 +25,10 @@ public final class AllRezolvrs implements Rezolvr<Optional<?>> {
   }
 
   @Override
-  public Optional<?> apply(Target t, Ctx c) {
+  public Optional<?> apply(Target t, String bservers) {
     return rezolvrs.stream()
       .filter(supports(t))
       .findFirst()
-      .map(rezolv(t, c))
-      .map(c::pass);
+      .map(rezolv(t, bservers));
   }
-
 }
