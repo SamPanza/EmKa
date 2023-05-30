@@ -101,7 +101,7 @@
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>10.11.0</version>
+              <version>10.12.0</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -114,7 +114,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <configLocation>google_checks.xml</configLocation>
+          <configLocation>../emka_checks.xml</configLocation>
           <violationSeverity>warning</violationSeverity>
         </configuration>
         <executions>
