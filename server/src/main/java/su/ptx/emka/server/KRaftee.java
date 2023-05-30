@@ -9,7 +9,6 @@ import kafka.server.KafkaRaftServer;
 import org.apache.kafka.common.utils.Time;
 import scala.Option;
 
-//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class KRaftee implements EmKaServer {
   private String bootstrapServers;
   private String logDir;

@@ -3,7 +3,6 @@ package su.ptx.emka.junit.target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class FTarget extends ATarget {
   private final Field fld;
 

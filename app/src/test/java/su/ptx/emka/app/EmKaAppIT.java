@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
-//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 class EmKaAppIT {
   @Test
   void inspect(TestReporter tr) {

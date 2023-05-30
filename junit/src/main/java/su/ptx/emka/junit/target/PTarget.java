@@ -3,7 +3,6 @@ package su.ptx.emka.junit.target;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 
-//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class PTarget extends ATarget {
   private final Parameter param;
 

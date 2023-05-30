@@ -9,7 +9,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-//CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 abstract class ATarget implements Target {
   private final AnnotatedElement elem;
 
