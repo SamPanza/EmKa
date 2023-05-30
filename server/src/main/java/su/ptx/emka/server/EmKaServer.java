@@ -12,7 +12,7 @@ public interface EmKaServer extends AutoCloseable {
 
   String bootstrapServers();
 
-  String logDirPath();
+  String logDir();
 
   default EmKaServer run() {
     return run(0, 0, null);

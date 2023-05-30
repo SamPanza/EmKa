@@ -8,4 +8,8 @@ public interface EmKaAppMBean {
   boolean isReady();
 
   void shutdown();
+
+  String getBootstrapServers();
+
+  String getLogDir();
 }

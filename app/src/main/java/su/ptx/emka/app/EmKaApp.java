@@ -1,14 +1,8 @@
 package su.ptx.emka.app;
 
 import static java.lang.Runtime.getRuntime;
-import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
 
 import java.io.File;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
 import org.eclipse.microprofile.config.ConfigProvider;
 import su.ptx.emka.server.EmKaServer;
 
@@ -19,16 +13,9 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
   /**
    * TODO: javadoc.
    */
-  public static void main(String[] args)
-      throws
-      MalformedObjectNameException,
-      NotCompliantMBeanException,
-      InstanceAlreadyExistsException,
-      MBeanRegistrationException {
-    EmKaApp app;
-    getPlatformMBeanServer().registerMBean(
-        app = new EmKaApp(),
-        new ObjectName(app.getClass().getPackageName(), "type", app.getClass().getSimpleName()));
+  public static void main(String[] args) {
+    EmKaApp app = new EmKaApp();
+    Jmx.register(app);
     getRuntime().addShutdownHook(new Thread(app::shutdown));
     app.run();
   }
@@ -59,5 +46,15 @@ public class EmKaApp implements Runnable, EmKaAppMBean {
   public void shutdown() {
     ready = false;
     server.close();
+  }
+
+  @Override
+  public String getBootstrapServers() {
+    return server.bootstrapServers();
+  }
+
+  @Override
+  public String getLogDir() {
+    return server.logDir();
   }
 }

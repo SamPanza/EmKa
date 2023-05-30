@@ -12,7 +12,7 @@ import scala.Option;
 //CHECKSTYLE-SUPPRESS: AbbreviationAsWordInName
 final class KRaftee implements EmKaServer {
   private String bootstrapServers;
-  private String logDirPath;
+  private String logDir;
   private KafkaRaftServer server;
 
   @Override
@@ -21,8 +21,8 @@ final class KRaftee implements EmKaServer {
   }
 
   @Override
-  public synchronized String logDirPath() {
-    return logDirPath;
+  public synchronized String logDir() {
+    return logDir;
   }
 
   @Override
@@ -43,7 +43,7 @@ final class KRaftee implements EmKaServer {
                 "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
                 "controller.listener.names", "CON",
                 "inter.broker.listener.name", "BRO",
-                "log.dir", logDirPath = new LogDirFormatter(dir).format(nodeId).getAbsolutePath(),
+                "log.dir", logDir = new LogDirFormatter(dir).format(nodeId).getAbsolutePath(),
                 "offsets.topic.replication.factor", (short) 1,
                 "transaction.state.log.replication.factor", (short) 1),
             false),
@@ -57,7 +57,7 @@ final class KRaftee implements EmKaServer {
   @Override
   public synchronized void close() {
     if (server != null) {
-      logDirPath = null;
+      logDir = null;
       bootstrapServers = null;
       server.shutdown();
       server.awaitShutdown();
