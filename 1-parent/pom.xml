@@ -114,7 +114,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <configLocation>google_checks.xml</configLocation>
+          <configLocation>../checks.xml</configLocation>
           <violationSeverity>warning</violationSeverity>
         </configuration>
         <executions>
