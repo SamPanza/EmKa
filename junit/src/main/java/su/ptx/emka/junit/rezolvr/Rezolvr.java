@@ -13,7 +13,7 @@ public interface Rezolvr<T> extends Predicate<Target>, BiFunction<Target, String
     return r -> r.test(t);
   }
 
-  static Function<Rezolvr<?>, ?> rezolv(Target t, String bservers) {
-    return r -> r.apply(t, bservers);
+  static Function<Rezolvr<?>, ?> rezolv(Target t, String b_servers) {
+    return r -> r.apply(t, b_servers);
   }
 }

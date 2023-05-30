@@ -25,10 +25,10 @@ public final class AllRezolvrs implements Rezolvr<Optional<?>> {
   }
 
   @Override
-  public Optional<?> apply(Target t, String bservers) {
+  public Optional<?> apply(Target t, String b_servers) {
     return rezolvrs.stream()
       .filter(supports(t))
       .findFirst()
-      .map(rezolv(t, bservers));
+      .map(rezolv(t, b_servers));
   }
 }

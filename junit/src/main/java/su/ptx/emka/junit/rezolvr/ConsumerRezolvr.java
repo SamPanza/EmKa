@@ -46,11 +46,11 @@ final class ConsumerRezolvr implements Rezolvr<Consumer<?, ?>> {
   }
 
   @Override
-  public Consumer<?, ?> apply(Target pc, String bservers) {
+  public Consumer<?, ?> apply(Target pc, String b_servers) {
     var a = pc.find(Konsumer.class).orElse(A);
     var typeArgs = pc.typeArgs();
     var kc = new KafkaConsumer<>(Map.of(
-        "bootstrap.servers", bservers,
+        "bootstrap.servers", b_servers,
         "key.deserializer", deserializers.get(typeArgs[0]),
         "value.deserializer", deserializers.get(typeArgs[1]),
         "group.id", a.group().isBlank() ? "g_" + UUID.randomUUID() : a.group(),

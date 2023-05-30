@@ -10,7 +10,7 @@ final class BootstrapServersRezolvr implements Rezolvr<String> {
   }
 
   @Override
-  public String apply(Target t, String bservers) {
-    return bservers;
+  public String apply(Target t, String b_servers) {
+    return b_servers;
   }
 }

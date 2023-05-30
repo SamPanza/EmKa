@@ -11,8 +11,8 @@ final class AdminRezolvr implements Rezolvr<Admin> {
   }
 
   @Override
-  public Admin apply(Target t, String bservers) {
+  public Admin apply(Target t, String b_servers) {
     return Admin.create(Map.of(
-      "bootstrap.servers", bservers));
+      "bootstrap.servers", b_servers));
   }
 }

@@ -31,10 +31,10 @@ final class ProducerRezolvr implements Rezolvr<Producer<?, ?>> {
   }
 
   @Override
-  public Producer<?, ?> apply(Target t, String bservers) {
+  public Producer<?, ?> apply(Target t, String b_servers) {
     var typeArgs = t.typeArgs();
     return new KafkaProducer<>(Map.of(
-        "bootstrap.servers", bservers,
+        "bootstrap.servers", b_servers,
         "key.serializer", serializers.get(typeArgs[0]),
         "value.serializer", serializers.get(typeArgs[1])));
   }
