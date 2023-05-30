@@ -114,7 +114,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <configLocation>../emka_checks.xml</configLocation>
+          <configLocation>google_checks.xml</configLocation>
           <violationSeverity>warning</violationSeverity>
         </configuration>
         <executions>
