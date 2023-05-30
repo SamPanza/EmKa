@@ -3,6 +3,7 @@
           "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
           "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
+<!--Based on https://raw.githubusercontent.com/checkstyle/checkstyle/1de91bc2e79d13860f841e8cddd85fdc54d4c1a4/src/main/resources/google_checks.xml-->
 <!--
     Checkstyle configuration that checks the Google coding conventions from Google Java Style
     that can be found at https://google.github.io/styleguide/javaguide.html
