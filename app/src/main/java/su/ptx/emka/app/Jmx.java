@@ -21,6 +21,18 @@ final class Jmx {
   private Jmx() {
   }
 
+  static void register(Object o) {
+    try {
+      getPlatformMBeanServer().registerMBean(o, objectName(o));
+    } catch (InstanceAlreadyExistsException e) {
+      throw new JmxException(e);
+    } catch (MBeanRegistrationException e) {
+      throw new JmxException(e);
+    } catch (NotCompliantMBeanException e) {
+      throw new JmxException(e);
+    }
+  }
+
   private static ObjectName objectName(Object o) {
     return objectName(o.getClass());
   }
@@ -29,17 +41,7 @@ final class Jmx {
     try {
       return new ObjectName(c.getPackageName(), "type", c.getSimpleName());
     } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  static void register(Object o) {
-    try {
-      getPlatformMBeanServer().registerMBean(o, objectName(o));
-    } catch (InstanceAlreadyExistsException
-             | MBeanRegistrationException
-             | NotCompliantMBeanException e) {
-      throw new RuntimeException(e);
+      throw new JmxException(e);
     }
   }
 
@@ -49,7 +51,7 @@ final class Jmx {
             "service:jmx:rmi:///jndi/rmi://127.0.0.1:%d/jmxrmi".formatted(port)))) {
       c.accept(connector.getMBeanServerConnection());
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new JmxException(e);
     }
   }
 
