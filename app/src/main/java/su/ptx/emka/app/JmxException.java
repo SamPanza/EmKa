@@ -6,9 +6,7 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
 import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
-import javax.management.ReflectionException;
 
 final class JmxException extends RuntimeException {
   JmxException(InstanceAlreadyExistsException cause) {
@@ -20,10 +18,6 @@ final class JmxException extends RuntimeException {
   }
 
   JmxException(NotCompliantMBeanException cause) {
-    super(cause);
-  }
-
-  JmxException(MalformedObjectNameException cause) {
     super(cause);
   }
 
@@ -40,10 +34,6 @@ final class JmxException extends RuntimeException {
   }
 
   JmxException(InstanceNotFoundException cause) {
-    super(cause);
-  }
-
-  JmxException(ReflectionException cause) {
     super(cause);
   }
 }

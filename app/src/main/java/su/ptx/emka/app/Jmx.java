@@ -41,7 +41,7 @@ final class Jmx {
     try {
       return new ObjectName(c.getPackageName(), "type", c.getSimpleName());
     } catch (MalformedObjectNameException e) {
-      throw new JmxException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -65,10 +65,8 @@ final class Jmx {
       throw new JmxException(e);
     } catch (InstanceNotFoundException e) {
       throw new JmxException(e);
-    } catch (ReflectionException e) {
-      throw new JmxException(e);
-    } catch (IOException e) {
-      throw new JmxException(e);
+    } catch (ReflectionException | IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }
