@@ -1,27 +1,42 @@
 package su.ptx.emka.app;
 
+import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static su.ptx.emka.app.Jmx.attr;
+import static su.ptx.emka.app.Jmx.objectName;
 import static su.ptx.emka.app.Jmx.register;
 import static su.ptx.emka.app.Jmx.withConnection;
 
 import java.io.IOException;
+import javax.management.AttributeNotFoundException;
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistration;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 class JmxTests {
+  @BeforeEach
+  void setUp() {
+    register(new Foo());
+  }
+
+  @AfterEach
+  void tearDown() throws InstanceNotFoundException, MBeanRegistrationException {
+    getPlatformMBeanServer().unregisterMBean(objectName(Foo.class));
+  }
+
   @Test
-  void registerBeanTwice() {
-    var foo = new Foo();
-    register(foo);
-    assertJmxExceptionCause(InstanceAlreadyExistsException.class, () -> register(foo));
+  void registerFooAgain() {
+    assertJmxExceptionCause(InstanceAlreadyExistsException.class, () -> register(new Foo()));
   }
 
   @Test
@@ -38,6 +53,13 @@ class JmxTests {
   void connectToBadPort() {
     var e = assertJmxExceptionCause(IOException.class, () -> withConnection(-1, conn -> fail()));
     assertTrue(e.getCause().getMessage().startsWith("invalid authority: 127.0.0.1:-1"));
+  }
+
+  @Test
+  void noSuchAttr() {
+    assertJmxExceptionCause(
+        AttributeNotFoundException.class,
+        () -> attr(getPlatformMBeanServer(), objectName(Foo.class), "OhNo"));
   }
 
   private static <T extends Throwable> T assertJmxExceptionCause(Class<T> t, Executable e) {

@@ -59,12 +59,16 @@ final class Jmx {
     try {
       //noinspection unchecked
       return (T) c.getAttribute(n, a);
-    } catch (AttributeNotFoundException
-             | MBeanException
-             | InstanceNotFoundException
-             | ReflectionException
-             | IOException e) {
-      throw new RuntimeException(e);
+    } catch (AttributeNotFoundException e) {
+      throw new JmxException(e);
+    } catch (MBeanException e) {
+      throw new JmxException(e);
+    } catch (InstanceNotFoundException e) {
+      throw new JmxException(e);
+    } catch (ReflectionException e) {
+      throw new JmxException(e);
+    } catch (IOException e) {
+      throw new JmxException(e);
     }
   }
 }
