@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EmKaApp" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="EMKA_LOG_DIR" value="app/target/logz" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="su.ptx.emka.app.EmKaApp" />
+    <module name="emka-app" />
+    <option name="VM_PARAMETERS" value="-Dcom.sun.management.jmxremote.port=9001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
