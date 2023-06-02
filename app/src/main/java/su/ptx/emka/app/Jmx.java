@@ -23,18 +23,14 @@ final class Jmx {
 
   static void register(Object o) {
     try {
-      getPlatformMBeanServer().registerMBean(o, objectName(o));
+      getPlatformMBeanServer().registerMBean(o, objectName(o.getClass()));
     } catch (InstanceAlreadyExistsException e) {
-      throw new JmxException(e);
+      throw new E(e);
     } catch (MBeanRegistrationException e) {
-      throw new JmxException(e);
+      throw new E(e);
     } catch (NotCompliantMBeanException e) {
-      throw new JmxException(e);
+      throw new E(e);
     }
-  }
-
-  private static ObjectName objectName(Object o) {
-    return objectName(o.getClass());
   }
 
   static ObjectName objectName(Class<?> c) {
@@ -51,22 +47,52 @@ final class Jmx {
             "service:jmx:rmi:///jndi/rmi://127.0.0.1:%d/jmxrmi".formatted(port)))) {
       c.accept(connector.getMBeanServerConnection());
     } catch (IOException e) {
-      throw new JmxException(e);
+      throw new E(e);
     }
   }
 
-  static <T> T attr(MBeanServerConnection c, ObjectName n, String a) {
+  static <T> T attr(MBeanServerConnection conn, Class<?> c, String a) {
     try {
       //noinspection unchecked
-      return (T) c.getAttribute(n, a);
+      return (T) conn.getAttribute(objectName(c), a);
     } catch (AttributeNotFoundException e) {
-      throw new JmxException(e);
+      throw new E(e);
     } catch (MBeanException e) {
-      throw new JmxException(e);
+      throw new E(e);
     } catch (InstanceNotFoundException e) {
-      throw new JmxException(e);
+      throw new E(e);
     } catch (ReflectionException | IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  static final class E extends RuntimeException {
+    E(InstanceAlreadyExistsException cause) {
+      super(cause);
+    }
+
+    E(MBeanRegistrationException cause) {
+      super(cause);
+    }
+
+    E(NotCompliantMBeanException cause) {
+      super(cause);
+    }
+
+    E(IOException cause) {
+      super(cause);
+    }
+
+    E(AttributeNotFoundException cause) {
+      super(cause);
+    }
+
+    E(MBeanException cause) {
+      super(cause);
+    }
+
+    E(InstanceNotFoundException cause) {
+      super(cause);
     }
   }
 }
