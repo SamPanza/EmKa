@@ -25,6 +25,12 @@
     </dependency>
 
     <dependency>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-clients</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
