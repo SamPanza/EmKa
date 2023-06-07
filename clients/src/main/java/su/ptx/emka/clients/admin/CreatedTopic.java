@@ -1,8 +1,8 @@
 package su.ptx.emka.clients.admin;
 
-import java.util.concurrent.ExecutionException;
+import static su.ptx.emka.clients.Kafut.sneakyGet;
+
 import org.apache.kafka.clients.admin.CreateTopicsResult;
-import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Uuid;
 
 /**
@@ -36,16 +36,5 @@ public final class CreatedTopic {
 
   public Uuid id() {
     return sneakyGet(ctr.topicId(name));
-  }
-
-  private static <T> T sneakyGet(KafkaFuture<T> f) {
-    try {
-      return f.get();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException("Interrupted", e);
-    } catch (ExecutionException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

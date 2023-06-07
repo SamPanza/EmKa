@@ -2,10 +2,13 @@ package su.ptx.emka.clients.admin;
 
 import static java.util.Collections.singleton;
 import static java.util.Optional.empty;
+import static su.ptx.emka.clients.Kafut.sneakyGet;
 
 import java.util.Map;
 import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.DescribeTopicsOptions;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicDescription;
 
 /**
  * TODO: javadoc.
@@ -32,5 +35,17 @@ public final class Kadm {
                     name,
                     empty(),
                     empty()))));
+  }
+
+  /**
+   * TODO: javadoc.
+   */
+  public TopicDescription describeTopic(String name) {
+    return sneakyGet(
+        adm.describeTopics(
+                singleton(name),
+                new DescribeTopicsOptions().includeAuthorizedOperations(true))
+            .topicNameValues()
+            .get(name));
   }
 }
