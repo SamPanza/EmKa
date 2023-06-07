@@ -10,14 +10,14 @@ import org.apache.kafka.clients.admin.NewTopic;
 /**
  * TODO: javadoc.
  */
-public final class Kadmin {
-  private final Admin admin;
+public final class Kadm {
+  private final Admin adm;
 
-  public Kadmin(Admin admin) {
-    this.admin = admin;
+  public Kadm(Admin admin) {
+    adm = admin;
   }
 
-  public Kadmin(String b_servers) {
+  public Kadm(String b_servers) {
     this(Admin.create(Map.of("bootstrap.servers", b_servers)));
   }
 
@@ -26,7 +26,7 @@ public final class Kadmin {
    */
   public CreatedTopic createTopic(String name) {
     return new CreatedTopic(
-        admin.createTopics(
+        adm.createTopics(
             singleton(
                 new NewTopic(
                     name,

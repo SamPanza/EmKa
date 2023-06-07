@@ -14,7 +14,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
-import su.ptx.emka.clients.admin.Kadmin;
+import su.ptx.emka.clients.admin.Kadm;
 import su.ptx.emka.junit.EmKa;
 
 @EmKa
@@ -23,7 +23,7 @@ class AllClientsAsParamsTests {
   void create_produce_consume(Admin admin,
                               Producer<Integer, Integer> producer,
                               Consumer<Integer, Integer> consumer) throws InterruptedException {
-    var kadmin = new Kadmin(admin);
+    var kadm = new Kadm(admin);
     //[The French definite articles](https://www.thinkinfrench.com/grammar-lesson/french-definite-articles/) are
     //  Le (masculine singular)
     //  La (feminine singular)
@@ -31,11 +31,11 @@ class AllClientsAsParamsTests {
     //  Les (plural)
     var topic = "Le.Topique";
 
-    var t = kadmin.createTopic(topic);
+    var t = kadm.createTopic(topic);
     assertEquals(topic, t.name());
     assertEquals(1, t.numPartitions());
     assertEquals(1, t.replicationFactor());
-    assertEquals(16, Base64.getDecoder().decode(t.id().toString()).length);
+    assertEquals(16, Base64.getUrlDecoder().decode(t.id().toString()).length);
 
     var sent = new Random().ints().limit(100).boxed().collect(toUnmodifiableSet());
     Set<Integer> polled = new HashSet<>();
