@@ -10,33 +10,32 @@ import org.apache.kafka.common.Uuid;
  */
 public final class CreatedTopic {
   private final CreateTopicsResult ctr;
+  private final String name;
 
-  CreatedTopic(CreateTopicsResult ctr) {
-    this.ctr = ctr;
+  CreatedTopic(CreateTopicsResult createTopicsResult) {
+    ctr = createTopicsResult;
+    var names = ctr.values().keySet().iterator();
+    name = names.next();
+    assert !names.hasNext();
   }
 
   /**
    * TODO: javadoc.
    */
   public String name() {
-    var names = ctr.values().keySet();
-    if (names.size() != 1) {
-      throw new IllegalArgumentException(
-          "Expected one topic in CTR but topics are %s".formatted(names));
-    }
-    return names.iterator().next();
+    return name;
   }
 
   public int numPartitions() {
-    return sneakyGet(ctr.numPartitions(name()));
+    return sneakyGet(ctr.numPartitions(name));
   }
 
   public int replicationFactor() {
-    return sneakyGet(ctr.replicationFactor(name()));
+    return sneakyGet(ctr.replicationFactor(name));
   }
 
   public Uuid id() {
-    return sneakyGet(ctr.topicId(name()));
+    return sneakyGet(ctr.topicId(name));
   }
 
   private static <T> T sneakyGet(KafkaFuture<T> f) {
