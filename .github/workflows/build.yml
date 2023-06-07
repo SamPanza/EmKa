@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - run: |
-          gem install hoc
+          sudo gem install hoc
           hoc -h
 
       - uses: actions/checkout@v3
