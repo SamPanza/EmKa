@@ -13,7 +13,7 @@ import org.apache.kafka.clients.admin.TopicDescription;
 /**
  * TODO: javadoc.
  */
-public final class Kadm {
+public final class Kadm implements AutoCloseable {
   private final Admin adm;
 
   public Kadm(Admin admin) {
@@ -47,5 +47,10 @@ public final class Kadm {
                 new DescribeTopicsOptions().includeAuthorizedOperations(true))
             .topicNameValues()
             .get(name));
+  }
+
+  @Override
+  public void close() {
+    adm.close();
   }
 }
