@@ -7,7 +7,9 @@ import static su.ptx.emka.clients.Kafut.sneakyGet;
 import java.util.Map;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.DescribeTopicsOptions;
+import org.apache.kafka.clients.admin.LogDirDescription;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.QuorumInfo;
 import org.apache.kafka.clients.admin.TopicDescription;
 
 /**
@@ -47,6 +49,23 @@ public final class Kadm implements AutoCloseable {
                 new DescribeTopicsOptions().includeAuthorizedOperations(true))
             .topicNameValues()
             .get(name));
+  }
+
+  public QuorumInfo quorumInfo() {
+    return sneakyGet(adm.describeMetadataQuorum().quorumInfo());
+  }
+
+  /**
+   * TODO: javadoc.
+   */
+  public Map.Entry<String, LogDirDescription> logDir() {
+    return sneakyGet(
+        adm.describeLogDirs(singleton(1))
+            .descriptions()
+            .get(1))
+        .entrySet()
+        .iterator()
+        .next();
   }
 
   @Override
