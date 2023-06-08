@@ -2,6 +2,7 @@ package su.ptx.emka.clients.admin;
 
 import static java.util.Collections.singleton;
 import static java.util.Optional.empty;
+import static su.ptx.emka.aux.Pair.pair;
 import static su.ptx.emka.clients.Kafut.sneakyGet;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.QuorumInfo;
 import org.apache.kafka.clients.admin.TopicDescription;
 import su.ptx.emka.aux.Node;
+import su.ptx.emka.aux.Pair;
 
 /**
  * TODO: javadoc.
@@ -56,14 +58,15 @@ public final class Kadm implements AutoCloseable {
   /**
    * TODO: javadoc.
    */
-  public Map.Entry<String, LogDirDescription> logDir() {
-    return sneakyGet(
-        adm.describeLogDirs(singleton(Node.id))
-            .descriptions()
-            .get(Node.id))
-        .entrySet()
-        .iterator()
-        .next();
+  public Pair<String, LogDirDescription> logDir() {
+    return pair(
+        sneakyGet(
+            adm.describeLogDirs(singleton(Node.id))
+                .descriptions()
+                .get(Node.id))
+            .entrySet()
+            .iterator()
+            .next());
   }
 
   /**

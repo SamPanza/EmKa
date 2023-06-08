@@ -28,8 +28,8 @@ class EmKaAppIT {
         assertEquals(Node.id, voters.get(0).replicaId());
         assertTrue(qi.observers().isEmpty());
         var ld = kadm.logDir();
-        assertEquals(ldir, ld.getKey());
-        tr.publishEntry("logDirDescription", ld.getValue().toString());
+        assertEquals(ldir, ld.f());
+        tr.publishEntry("logDirDescription", ld.l().toString());
       }
     });
   }
