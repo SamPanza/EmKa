@@ -35,6 +35,12 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-clients</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <properties>
@@ -46,9 +52,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

@@ -12,9 +12,10 @@
   <modules>
     <module>0-bom</module>
     <module>1-parent</module>
+    <module>clients</module>
     <module>server</module>
-    <module>app</module>
     <module>junit</module>
+    <module>app</module>
     <module>site</module>
   </modules>
 </project>

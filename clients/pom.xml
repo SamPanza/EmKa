@@ -11,22 +11,17 @@
     <relativePath>../1-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>emka-junit</artifactId>
+  <artifactId>emka-clients</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>su.ptx.emka</groupId>
-      <artifactId>emka-server</artifactId>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>su.ptx.emka</groupId>
-      <artifactId>emka-clients</artifactId>
       <scope>test</scope>
     </dependency>
 
