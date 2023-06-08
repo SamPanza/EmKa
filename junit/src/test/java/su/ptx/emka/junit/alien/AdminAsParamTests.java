@@ -29,7 +29,7 @@ class AdminAsParamTests {
     assertEquals(1, nodes.size());
     var node = nodes.iterator().next();
     assertEquals(Node.id, node.id());
-    assertEquals("localhost", node.host());
+    assertEquals(Node.host, node.host());
     assertFalse(node.hasRack()); //NB: What is rack?
     assertEquals(node, ci.controller());
     assertEquals(

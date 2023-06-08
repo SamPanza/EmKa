@@ -37,8 +37,9 @@ final class KRaftee implements EmKaServer {
             Map.of(
                 "process.roles", "broker,controller",
                 "node.id", Node.id,
-                "listeners", "BRO://localhost:%d,CON://localhost:%d".formatted(broPort, conPort),
-                "controller.quorum.voters", Node.id + "@localhost:" + conPort,
+                "listeners", "BRO://%s:%d,CON://%s:%d".formatted(
+                    Node.host, broPort, Node.host, conPort),
+                "controller.quorum.voters", Node.id + "@" + Node.host + ":" + conPort,
                 "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
                 "controller.listener.names", "CON",
                 "inter.broker.listener.name", "BRO",
@@ -49,7 +50,7 @@ final class KRaftee implements EmKaServer {
         Time.SYSTEM,
         Option.empty());
     server.startup();
-    bootstrapServers = "localhost:" + broPort;
+    bootstrapServers = Node.host + ":" + broPort;
     return this;
   }
 

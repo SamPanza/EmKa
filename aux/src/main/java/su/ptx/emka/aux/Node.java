@@ -5,4 +5,5 @@ package su.ptx.emka.aux;
  */
 public interface Node {
   int id = 1;
+  String host = "localhost";
 }
