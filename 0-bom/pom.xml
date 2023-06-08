@@ -17,7 +17,7 @@
     <dependencies>
       <dependency>
         <groupId>su.ptx.emka</groupId>
-        <artifactId>emka-server</artifactId>
+        <artifactId>emka-aux</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -29,13 +29,19 @@
 
       <dependency>
         <groupId>su.ptx.emka</groupId>
-        <artifactId>emka-app</artifactId>
+        <artifactId>emka-server</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>su.ptx.emka</groupId>
         <artifactId>emka-junit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>su.ptx.emka</groupId>
+        <artifactId>emka-app</artifactId>
         <version>${project.version}</version>
       </dependency>
 

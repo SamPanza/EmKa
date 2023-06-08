@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import kafka.server.BrokerMetadataCheckpoint;
 import kafka.server.MetaProperties;
 import org.apache.kafka.metadata.bootstrap.BootstrapDirectory;
+import su.ptx.emka.aux.Node;
 
 final class LogDirFormatter {
   static final String META_PROPS = "meta.properties";
@@ -21,7 +22,7 @@ final class LogDirFormatter {
     this.dir = dir;
   }
 
-  File format(int nodeId) {
+  File format() {
     final File logDir;
     if (dir == null) {
       try {
@@ -41,7 +42,7 @@ final class LogDirFormatter {
       return logDir;
     }
     new BrokerMetadataCheckpoint(metaProps).write(
-      new MetaProperties(randomUuid().toString(), nodeId).toProperties());
+      new MetaProperties(randomUuid().toString(), Node.id).toProperties());
     try {
       new BootstrapDirectory(logDir.toString(), empty()).writeBinaryFile(fromVersion(latest(), ""));
     } catch (Exception e) {

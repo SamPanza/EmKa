@@ -12,6 +12,7 @@ import org.apache.kafka.clients.admin.LogDirDescription;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.QuorumInfo;
 import org.apache.kafka.clients.admin.TopicDescription;
+import su.ptx.emka.aux.Node;
 
 /**
  * TODO: javadoc.
@@ -57,9 +58,9 @@ public final class Kadm implements AutoCloseable {
    */
   public Map.Entry<String, LogDirDescription> logDir() {
     return sneakyGet(
-        adm.describeLogDirs(singleton(1))
+        adm.describeLogDirs(singleton(Node.id))
             .descriptions()
-            .get(1))
+            .get(Node.id))
         .entrySet()
         .iterator()
         .next();

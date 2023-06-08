@@ -16,6 +16,11 @@
   <dependencies>
     <dependency>
       <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-aux</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>su.ptx.emka</groupId>
       <artifactId>emka-clients</artifactId>
     </dependency>
 

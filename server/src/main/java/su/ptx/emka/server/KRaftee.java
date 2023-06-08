@@ -8,6 +8,7 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
 import org.apache.kafka.common.utils.Time;
 import scala.Option;
+import su.ptx.emka.aux.Node;
 
 final class KRaftee implements EmKaServer {
   private String bootstrapServers;
@@ -29,20 +30,19 @@ final class KRaftee implements EmKaServer {
     if (server != null) {
       throw new IllegalStateException("Server already started");
     }
-    var nodeId = 1;
     var broPort = FREE_PORTS.applyAsInt(port1);
     var conPort = FREE_PORTS.applyAsInt(port2);
     server = new KafkaRaftServer(
         new KafkaConfig(
             Map.of(
                 "process.roles", "broker,controller",
-                "node.id", nodeId,
+                "node.id", Node.id,
                 "listeners", "BRO://localhost:%d,CON://localhost:%d".formatted(broPort, conPort),
-                "controller.quorum.voters", nodeId + "@localhost:" + conPort,
+                "controller.quorum.voters", Node.id + "@localhost:" + conPort,
                 "listener.security.protocol.map", "CON:PLAINTEXT,BRO:PLAINTEXT",
                 "controller.listener.names", "CON",
                 "inter.broker.listener.name", "BRO",
-                "log.dir", logDir = new LogDirFormatter(dir).format(nodeId).getAbsolutePath(),
+                "log.dir", logDir = new LogDirFormatter(dir).format().getAbsolutePath(),
                 "offsets.topic.replication.factor", (short) 1,
                 "transaction.state.log.replication.factor", (short) 1),
             false),

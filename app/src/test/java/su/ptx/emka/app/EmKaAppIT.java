@@ -7,6 +7,7 @@ import static su.ptx.emka.app.Jmx.withConnection;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
+import su.ptx.emka.aux.Node;
 import su.ptx.emka.clients.admin.Kadm;
 
 class EmKaAppIT {
@@ -19,12 +20,12 @@ class EmKaAppIT {
       tr.publishEntry("log.dir", ldir);
       try (var kadm = new Kadm(bservers)) {
         var qi = kadm.quorumInfo();
-        assertEquals(1, qi.leaderId());
+        assertEquals(Node.id, qi.leaderId());
         tr.publishEntry("leaderEpoch", String.valueOf(qi.leaderEpoch()));
         tr.publishEntry("highWatermark", String.valueOf(qi.highWatermark()));
         var voters = qi.voters();
         assertEquals(1, voters.size());
-        assertEquals(1, voters.get(0).replicaId());
+        assertEquals(Node.id, voters.get(0).replicaId());
         assertTrue(qi.observers().isEmpty());
         var ld = kadm.logDir();
         assertEquals(ldir, ld.getKey());

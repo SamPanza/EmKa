@@ -11,31 +11,7 @@
     <relativePath>../1-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>emka-clients</artifactId>
-
-  <dependencies>
-    <dependency>
-      <groupId>su.ptx.emka</groupId>
-      <artifactId>emka-aux</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <artifactId>emka-aux</artifactId>
 
   <build>
     <plugins>

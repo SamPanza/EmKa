@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.common.Uuid;
 import org.junit.jupiter.api.Test;
+import su.ptx.emka.aux.Node;
 import su.ptx.emka.clients.admin.Kadm;
 import su.ptx.emka.junit.EmKa;
 
@@ -27,7 +28,7 @@ class AdminAsParamTests {
     var nodes = ci.nodes();
     assertEquals(1, nodes.size());
     var node = nodes.iterator().next();
-    assertEquals(1, node.id());
+    assertEquals(Node.id, node.id());
     assertEquals("localhost", node.host());
     assertFalse(node.hasRack()); //NB: What is rack?
     assertEquals(node, ci.controller());

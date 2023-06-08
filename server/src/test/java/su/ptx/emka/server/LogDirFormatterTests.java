@@ -55,7 +55,7 @@ class LogDirFormatterTests {
   }
 
   private static File format(File dir) {
-    return new LogDirFormatter(dir).format(1);
+    return new LogDirFormatter(dir).format();
   }
 
   private static Set<String> ls(File dir) {
