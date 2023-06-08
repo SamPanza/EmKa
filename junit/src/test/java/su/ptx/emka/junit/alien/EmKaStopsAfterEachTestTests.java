@@ -37,7 +37,7 @@ class EmKaStopsAfterEachTestTests {
   @Test
   @Order(2)
   void createdTopicGone() {
-    var e1 = assertThrows(RuntimeException.class, () -> kadm.describeTopic("1"));
+    var e1 = assertThrows(RuntimeException.class, () -> kadm.topicInfo("1"));
     var e2 = e1.getCause();
     assertTrue(e2 instanceof ExecutionException);
     var e3 = e2.getCause();
