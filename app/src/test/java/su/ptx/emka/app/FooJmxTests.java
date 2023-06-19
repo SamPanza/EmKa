@@ -1,10 +1,12 @@
 package su.ptx.emka.app;
 
 import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
-import static su.ptx.emka.app.Assertions.assertJmxExceptionCause;
 import static su.ptx.emka.app.Jmx.attr;
 import static su.ptx.emka.app.Jmx.objectName;
 import static su.ptx.emka.app.Jmx.register;
+import static su.ptx.emka.aux.Pair.pair;
+import static su.ptx.emka.test.AssThr.assThr;
+import static su.ptx.emka.test.StringPredicates.any;
 
 import java.io.IOException;
 import javax.management.AttributeNotFoundException;
@@ -33,20 +35,25 @@ class FooJmxTests {
 
   @Test
   void register_already_existing_instance_throws() {
-    assertJmxExceptionCause(InstanceAlreadyExistsException.class, () -> register(new Foo()));
+    assThr(
+        () -> register(new Foo()),
+        pair(Jmx.E.class, any()),
+        pair(InstanceAlreadyExistsException.class, any()));
   }
 
   @Test
   void get_unknown_attr_throws() {
-    assertJmxExceptionCause(
-        AttributeNotFoundException.class,
-        () -> attr(CONN, Foo.class, "OhNo"));
+    assThr(
+        () -> attr(CONN, Foo.class, "OhNo"),
+        pair(Jmx.E.class, any()),
+        pair(AttributeNotFoundException.class, any()));
   }
 
   @Test
   void get_throwing_attr_throws() {
-    assertJmxExceptionCause(
-        MBeanException.class,
-        () -> attr(CONN, Foo.class, "Throw"));
+    assThr(
+        () -> attr(CONN, Foo.class, "Throw"),
+        pair(Jmx.E.class, any()),
+        pair(MBeanException.class, any()));
   }
 }

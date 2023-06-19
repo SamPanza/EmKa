@@ -31,8 +31,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>su.ptx.emka</groupId>
+      <artifactId>emka-test</artifactId>
       <scope>test</scope>
     </dependency>
 

@@ -13,6 +13,7 @@
     <module>0-bom</module>
     <module>1-parent</module>
     <module>aux</module>
+    <module>test</module>
     <module>clients</module>
     <module>server</module>
     <module>junit</module>

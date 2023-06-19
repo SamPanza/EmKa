@@ -20,6 +20,11 @@
         <artifactId>emka-aux</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>su.ptx.emka</groupId>
+        <artifactId>emka-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>su.ptx.emka</groupId>
